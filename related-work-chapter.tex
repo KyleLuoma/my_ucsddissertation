@@ -1,0 +1,58 @@
+\section{Related Work for Snails}
+
+
+
+\paragraph{\textbf{Ontology Mapping}}
+Schema modifications and intermediate representations to enhance performance in a specific context extend beyond NL-to-SQL applications.
+Mapping relational database schemas to ontologies is an approach used to improve schema-to-schema integration and web application application-database interfaces~\cite{4061430}.
+This improves the semantic description of underlying data, which is often a desirable feature in web applications that interact within the semantic web~\cite{7396620}.
+While ontological mapping of a relational database can improve performance in this context; we see less evidence that such an approach is useful or necessary in NL-to-SQL applications, though this may serve as a compelling opportunity for future research.
+
+\paragraph{\textbf{NL-to-SQL Benchmarks}}
+\emph{Spider}~\cite{Yu&al.18c}, soon to be superseded by a more challenging benchmark for the LLM era, was a popular NL-to-SQL benchmark that still offers a publically-available dataset consisting of 166 multi-table databases and 1,034 NL questions and gold queries over the databases in a development dataset. 
+\emph{Spider-Syn}~\cite{gan-etal-2021-towards} and Spider-Realistic~\cite{gan-etal-2021-towards} are extensions of the Spider benchmark that perform NL question synonym replacement to reduce the occurrences of lexical matching between NL question keywords and schema identifiers.
+\emph{BIRD}~\cite{li2023llm} is an emergent benchmark containing 95 large databases over 37 domains that seeks to better replicate real-world databases in order to better challenge highly capable LLM-based NL-to-SQL systems.
+While Spider and its variants as well as BIRD intend to better-replicate real-world database designs, our naturalness-focused analysis indicates that their schema identifiers are more natural than those we encountered in our real-world database selection process (see the statistics in Figure \ref{fig:naturalnesscompare}).
+Additionally, Spider and BIRD both evaluate performance using either exact set matching or execution result set comparison while we use the more pragmatic set-superset matching as proposed in~\cite{floratou2024nl2sql} and schema linking-specific recall metrics.
+
+\emph{Archerfish}
+~\cite{floratou2024nl2sql} is a benchmarking framework that relaxes execution matching and accounts for semantic ambiguity in NL questions by allowing for multiple correct answers derived from candidate key analysis.
+This framework relies on the binary ``correct, or not'' evaluation approach common to other benchmarks, whereas in addition to relaxed execution matching, SNAILS evaluates target schema linking performance via query identifier recall.
+Overall, we find that our benchmark and findings complement this existing and ongoing research by enhancing our ability to target specific schema-related aspects of NL-to-SQL performance in future NLI development.
+
+\paragraph{\textbf{Impacts of Schema on NL-to-SQL Performance}}
+Spider-Syn~\cite{gan-etal-2021-towards} demonstrates degraded NL-to-SQL performance of language models trained for NL-to-SQL tasks when the occurrence of lexical matching between NL questions and schema identifiers is reduced. 
+This approach differs from our experiments in that it evaluates a LM specifically trained on NL-to-SQL tasks using the Spider training set as opposed to the more general-purpose foundational LLMs evaluated in this work.
+They also make no apparent attempt to reduce the naturalness of  database schema identifiers.
+
+Semantics-preserving schema transformation is a design feature of MT-teql~\cite{10.14778/3494124.3494139}, an NL-to-SQL evaluation framework that modifies natural language utterances and schema properties to stress LM robustness.
+MT-teql provides a holistic view of the effect of NL utterance variances and schema design on LM performance. 
+However, it does not address the question of schema identifier naturalness, nor does it make modifications to schema elements that are necessary for answer generation. 
+
+Some recent work has examined the effects of schema ambiguity, where semantically different tables or columns have identical or synonymous names.
+Schema ambiguity, where a schema contains one or more semantically similar pairs of elements, degrades semantic parsing (i.e., NL-to-SQL) performance by recalling undesired tables or columns in response to a NL question that contains patterns or keywords that align with more than one schema element in the latent space~\cite{10555063}.
+Documentation, combined with agent-based column selection, can improve Text-to-SQL performance in the presence of data and schema ambiguity~\cite{huang2023data}.
+Though we did not focus on ambiguity in our work, identifier naturalness and ambiguity are complementary efforts that provide a potential future direction for the expansion of the SNAILS benchmark artifacts. 
+
+
+\section{Related Work for Skalpel}
+
+
+\paragraph{\textbf{Evaluating Schema Subsetting Methods}}
+CRUSH~\cite{kothyari-etal-2023-crush4sql} is a recent work that performs subsetting evaluation of a novel halucination-based subsetting method and compares it to variations of dense passage retrieval.
+The authors provide benchmark datasets including SpiderUnion, and BirdUnion--unions of the disjoint schemas in the Spider~\cite{benchmark-spider} and Bird~\cite{benchmark-bird} benchmarks respectively. They also introduce SocialDB, a collection of database schemas and schema descriptions without associated database instances and NL-SQL question-query pairs.
+In our work, we extend this line of research further by adopting the  SNAILS collection to better-represent real-world schema subsetting challenges.
+Additionally, we adopt a more robust benchmark evaluation strategy by introducing precision and f1 metrics in addition to the recall metric used by the CRUSH authors.
+Finally, our subsetting method comparison is more representative of the current SOTA in the NL-to-SQL domain by evaluating subsetting methods described by systems with top placement on current benchmarks.
+
+A recent ArXiv preprint that critically evaluates the usefulness of schema subsetting using SoTA LLMs suggests that as LLM capability increases, the need for schema subsetting diminishes~\cite{maamari2024deathschemalinkingtexttosql}.
+In this work, the authors evaluate four LLM-based schema subsetting methods using the Bird SQL benchmark and measure performance using execution accuracy, false positive rates during subsetting, and schema linking recall.
+While this concurrent work bears some resemblance to our \PROJECTNAME{ } project, we provide additional measures of recall, precision, and F1 for various combinations of table and column identifiers.
+We also extend the scope of subsetting evaluation to non-LLM-based subsetting methods such as semantic similarity search- and finetuned classifier-based approaches.
+In addition to the Bird benchmark, we also evaluate SoTA linking methods using the Spider2 and SNAILS benchmarks.
+
+The authors of the \emph{In-depth Analysis of LLM-based Schema Linking}~\cite{Katsogiannis-Meimarakis2026} concurrently and independently developed a schema subsetting (or schema linking) evaluation methodology focused on LLM-based schema linking approaches in which they replicate several LLM-prompting methods for schema linking and evaluate them in terms of precision, recall, and accuracy using the Spider and Bird benchmarks~\cite{benchmark-spider,benchmark-bird}.
+Our work complements this approach and makes use of the Spider 2 and SNAILS~\cite{benchmark-spider2,benchmark-snails} benchmarks which contain very large schemas.
+We also opt to reproduce existing subsetting methods using original code, and additionally evaluate subsetting performance in terms of token usage as well as both online inference and offline pre-processing time requirements. 
+
+

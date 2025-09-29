@@ -1,0 +1,9 @@
+[submodule "spql_2_research_survey"]
+	path = spql_2_research_survey
+	url = https://www.github.com/kyleluoma/spql_2_research_survey
+[submodule "schemas-for-nl-paper"]
+	path = schemas-for-nl-paper
+	url = https://www.github.com/kyleluoma/schemas-for-nl-paper
+[submodule "skalpel-paper"]
+	path = skalpel-paper
+	url = https://www.github.com/kyleluoma/skalpel-paper

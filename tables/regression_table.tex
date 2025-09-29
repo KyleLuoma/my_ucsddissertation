@@ -1,0 +1,17 @@
+\begin{table}
+\caption{Logistic regression coefficients, standard error, and significance (p value) for non-colinear parameters with execution accuracy as the dependent variable. n = 10,241, Pseudo R-squared = 0.099. Execution accuracy is binary (1, 0) where 1 indicates a correct NL-to-SQL generation given a schema subset.}
+\label{tab:executionaccuracycorrelations}
+\begin{tabular}{lccc}
+\toprule
+Metric & Coef & StdErr & pValue \\
+\midrule
+Const & -4.679 & 0.151 & 0.000 \\
+TableRecall & 1.107 & 0.213 & 0.000 \\
+TablePrecision & 0.599 & 0.181 & 0.001 \\
+ColumnRecall & 0.933 & 0.175 & 0.000 \\
+ColumnPrecision & 0.597 & 0.190 & 0.002 \\
+SubsetTableProportion & -0.055 & 0.163 & 0.736 \\
+SubsetColumnProportion & 0.189 & 0.217 & 0.383 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,911 @@
+\newcommand{\TestAlgorithm}{
+    \begin{algorithm}
+        \caption{Calculate $y = x^n$}
+    \begin{algorithmic} 
+        \REQUIRE $n \geq 0 \vee x \neq 0$
+        \ENSURE $y = x^n$
+        \STATE $y \leftarrow 1$
+        \IF{$n < 0$}
+        \STATE $X \leftarrow 1 / x$
+        \STATE $N \leftarrow -n$
+        \ELSE
+        \STATE $X \leftarrow x$
+        \STATE $N \leftarrow n$
+        \ENDIF
+        \WHILE{$N \neq 0$}
+        \IF{$N$ is even}
+        \STATE $X \leftarrow X \times X$
+        \STATE $N \leftarrow N / 2$
+        \ELSE[$N$ is odd]
+        \STATE $y \leftarrow y \times X$
+        \STATE $N \leftarrow N - 1$
+        \ENDIF
+        \ENDWHILE
+    \end{algorithmic}
+    \end{algorithm}
+}
+\newcommand{\ReplaceSynonymsAlgorithm}{
+    \begin{algorithm}
+        \caption{Find and Replace Synonyms}
+        \begin{algorithmic}
+        \STATE $speakQlAst \gets parseSpeakQL(query)$ 
+        \STATE $synonymKwRuleset \gets \{selectKW, fromKW, joinKW, ...\}$
+        \STATE $syntaxSugarRs \gets \{theKW, tableKW, ofKW, isKW\}$
+        \STATE $synonymHashMap \gets \{(selectKW : SELECT), (fromKW : FROM) , ...\}$
+        \FORALL{$nodes$ such that $node \in speakQlAst$}
+            \IF{$node.rule \in synonymKwRuleset$}
+                \STATE $node.replaceKW(synonymHashMap[node.rule])$
+            \ENDIF
+            \IF{$node.rule \in syntaxSugarRs$}
+                \STATE $speakQlAst.removeNode(node)$
+            \ENDIF
+        \ENDFOR
+        \end{algorithmic}
+        \label{alg:synonyms}
+    \end{algorithm}
+}
+\newcommand{\ReorderParseTreeAlgorithm}{
+    \begin{algorithm}
+        \caption{Reorder Select, From and Where Expressions}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \FORALL{$ruleNodes$ such that $ruleNode \in speakQlAst$}
+            \IF{$ruleNode == qryOrdSpec$}
+                \STATE $expr \gets ruleNode.children$
+                \STATE $reorderedExpr \gets [\varnothing]$
+                \STATE $reorderedExpr.append(expr.selExpr)$
+                \STATE $reorderedExpr.append(expr.tabExpr)$
+                \STATE $reorderedExpr.append(expr.whereExpr)$
+                \STATE $ruleNode.children \gets reorderedExpr$
+            \ENDIF
+        \ENDFOR
+        \end{algorithmic}
+        \label{alg:reorder}
+    \end{algorithm}
+}
+\newcommand{\ReorderModifiersAlgorithm} {
+    \begin{algorithm}
+        \caption{Reorder Select Modifier Items}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \FORALL{$ruleNodes$ such that $ruleNode \in speakQlAst$}
+            \IF{$ruleNode == selModExpr$}
+                \STATE $reorderedItms \gets [\varnothing]$
+                \STATE $grpByCls \gets ruleNode.getChildByRule(grpByCls)$
+                \STATE $havingCls \gets ruleNode.getChildByRule(hvingCls)$
+                \STATE $ordrByCls \gets ruleNode.getChildByRule(ordrByCls)$
+                \STATE $limitCls \gets ruleNode.getChildByRule(limitCls)$
+                \STATE $reorderedItms.append(grpByCls)$
+                \STATE $reorderedItms.append(havingCls)$
+                \STATE $reorderedItms.append(ordrByCls)$
+                \STATE $reorderedItms.append(limitCls)$
+                \STATE $selModExpr.children \gets reorderedItms$
+            \ENDIF
+            \ENDFOR
+        \end{algorithmic}
+        \label{alg:reordermodifiers}
+    \end{algorithm}
+}
+\newcommand{\TransformUnbundledQuery} {
+    \begin{algorithm}
+        \caption{Transform Unbundled Query (High Level)}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \REQUIRE $\exists unbndQryOrdSpc \in speakQlAst$
+            \STATE $speakQlAst.inferGroupBy()$
+            \STATE $speakQlAst.bundleSelectElements()$
+            \STATE $speakQlAst.bundleWhereStatements()$
+            \STATE $speakQlAst.bundleJoinParts()$
+            \STATE $speakQlAst.bundleTables()$
+            \FORALL {$ruleNodes$ such that $ruleNode \in speakQlAst$}
+                \IF{$ruleNode \in \{qryOrdSpec, multQryOrdSpec, exprDelim\}$}
+                    \STATE $speakQlAst.removeNode(ruleNode)$
+                \ENDIF
+            \ENDFOR
+        \end{algorithmic}
+        \label{alg:transformunbundled}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionInferGroupBy} {
+    \begin{algorithm}
+        \caption{Unbundled Function: Infer GroupBy}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \REQUIRE $\exists grpByCls \in speakQlAst \land \exists autoMtcKW \in speakQlAst$
+            \STATE $autoKws \gets speakQlAst.nodesWithName(autoMtcKW)$
+            \FORALL {$autoKw \in autoKws$}
+                \STATE $speakQlAst.removeNode(autoKw)$
+            \ENDFOR
+            \STATE $gbNode \gets speakQlAst.nodeWithName(grpByCls)$
+            \STATE $elmtsByTbl \gets speakQlAst.getAllTablesAndElements()$
+            \STATE $gbItms \gets [\varnothing]$
+            \FORALL {$selElmt \in elmtsBtTbl$}
+                \IF{$selElmt $ is $column$}
+                    \STATE $gbItems.append(selElmt)$
+                    \STATE $gbItems.append(delim)$
+                \ENDIF
+            \ENDFOR
+            \STATE $gbNode.children \gets gbItms$
+        \end{algorithmic}
+        \label{alg:infergroupby}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionSelectElements} {
+    \begin{algorithm}
+        \caption{Unbundled Function: bundleSelectElements}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \FORALL {$ruleNode \in speakQlAst.nodesWithName(nothingElmt)$}  
+                \STATE $ruleNode.rename(selElmt)$    
+            \ENDFOR
+            \STATE $elmtsByTbl \gets speakQlAst.getAllTablesAndElements()$
+            \STATE $selElmtsRlNd' \gets speakQlAst.nodesWithName(selElmts)[0]$
+            \STATE $newChildren \gets [ \varnothing ]$
+            \FORALL {$tblItm \in elmtsByTbl$}
+                \FORALL {$selectElmt \in elmtsByTbl[tblItm]$}
+                    \STATE $newChildren.append(tblItm . selectElmt)$
+                \ENDFOR
+            \ENDFOR
+            \STATE $selElmtsRlNd'.children \gets newChildren$
+            \FORALL {$ruleNode \in speakQlAst.nodesWithName(selElmts)$ such that $ruleNode != selElmtsRlNd'$}
+                \STATE $speakQlAst.removeNode(ruleNode)$
+            \ENDFOR
+        \end{algorithmic}
+        \label{alg:transformfunctionselectelements}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionWhereStatements} {
+    \begin{algorithm}
+        \caption{Unbundled Function: bundleWhereStatements}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \REQUIRE $\exists whereExpr \in speakQlAst$
+            \STATE $unbdlExprs \gets speakQlAst.nodesWithName(unbdlQryOrdSpc)$
+            \STATE $unbdlExpr' \gets unbdlExprs[0]$
+            \STATE $whereExpr' \gets unbdlExpr'.nodeWithName(whereExpr)$
+            \FORALL{$exprNode \in unbdlExprs[1:]$}
+                \STATE $tblName \gets exprNode.nodeWithName(tblName)$
+                \STATE $exprWhereExpr \gets exprNode.nodeWithName(whereExpr)$
+                \STATE $exprWhereKw \gets exprWhereExpr.nodeWithName(whereKW)$
+                \STATE $exprWhereExpr.removeNode(exprWhereKw)$
+            \ENDFOR
+        \end{algorithmic}
+        \label{alg:transformfunctionwherestatements}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionJoinParts} {
+    \begin{algorithm}
+        \caption{Unbundled Function: bundleJoinParts}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            
+            
+        \end{algorithmic}
+        \label{alg:transformfunctionjoinparts}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionTables} {
+    \begin{algorithm}
+        \caption{Unbundled Function: bundleTables}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            
+            
+        \end{algorithmic}
+        \label{alg:transformfunctiontables}
+    \end{algorithm}
+}
+\usepackage{tabularx}
+\newcommand{\synonymgrammartable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \synonymgrammar
+        \hline
+    \end{tabularx}
+}
+\newcommand{\synonymgrammar} {
+    \noindent\parbox[t]{0.3\linewidth}{
+<selExpr> ::=
+} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <selKW> <selSpec>* <selElmts>
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+<selKW> ::=
+} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "select" | "find" | "retrieve" | "get" | "show me" | "display" | "present" | "what is" | "what is the" | "what are" | "what are the"
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{<tabExpr> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+<frmKW> <tblSrcs>
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<frmKW> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+"from" | "from table" | "from tables" | "in table" | "in tables"
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<joinKW> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+"join" | "join table" | "by joining" | "by joining table" | "joined with" | "join with" | "joined with table" | "join with table" | "by joining with table"
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<onKW> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+"on"
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<theKW> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+"the"
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<tblKW> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+"table"
+} \\
+}
+\newcommand{\sqlSelectStatementTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \sqlSelectStatement
+        \hline
+    \end{tabularx} 
+}
+\newcommand{\sqlSelectStatement} {
+    \noindent\parbox[t]{0.3\linewidth}{
+        <selStmt> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <qrySpec>
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <qrySpec> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "select" <selSpec>* <selElmts> <fromCls>? <grpByCls>? <havingCls>? <ordrByCls>? <limitCls>?
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <fromCls> ::=
+        }
+    & \noindent\parbox[t]{0.6\linewidth}{
+        ("from" <tblSources>?) ("where" <expression>)?
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <grpByCls> ::=
+        }
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "group by" <grpByItm> ("," <grpByItm>)?
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <havingCls> ::=
+        }
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "having" <expression>
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <ordrByCls> ::=
+        }
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "order by" <ordrByExpr> ("," ordrByExpr)
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <ordrByExpr> ::=
+        }
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <expression> ("asc" | "desc")
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <limitCls> ::=
+        }
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "limit" (<limitClsAtom> ",")? <limitClsAtom> \\
+        | "limit" <limitClsAtom> "offset" <limitClsAtom>
+        } \\
+}
+
+\newcommand{\selectStatement} {
+    \noindent\parbox[t]{0.3\linewidth}{
+        <selStmt> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <qrySpec>
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <qrySpec> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <qryOrdSpec> <selModExpr> \\| 
+        (<multiJoinExpr exprDelim)? (<selModExpr> <exprDelim>)? <ubndQryOrdSpc> (<exprDelim> (<ubndQryOrdSpc> | <multiJoinExpr)) (<exprDelim> <selModExpr)?
+        } \\
+
+
+    \noindent\parbox[t]{0.3\linewidth}{
+      <qryOrdSpec> ::=
+      } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <selExpr> <whereExpr>? <tabExpr> \\|
+        <selExpr> <tabExpr> <whereExpr>? \\|
+        <tabExpr> <selExpr> <whereExpr>? \\|
+        <tabExpr> <whereExpr>? <selExpr>
+        } \\
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <ubndQryOrdSpc> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <selExpr> <whereExpr>? <tabExprNoJoin> \\|
+        <selExpr> <tabExprNoJoin> <whereExpr>? \\|
+        <tabExprNoJoin> <selExpr> <whereExpr>? \\|
+        <tabExprNoJoin> <whereExpr>? <selExpr>
+        } \\
+}
+\newcommand{\selectStatementTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \selectStatement
+        \hline
+    \end{tabularx} 
+}
+\newcommand{\unbundleQueryTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \unbundleQueryRules
+        \hline
+    \end{tabularx}
+}
+\newcommand{\unbundleQueryRules} {
+\noindent\parbox[t]{0.3\linewidth}{
+<tabExprNoJoin> ::=
+} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <frmClsNoJoin>
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <frmClsNoJoin> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <frmKW> <theKW>? <tblSrcNoJoin> <tblKW>?
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <tblSrcNoJoin> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <tblSrcItm> | "(" <tblSrcItm> ")"
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <mltiJnExpr> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <mltiJnPrt> (<exprDelim> <mltiJnPrt>)*
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <mltiJnPrt> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <mltiInnrJn> | <mltiOutJn> | <mltiNatJn>
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <exprDelim> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "and then" | "then" | "next"
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <mltiInnrJn> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <inJoinKW>? <joinKW> <tblSrcItm> <withKW> <tblSrcItm> (<onKW> <expr> | "using" "(" <uidLst> ")")?
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <mltiOutJn> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <joinDir> <outJoinKW>? <joinKW> <tblSrcItm> <withKW> <tblSrcItm> (<onKW> <expr> | "using" "(" <uidLst> ")")
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <mltiNatJn> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <natJoinKW> (<joinDir> <outJoinKW>)? <joinKW> <tblSrcItm> <withKW> <tblSrcItm> 
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <withKW> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "with" | "with table" | "and"
+    } \\
+
+}
+\newcommand{\selectExpressionTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \selectExpression
+        \hline
+    \end{tabularx}
+}
+\newcommand{\selectExpression} {
+\noindent\parbox[t]{0.3\linewidth}{
+<selExpr> ::=
+} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <selKW> <selSpec>* <selElmts> \\
+    | <selKW> <nothingElmt>
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+<selKW> ::=
+} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "select" | "find" | "retrieve" | "get" | "show me" | "display" | "present" | "what is" | "what is the" | "what are" | "what are the"
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{<selSpec> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "all" | "distinct" | "distinctrow
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<selElmts> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    ("*" | <selElmt>) (<delim> <selElmt>)*
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<delim> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "," | "and"
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<selElmt> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    \emph{"*"} | <colName> | <funCall>
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<nothingElmt> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <nothingKW>
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<nothingKW> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "nothing"
+} \\
+
+}
+\newcommand{\whereExpressionTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \whereExpression
+        \hline
+    \end{tabularx}  
+}
+\newcommand{\whereExpression} {
+\noindent\parbox[t]{0.3\linewidth}{<whereExpr> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <whereKW> <expr>
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<whereKW> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "where"
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<expr> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    ("not" | "!") <expr> \\| <expr> <logicOp> <expr> \\| <predicate> "is" "not"? ("true" | "false" | "unknown") \\| <predicate>
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<logicOp> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    "and" | "xor" | "or"
+} \\
+
+\noindent\parbox[t]{0.3\linewidth}{<predicate> ::=} 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <predicate> "not"? "is" "in" <leftParen> <selStmt> <rightParen> \\
+    | <predicate> "is" "not" "null" \\
+    | <predicate> <compareOp> <predicate> \\
+    | <predicate> <compareOp> ("all" | "any" | "some") <leftParen> <selStmt> <rightParen> \\
+    | <predicate> "not"? "between" <predicate> "and" <predicate> \\
+    | <predicate> "not"? "like" <predicate> \\
+    | \emph(expressionAtom)
+} \\
+}
+\newcommand{\tableExpressionTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \tableExpression
+        \hline
+    \end{tabularx}
+}
+\newcommand{\tableExpression} {
+    \noindent\parbox[t]{0.3\linewidth}{<tabExpr> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    <frmKW> <tblSrcs>
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<frmKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "from" | "from table" | "from tables" | "in table" | "in tables"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<tblSrcs> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    <theKW>? <tblSrc> <tabKW>? (<delim> <theKW>? <tblSrc> <tblKW>?)*
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<tblSrc> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    <tblSrcItm> <joinPart>* \\
+    | "(" <tblSrcItm> <joinPart> ")"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<tblSrcItm> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "(" <slctStmt> ")" \\
+    | <tblName> <tblAlias>? \\
+    | "(" <tblSrcs> ")"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<joinPart> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    <inJoin> | <outJoin> | <natJoin>
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<inJoin> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    <inJoinKW>? <joinKW> <tblSrcItm> (<onKW> <expr>)
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<inJoinKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "inner" | "cross"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<outJoin> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    <joinDir> <outJoinKW>? <joinKW> <tblSrcItm> (<onKW> <expr>)
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<joinDir> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "left" | right
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<outJoinKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "outer"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<natJoin> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    <natJoinKW> (<joinDir> <outJoinKW>)? <joinKW> <tblSrcItm> 
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<natJoinKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "natural"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<joinKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "join" | "join table" | "by joining" | "by joining table" | "joined with" | "join with" | "joined with table" | "join with table" | "by joining with table"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<onKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "on"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<theKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "the"
+    } \\
+    
+    \noindent\parbox[t]{0.3\linewidth}{<tblKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+    "table"
+    } \\
+}
+\newcommand{\selectModifierTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \selectModifier
+        \hline
+    \end{tabularx}   
+}
+\newcommand{\selectModifier} {
+
+%     selectModifierExpression //SPEAKQL FEATURE: enables reordering by adding an additional
+%                          // selectModifierItem layer with every modifier item as an option
+%     : selectModifierItem? selectModifierItem? selectModifierItem? selectModifierItem?
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<selModExpr> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <selModItm>? <selModItm>? <selModItm>? <selModItm>?
+    } \\
+
+% selectModifierItem
+%     : groupByClause | havingClause | orderByClause | limitClause
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<selModItm> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <grpByCls> | <havingCls> | <orderByCls> | <limitCls>
+    } \\
+
+% groupByClause //SPEAKQL FEATURE: Added aggregate function option to end of group by clause to enable table-spanning aggregation using the simple query partitioning feature
+%     : groupByKeyword groupByItem (groupByItemDelimiter groupByItem)* (WITH ROLLUP)?
+%             (expressionDelimiter selectKeyword? aggregateWindowedFunction (selectElementDelimiter aggregateWindowedFunction)* )?
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<grpByCls> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <grpByKW> <grpByItm> (<delim> <grpByItm>)* ("with" "rollup")? 
+    } \\
+
+% groupByKeyword
+%     : GROUP BY | GROUP
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<grpByKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "group by" | "group"
+    } \\
+
+% groupByItem
+%     : groupByExpression order
+%     | automaticGroupByKeyword
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<grpByItm> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <grpByExpr> <order> | <autoMtcKW>
+    } \\
+
+% automaticGroupByKeyword
+%     : AUTOMATIC | AUTOMATICALLY
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<autoMtcKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "automatic" | "automatically"
+    } \\
+
+% groupByExpression
+%     : notOperator=(NOT | '!') groupByExpression
+%     | predicate IS NOT? testValue=(TRUE | FALSE | UNKNOWN)
+%     | predicate
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<grpByExpr> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "not" <grpByExpr> \\
+        | <predicate> "is" "not"? ("true" | "false" | "unknown") \\
+        | "predicate"
+    } \\
+
+% delim
+%     : ',' | AND
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<delim> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "," | "and"
+    } \\
+
+% havingClause
+%     : havingKeyword havingExpr=expression
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<havingCls> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <havingKW> <expr>
+    } \\
+
+% havingKeyword
+%     : HAVING
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<havingKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "having"
+    } \\
+
+% orderByClause
+%     : ORDER BY orderByExpression (',' orderByExpression)*
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<ordrByCls> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "order by" <ordrByExpr> (<delim> <ordrByExpr>)
+    } \\
+
+% orderByExpression
+%     : expression order?
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<ordrByExpr> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <expr> <order>?
+    } \\
+
+% //Speakq feature: full word ascending and descending
+% order
+%     : ascendingKeyword | descendingKeyword
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<order> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <ascKW> | <descKW>
+    } \\
+
+% ascendingKeyword
+%     : ASC | ASCENDING
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<ascKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        "asc" | "ascending"
+    } \\
+
+% descendingKeyword
+%     : DESC | DESCENDING
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<descKW> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        'desc' | 'descending'
+    } \\
+
+% limitClause
+%     : LIMIT ( (offset=limitClauseAtom ',')? limit=limitClauseAtom
+%     | limit=limitClauseAtom OFFSET offset=limitClauseAtom )
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<limitCls> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        'limit' <limitClsAtm> 
+    } \\
+
+% limitClauseAtom
+%     : decimalLiteral | simpleId
+%     ;
+
+    \noindent\parbox[t]{0.3\linewidth}{<limitClsAtm> ::=} 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        \emph(decimalLiteral | simpleId)
+    } \\
+
+}
+\newcommand{\naturalFunctionTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \naturalFunction
+        \hline
+    \end{tabularx} 
+}
+\newcommand{\naturalFunction} {
+    \noindent\parbox[t]{0.3\linewidth}{
+        <funCall> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <aggrFun> | <noParAggrFun> | <nonAggrWinFun> | <sclrFunNam>
+        } \\
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <aggrFun> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <theKW>? ("avg" | "average" | "max" | "min" | "sum") <ofKW>? "(" ("all" | "distinct")? \textbf{<funArg>} ")" \\
+        | <theKW>? "count" <ofKW>? "(" ("*" | "all"? \textbf{<funArg>} | "distinct" \textbf{<funArg>}) ")" \\
+        ("std" | "std dev" | "std dev pop" | "std dev samp" | "var pop" | "var sample" | "variance") "(" "all"? \textbf{<funArg>} ")" \\
+        "group concat" "(" "distinct"? \textbf{<funArg>}  ("order by" <ordByExp> (<delim> <ordByExp>)*) ")"
+        } \\
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <funArg> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        (<constant> | <colName> | <funCall> | <expr>) (<delim> (<constant> | <colName> | <funCall> | <expr>))*
+        } \\
+
+    \noindent\parbox[t]{0.3\linewidth}{
+        <noParAggrFun> ::=
+        } 
+    & \noindent\parbox[t]{0.6\linewidth}{
+        <theKW>? ("avg" | "average" | "max" | "min" | "sum") <ofKW>? ("all" | "distinct")? \textbf{(<constant> | <colName>)} \\
+        | <theKW>? "count" <ofKW>? ("*" | "all"? <funArg> | "distinct" \textbf{(<constant> | <colName>)}) 
+        } \\
+
+    
+
+}
+\newcommand{\FullGrammar}{
+\noindent
+
+\begin{tabularx}{\linewidth}{l l}
+
+    \hline
+
+\selectStatement
+    \selectExpression
+    \whereExpression
+    \tableExpression
+
+\hline
+
+\end{tabularx}
+}
+\newcommand{\thematiccoding} {
+    \begin{table}
+        \begin{tabular}{| l | c |}
+          \hline
+              & \textbf{Frequency} \\
+          \hline
+          \textbf{-- Positive --} & \textbf{31} \\
+          \hline
+          General Positive Impressions & 12 \\
+          \hline
+          Positive Unbundling Impressions & 14 \\
+          \hline
+          Positive Natural Function Impressions & 4 \\
+          \hline
+          Positive Ordering Impressions & 1 \\
+          \hline
+          \textbf{-- Negative --} & \textbf{23} \\
+          \hline
+          Syntax Difficulty & 9 \\
+          \hline
+          Unfamiliar Language, Needs Practice & 8 \\
+          \hline
+          Faux Natural Language & 6 \\
+          \hline
+          \textbf{-- Improvement Ideas -- } & \textbf{10} \\
+          \hline
+          Minimize Punctuation & 5 \\
+          \hline
+          Syntax Improvements & 5 \\
+          \hline
+        \end{tabular}
+        \caption{Thematic Analysis - Category and Code Frequencies}
+        \label{tab:categories-and-codes}
+    \end{table}
+}

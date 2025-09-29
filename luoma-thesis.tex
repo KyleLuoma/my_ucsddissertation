@@ -11,6 +11,18 @@
 \usepackage{microtype}
 \usepackage[breaklinks=true,pdfborder={0 0 0}]{hyperref}
 \usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{verbatim}
+
 \AtBeginDocument{%
 	\settowidth\cvlabelwidth{\cvlabelfont 0000--0000}%
 }
@@ -25,6 +37,15 @@
 \usepackage{blindtext}
 \overfullrule5pt
 % ---
+
+\input{speakql-commands}
+% \input{snails-commands}
+% \input{skalpel-commands}
+
+
+% technical report content flag
+\newif\iftechreport
+\techreporttrue
 
 % Required information
 \title{This is the Title of My Dissertation}
@@ -200,187 +221,24 @@ like an ordinary chapter. It should appear after the
 \verb!\mainmatter! macro because it should start on page~1.
 \end{dissertationintroduction}
 
-\chapter{An ordinary page}
-The purpose of this page is to illustrate an ordinary page of text in
-a doctoral dissertation or master's thesis. All pages of the doctoral
-dissertation or master's thesis must be kept within the margins of
-1.5'' on the left, 1'' on the right, 1'' on the top and 1.25'' on the
-bottom. All text must be double spaced except as indicated below.
+\chapter{Introduction}
 
-It is recommended that to increase the margins as paper can shift in a
-printer and as some photocopiers tend to increase the image being
-copied.
+\chapter{SpeakQL 2.0 - Implementing and Evaluating a Speech Friendly SQL Dialect}
 
-The first line of each paragraph must be indented at least one 0.5''
-tab, as done here.
+\input{speakql-chapter}
 
-This text is intended to be a part of the dissertation, for a doctoral
-student, or the thesis if you are receiving a master's degree, and now
-a quote is included here:
-\begin{quote}
-All quotes of more than six lines, even though this one is not, are to
-be indented 0.5'' from the left and 0.5'' from the right. These longer
-quotes are to be single spaced. Don't forget to adjust for proper
-spacing after the last line of the quoted material.
-\end{quote}
-The rest of the paragraph would continue as so.
+\chapter{SNAILS}
 
-\chapter{Figures and Such}
-This demonstrates how OGS wants figures and tables formatted. For
-figures, the caption goes below the figure and ``Figure'' is in bold.
-See Figure~\ref{fig:zen}. Tables are formatted with the caption above
-the table. See Table~\ref{tab:bad}.
+% \include{snails-chapter}
 
-Of course, Table~\ref{tab:bad} looks horrible. It should probably be
-formatted like Table~\ref{tab:good} instead.
+\chapter{SKALPEL}
 
-For facing caption pages, see Table~\ref{tab:facing}. Of course,
-facing caption pages are vaguely ridiculous and my implementation of
-them in the class file is by far the most brittle part of the
-implementation. It's entirely possible that something has changed and
-these don't work at all. I implemented it merely for the challenge.
+% \include{skalpel-chapter}
 
-\begin{figure}
-\centering
-\fbox{\parbox{.9\linewidth}{%
-	\noindent
-	{\Huge PHD ZEN}\par
-	\vskip.5in
-	\centerline{comic here}
-	\vskip.5in
-}}
-\caption[``Ph.D. Zen'']{Comic entitled ``Ph.D. Zen'' by Jorge Cham, 2005. Copyright
-has not been obtained and so it isn't displayed.}
-\label{fig:zen}
-\end{figure}
+\chapter{Related Work}
 
-\begin{table}
-\centering
-\caption[Electronic Dissertation Submission Rates]{Electronic
-Dissertation Submission Rates at UCSD, Fall 2005 and Winter 2006.
-(First two quarters that the program was available to all Ph.D.
-candidates not in a Joint Doctoral Program with SDSU.)}
-\label{tab:bad}
-\begin{tabular}{|*{5}{>{\centering\arraybackslash}m{.15\linewidth}|}}
-\hline
-&Ph.D.s awarded (Including Joint degrees) & Electronic submission of
-Dissertation & Paper Submission of Dissertation & Percentage of
-Electronic Submission\\
-\hline
-Fall\par 2005 & 84 & 37 & 47 & 44.05\%\\
-\hline
-Winter\par 2006 & 64 & 42 & 22 & 65.63\%\\
-\hline
-\end{tabular}
-\end{table}
+\chapter{Conclusion and Future Work}
 
-\begin{table}
-\centering
-\caption[Electronic Dissertation Submission Rates]{Electronic
-Dissertation Submission Rates at UCSD, Fall 2005 and Winter 2006.
-(First two quarters that the program was available to all Ph.D.
-candidates not in a Joint Doctoral Program with SDSU.)}
-\label{tab:good}
-\renewcommand\tabularxcolumn[1]{>{\RaggedRight\arraybackslash}p{#1}}
-\begin{tabularx}{.9\linewidth}{lcccc}
-\toprule
-&\multicolumn{1}{X}{Ph.D.s awarded (Including Joint degrees)}
-&\multicolumn{1}{X}{Electronic submission of Dissertation}
-&\multicolumn{1}{X}{Paper Submission of Dissertation}
-&\multicolumn{1}{X}{Percentage of Electronic Submission}\\
-\midrule
-Fall 2005 & 84 & 37 & 47 & 44.05\%\\
-Winter 2006 & 64 & 42 & 22 & 65.63\%\\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\begin{facingcaption}{table}
-\caption[UCSD Gender Distribution]{University of
-California, San Diego Gender Distribution for the Campus Population,
-October~2005\\
-(http://assp.ucsd.edu/analytical/Campus\%20Population.shtml)\\
-\emph{(This is an example of a facing caption page, the next page is
-the example of the table/figure/etc.\ that corresponds to this
-caption. It is also an example of table/figure that is rotated 90
-degrees to fit the page.)}}
-\label{tab:facing}
-\renewcommand\tabularxcolumn[1]{>{\RaggedLeft\arraybackslash}p{#1}}
-\parindent=0pt
-\setbox0=\vbox{%
-\vsize\textwidth
-\hsize\textheight
-\linewidth\hsize
-\columnwidth\hsize
-\textwidth\hsize
-\textheight\vsize
-\begin{tabularx}{\linewidth}{lXXXXXX}
-\toprule
-& \multicolumn{2}{c}{\textbf{Women}}
-& \multicolumn{2}{c}{\textbf{Men}}
-& \multicolumn{2}{c}{\textbf{Total}}\\
-\cmidrule(l){2-3}\cmidrule(l){4-5}\cmidrule(l){6-7}
-\textbf{Population Segment}
-& \multicolumn{1}{c}{\textbf{N}} & \multicolumn{1}{c}{\textbf{\%}}
-& \multicolumn{1}{c}{\textbf{N}} & \multicolumn{1}{c}{\textbf{\%}}
-& \multicolumn{1}{c}{\textbf{N}} & \multicolumn{1}{c}{\textbf{\%}}\\
-\midrule
-Students & 12,987 & 51\% & 12,686 & 49\% & 25,673 & 100\%\\
-Employees & 9,943 & 56\% &  7,671 & 44\% & 17,614 & 100\%\\
-\addlinespace
-\hfill\textbf{Total} & \textbf{22,930} & \textbf{53\%} &
-\textbf{20,357} & \textbf{47\%} & \textbf{43,287} & \textbf{100\%}\\
-\bottomrule
-\end{tabularx}
-\singlespacing
-
-\emph{Notes}:
-\begin{enumerate}
-\item The counts shown below will differ from the official quarterly
-Registrar's registration report because 1) data for residents in the
-Schools of Medicine and Pharmacy and Pharmaceutical Science are
-excluded, and 2) registered, non-matriculated, visiting students are
-included.
-\item Student workers are excluded from employees; however emeritus
-faculty and others on recall status are included.
-\end{enumerate}
-
-Campus Planning. Analytical Studies and Space Planning\\
-31 January 2006
-}
-\centerline{\rotatebox{90}{\box0}}
-\end{facingcaption}
-
-% This will give us some more text
-\Blinddocument
-
-% Skipping a bunch of chapters
-\setcounter{chapter}{50}
-\chapter{Another chapter}
-\setcounter{figure}{73}
-\setcounter{table}{88}
-\begin{figure}
-\centering
-\fbox{\hbox to.8\linewidth{\hss Another figure\hss}}
-\caption{Another figure caption}
-\end{figure}
-\begin{table}
-\centering
-\caption{Another table caption}
-\begin{tabular}{ccc}
-\toprule
-X&Y&Z\\
-\midrule
-a&b&c\\
-\bottomrule
-\end{tabular}
-\end{table}
-\begin{figure}
-\caption{ASDF fig}
-\end{figure}
-\begin{table}
-\caption{ASDF tab}
-\end{table}
 
 \appendix
 \Blinddocument
@@ -388,6 +246,6 @@ a&b&c\\
 % Stuff at the end of the dissertation goes in the back matter
 \backmatter
 \bibliographystyle{plain} % Or whatever style you want like plainnat
-\bibliography{references}
+\bibliography{spql2refbib}
 
 \end{document}
