@@ -1,8 +1,9 @@
 import os
 import re
 
-SPEAKQL_FILE = "./spql_2_research_survey/main.tex"
-SNAILS_FILE = "./schemas-for-nl-paper/SNAILS-SIGMOD-2025 and TR.tex"
+# SPEAKQL_FILE = "./spql_2_research_survey/speakql-thesis-chapter.tex"
+SPEAKQL_FILE = "./speakql-vldb-2022/UIST-2023/speakql-thesis-chapter.tex"
+SNAILS_FILE = "./schemas-for-nl-paper/SNAILS-thesis-chapter.tex"
 SKALPEL_FILE = "./skalpel-paper/schema-knowledge-focus.tex"
 
 PROJECTS = ["speakql", "snails", "skalpel"]
@@ -54,14 +55,14 @@ for project in project_files:
     project_tex = project_tex.split(project_end_sections[project])[0]
     sections = project_tex.split("\\section{")[1:]
     section_dict = {section.split("}")[0]: "}".join(section.split("}")[1:]) for section in sections}
-    related_work[project] = section_dict.get("Related Work", None)
+    related_work[project] = section_dict.pop("Related Work", None)
 
     with open(f"{project}-chapter.tex", "wt") as f:
         f.write("\n".join(["\\section{" + section + "}\n" + section_dict[section] for section in section_dict]))
 
     # Extract commands
-    commands = project_tex.split("\n\\newcommand")
-    commands = [extract_command("\\newcommand" + command) for command in commands]
+    commands = project_tex.split("\n\\newcommand")[1:]
+    commands = [extract_command("\\newcommand" + command) for command in commands if "vldb" not in command]
     commands = [command for command in commands if command is not None and command not in all_commands]
     all_commands.extend(commands)
 

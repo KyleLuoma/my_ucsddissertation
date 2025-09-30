@@ -1,3 +1,51 @@
+\section{Related Work for Speakql}
+
+
+\paragraph{\textbf{Natural Language Interfaces}}
+
+Section 2.2 discussed NLIs in detail and their relationship with SpeakQL. 
+In particular, note that while we envision future integration of SpeakQL with NLIs for databases, the primary focus of this paper is the new dialect for spoken querying, not building a new NLI. 
+We describe how our features can help improve ease of use, while preserving a context free grammar and correct-by-construction guarantees of regular SQL.
+In contrast, NL-to-SQL and chat-based interfaces today are primarily aimed at NL typing-based interactions, which lack such correctness guarantees.
+
+NLIs such as FLAME \cite{joshi2023flame} that provide code repair, autocompletion, and syntax reconstruction (i.e. inserting missing delimiter symbols) for targeted domains (spreadsheets in this case) are compelling candidates for integration with SpeakQL in a speech recognition context, where errors may result from either user or speech recognition errors.
+
+\paragraph{\textbf{Natural Language Interfaces With Structural Elements}}
+
+Some data NLIs straddle the line between NL and controlled NL. SODA (Search over DAta Warehouse) \cite{10.14778/2336664.2336667} employs a simple, high level, query language as input to a pattern and meta-data enabled NL-to-SQL system. 
+While this system employs a formal language for input queries, it differs from SpeakQL in that 1) it does not represent the full expressive power of SQL and 2) there is not a direct mapping between the input sequence and an equivalent SQL query, and ambiguity resolution remains a challenge. 
+
+ATHENA \cite{10.14778/2994509.2994536} is an NL-to-SQL system that employs a novel intermediate ontology query language (OQL) for disambiguation which is then translated into SQL. While the OQL is similar to SpeakQL in the sense that they are both grammar-based languages, OQL serves as an intermediate representation of NL inputs and is transparent to database users; whereas SpeakQL is the input language designed for user interaction. Additionally, OQL does not resolve NL ambiguities, and the ATHENA system generates multiple possible SQL queries for a single NL input.
+
+NaLIR \cite{10.14778/2735461.2735468} is an NL-to-SQL system that provides an interactive communicator as a means to disambiguate NL queries that yield more than one valid SQL statement. It provides feedback to users in the form a natural language explanation of query tree-based choices and a disambiguation widget that allows users to select the correct interpretation from a list of possibilities. Similar to ATHENA, NaLIR uses a structured intermediate interpretation of an NL expression to resolve ambiguities whereas SpeakQL gives the task of disambiguation to users through its syntax structure.
+
+\paragraph{\textbf{Speech-Based Database Interaction}}
+EchoQuery~\cite{Lyons2016} is a stateful query-by-voice system that allows users to interact with a relational database in a conversational manner. 
+It only presents a tool demonstration though, without a rigorous grammar or thorough user study evaluation. 
+It does use a speech-friendly dialect, but its syntax represents a subset of SQL expressiveness, e.g., joins are not explicitly defined at all and disjunctive predicates are not possible at all.
+In contrast, our work formalizes SpeakQL as a new dialect of SQL for spoken querying and defines its grammar.
+We extend a non-trivial subset of SQL and retain its full expressive power, including on joins and predicates, because SpeakQL subsumes that SQL subset.
+We also evaluate the ease of use of the SpeakQL dialect using a thorough A/B user study. 
+
+Prior work on SpeakQL 1.0~\cite{Shah2020} is a speech+touch multimodal query interface that allows users to modify query intent using a novel SQL touch keyboard. SpeakQL 1.0 also targets a non-trivial subset of SQL. In contrast, SpeakQL 2.0 (this paper) proposes and evaluates a new dialect of SQL designed for spoken querying, not a new multimodal interface with touchscreen focus.
+
+Data@Hand \cite{10.1145/3411764.3445421} is another speech+touch query interface that allows interaction with personal health data on a smartphone device. Users issue natural language instructions to initiate interaction, and then disambiguate or modify their requests with on-screen widgets. Data@Hand differs from other systems mentioned here as it is targeted at lay users and limited to personal health data in scope, whereas SpeakQL is targeted at SQL-trained data analysts and database experts and is intended to function on any arbitrary relational database.
+
+CiceroDB~\cite{10.14778/3415478.3415496} uses Google Assistant to infer user query intent from NL statements and vocalizes query result sets using computer-generated voice. 
+It is orthogonal to both the general goals of the SpeakQL line of work and this paper's specific goals of a new speech-first dialect of SQL. 
+One can use both SpeakQL and CiceroDB together to enable fully speech-based interactions with databases to both query data and to consume results.
+
+Setlur and Tory \cite{10.1145/3491102.3501972} design and evaluate a speech-only interaction system as well as a speech+visual multimodal interaction system for querying data and viewing results on a tablet device. Rather than using a structured, or semi-structured language, these systems employ a chatbot-style natural language interface. Among other results, the authors found that augmenting a voice-based system with visual feedback resulted in richer dialogue and data exploration sessions.
+
+\paragraph{\textbf{Spoken Programming as Assistive Technology}}
+Spoken programming systems have been considered and evaluated as assistive technologies for programmers with motor impairments. 
+Much prior art in this space ended up as ultimately unconvincing due to weak ASR capabilities~\cite{1698772}. 
+But the recent wave of highly accurate deep learning-based ASR has rekindled interest in this space. 
+Usability interviews with motor impaired programmers suggested a promising future for an NL-based programming system that can avoid dictation of symbols and variables~\cite{10.1145/3517428.3550392}. 
+The SpeakQL dialect is inspired by a similar vision and our user study survey responses support a similar conclusion, viz., a desire for more natural-feeling constructs to avoid dictating symbols.
+
+
+
 \section{Related Work for Snails}
 
 

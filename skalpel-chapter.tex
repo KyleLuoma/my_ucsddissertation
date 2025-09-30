@@ -619,25 +619,3 @@ Future research into subsetting over very large schemas would benefit from an in
 % Thus, an unbiased evaluation using additional data would be necessary to determine if the \PROJECTNAME{ }subsetter performs better in terms of recall, precision, and f1. 
 % Nevertheless, we find the preliminary results promising and suggest a further evaluation of the approach as future research.
 
-
-\section{Related Work}
-
-
-\paragraph{\textbf{Evaluating Schema Subsetting Methods}}
-CRUSH~\cite{kothyari-etal-2023-crush4sql} is a recent work that performs subsetting evaluation of a novel halucination-based subsetting method and compares it to variations of dense passage retrieval.
-The authors provide benchmark datasets including SpiderUnion, and BirdUnion--unions of the disjoint schemas in the Spider~\cite{benchmark-spider} and Bird~\cite{benchmark-bird} benchmarks respectively. They also introduce SocialDB, a collection of database schemas and schema descriptions without associated database instances and NL-SQL question-query pairs.
-In our work, we extend this line of research further by adopting the  SNAILS collection to better-represent real-world schema subsetting challenges.
-Additionally, we adopt a more robust benchmark evaluation strategy by introducing precision and f1 metrics in addition to the recall metric used by the CRUSH authors.
-Finally, our subsetting method comparison is more representative of the current SOTA in the NL-to-SQL domain by evaluating subsetting methods described by systems with top placement on current benchmarks.
-
-A recent ArXiv preprint that critically evaluates the usefulness of schema subsetting using SoTA LLMs suggests that as LLM capability increases, the need for schema subsetting diminishes~\cite{maamari2024deathschemalinkingtexttosql}.
-In this work, the authors evaluate four LLM-based schema subsetting methods using the Bird SQL benchmark and measure performance using execution accuracy, false positive rates during subsetting, and schema linking recall.
-While this concurrent work bears some resemblance to our \PROJECTNAME{ } project, we provide additional measures of recall, precision, and F1 for various combinations of table and column identifiers.
-We also extend the scope of subsetting evaluation to non-LLM-based subsetting methods such as semantic similarity search- and finetuned classifier-based approaches.
-In addition to the Bird benchmark, we also evaluate SoTA linking methods using the Spider2 and SNAILS benchmarks.
-
-The authors of the \emph{In-depth Analysis of LLM-based Schema Linking}~\cite{Katsogiannis-Meimarakis2026} concurrently and independently developed a schema subsetting (or schema linking) evaluation methodology focused on LLM-based schema linking approaches in which they replicate several LLM-prompting methods for schema linking and evaluate them in terms of precision, recall, and accuracy using the Spider and Bird benchmarks~\cite{benchmark-spider,benchmark-bird}.
-Our work complements this approach and makes use of the Spider 2 and SNAILS~\cite{benchmark-spider2,benchmark-snails} benchmarks which contain very large schemas.
-We also opt to reproduce existing subsetting methods using original code, and additionally evaluate subsetting performance in terms of token usage as well as both online inference and offline pre-processing time requirements. 
-
-

@@ -2,7 +2,9 @@
 % mathptmx is a Times Roman look-alike (don't use the times package)
 % It isn't clear if Times is required. The OGS manual lists several
 % "standard fonts" but never says they need to be used.
-\usepackage{mathptmx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newtx}
 \usepackage[NoDate]{currvita}
 \usepackage{array}
 \usepackage{tabularx}
@@ -12,6 +14,7 @@
 \usepackage[breaklinks=true,pdfborder={0 0 0}]{hyperref}
 \usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{float}
 %__PACKAGES__%
 
@@ -23,14 +26,25 @@
 % OGS recommends increasing the margins slightly.
 \increasemargins{.1in}
 
-% These are just for testing/examples, delete them
-\usepackage{trace}
-%\usepackage{showframe} % This package was just to see page margins
-\usepackage[english]{babel}
-\usepackage{blindtext}
-\overfullrule5pt
-% ---
+\newenvironment{packeditems}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{itemize}}
 
+\newenvironment{packedenums}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+
+\newenvironment{packedparagraphs}{
+  \setlength{\parskip}{-5pt}
+}
+
+\newcommand{\eat}[1]{}
 %__CUSTOM_COMMANDS__%
 
 
@@ -214,29 +228,29 @@ like an ordinary chapter. It should appear after the
 
 \chapter{Introduction}
 
-\chapter{SpeakQL 2.0 - Implementing and Evaluating a Speech Friendly SQL Dialect}
+\chapter{Design and Evaluation of an SQL-Based Dialect for Spoken Querying}
 
 \input{speakql-chapter}
 
-\chapter{SNAILS}
+\chapter{SNAILS: Schema Naming Assessments for Improved LLM-based SQL Inference}
 
-% \include{snails-chapter}
+\include{snails-chapter}
 
-\chapter{SKALPEL}
+\chapter{SKALPEL: Schema Knowledge Adjustments for LLM NL-to-SQL Performance Enhancements in Large Databases}
 
-% \include{skalpel-chapter}
+\include{skalpel-chapter}
 
 \chapter{Related Work}
+\input{related-work-chapter}
 
 \chapter{Conclusion and Future Work}
 
 
 \appendix
-\Blinddocument
 
 % Stuff at the end of the dissertation goes in the back matter
 \backmatter
 \bibliographystyle{plain} % Or whatever style you want like plainnat
-\bibliography{spql2refbib}
+\bibliography{speakql-ref, snails-ref, skalpel-ref}
 
 \end{document}

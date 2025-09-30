@@ -1,201 +1,3 @@
-\newcommand{\TestAlgorithm}{
-    \begin{algorithm}
-        \caption{Calculate $y = x^n$}
-    \begin{algorithmic} 
-        \REQUIRE $n \geq 0 \vee x \neq 0$
-        \ENSURE $y = x^n$
-        \STATE $y \leftarrow 1$
-        \IF{$n < 0$}
-        \STATE $X \leftarrow 1 / x$
-        \STATE $N \leftarrow -n$
-        \ELSE
-        \STATE $X \leftarrow x$
-        \STATE $N \leftarrow n$
-        \ENDIF
-        \WHILE{$N \neq 0$}
-        \IF{$N$ is even}
-        \STATE $X \leftarrow X \times X$
-        \STATE $N \leftarrow N / 2$
-        \ELSE[$N$ is odd]
-        \STATE $y \leftarrow y \times X$
-        \STATE $N \leftarrow N - 1$
-        \ENDIF
-        \ENDWHILE
-    \end{algorithmic}
-    \end{algorithm}
-}
-\newcommand{\ReplaceSynonymsAlgorithm}{
-    \begin{algorithm}
-        \caption{Find and Replace Synonyms}
-        \begin{algorithmic}
-        \STATE $speakQlAst \gets parseSpeakQL(query)$ 
-        \STATE $synonymKwRuleset \gets \{selectKW, fromKW, joinKW, ...\}$
-        \STATE $syntaxSugarRs \gets \{theKW, tableKW, ofKW, isKW\}$
-        \STATE $synonymHashMap \gets \{(selectKW : SELECT), (fromKW : FROM) , ...\}$
-        \FORALL{$nodes$ such that $node \in speakQlAst$}
-            \IF{$node.rule \in synonymKwRuleset$}
-                \STATE $node.replaceKW(synonymHashMap[node.rule])$
-            \ENDIF
-            \IF{$node.rule \in syntaxSugarRs$}
-                \STATE $speakQlAst.removeNode(node)$
-            \ENDIF
-        \ENDFOR
-        \end{algorithmic}
-        \label{alg:synonyms}
-    \end{algorithm}
-}
-\newcommand{\ReorderParseTreeAlgorithm}{
-    \begin{algorithm}
-        \caption{Reorder Select, From and Where Expressions}
-        \begin{algorithmic}
-            \STATE $speakQlAst \gets parseSpeakQL(query)$
-            \FORALL{$ruleNodes$ such that $ruleNode \in speakQlAst$}
-            \IF{$ruleNode == qryOrdSpec$}
-                \STATE $expr \gets ruleNode.children$
-                \STATE $reorderedExpr \gets [\varnothing]$
-                \STATE $reorderedExpr.append(expr.selExpr)$
-                \STATE $reorderedExpr.append(expr.tabExpr)$
-                \STATE $reorderedExpr.append(expr.whereExpr)$
-                \STATE $ruleNode.children \gets reorderedExpr$
-            \ENDIF
-        \ENDFOR
-        \end{algorithmic}
-        \label{alg:reorder}
-    \end{algorithm}
-}
-\newcommand{\ReorderModifiersAlgorithm} {
-    \begin{algorithm}
-        \caption{Reorder Select Modifier Items}
-        \begin{algorithmic}
-            \STATE $speakQlAst \gets parseSpeakQL(query)$
-            \FORALL{$ruleNodes$ such that $ruleNode \in speakQlAst$}
-            \IF{$ruleNode == selModExpr$}
-                \STATE $reorderedItms \gets [\varnothing]$
-                \STATE $grpByCls \gets ruleNode.getChildByRule(grpByCls)$
-                \STATE $havingCls \gets ruleNode.getChildByRule(hvingCls)$
-                \STATE $ordrByCls \gets ruleNode.getChildByRule(ordrByCls)$
-                \STATE $limitCls \gets ruleNode.getChildByRule(limitCls)$
-                \STATE $reorderedItms.append(grpByCls)$
-                \STATE $reorderedItms.append(havingCls)$
-                \STATE $reorderedItms.append(ordrByCls)$
-                \STATE $reorderedItms.append(limitCls)$
-                \STATE $selModExpr.children \gets reorderedItms$
-            \ENDIF
-            \ENDFOR
-        \end{algorithmic}
-        \label{alg:reordermodifiers}
-    \end{algorithm}
-}
-\newcommand{\TransformUnbundledQuery} {
-    \begin{algorithm}
-        \caption{Transform Unbundled Query (High Level)}
-        \begin{algorithmic}
-            \STATE $speakQlAst \gets parseSpeakQL(query)$
-            \REQUIRE $\exists unbndQryOrdSpc \in speakQlAst$
-            \STATE $speakQlAst.inferGroupBy()$
-            \STATE $speakQlAst.bundleSelectElements()$
-            \STATE $speakQlAst.bundleWhereStatements()$
-            \STATE $speakQlAst.bundleJoinParts()$
-            \STATE $speakQlAst.bundleTables()$
-            \FORALL {$ruleNodes$ such that $ruleNode \in speakQlAst$}
-                \IF{$ruleNode \in \{qryOrdSpec, multQryOrdSpec, exprDelim\}$}
-                    \STATE $speakQlAst.removeNode(ruleNode)$
-                \ENDIF
-            \ENDFOR
-        \end{algorithmic}
-        \label{alg:transformunbundled}
-    \end{algorithm}
-}
-\newcommand{\TransformFunctionInferGroupBy} {
-    \begin{algorithm}
-        \caption{Unbundled Function: Infer GroupBy}
-        \begin{algorithmic}
-            \STATE $speakQlAst \gets parseSpeakQL(query)$
-            \REQUIRE $\exists grpByCls \in speakQlAst \land \exists autoMtcKW \in speakQlAst$
-            \STATE $autoKws \gets speakQlAst.nodesWithName(autoMtcKW)$
-            \FORALL {$autoKw \in autoKws$}
-                \STATE $speakQlAst.removeNode(autoKw)$
-            \ENDFOR
-            \STATE $gbNode \gets speakQlAst.nodeWithName(grpByCls)$
-            \STATE $elmtsByTbl \gets speakQlAst.getAllTablesAndElements()$
-            \STATE $gbItms \gets [\varnothing]$
-            \FORALL {$selElmt \in elmtsBtTbl$}
-                \IF{$selElmt $ is $column$}
-                    \STATE $gbItems.append(selElmt)$
-                    \STATE $gbItems.append(delim)$
-                \ENDIF
-            \ENDFOR
-            \STATE $gbNode.children \gets gbItms$
-        \end{algorithmic}
-        \label{alg:infergroupby}
-    \end{algorithm}
-}
-\newcommand{\TransformFunctionSelectElements} {
-    \begin{algorithm}
-        \caption{Unbundled Function: bundleSelectElements}
-        \begin{algorithmic}
-            \STATE $speakQlAst \gets parseSpeakQL(query)$
-            \FORALL {$ruleNode \in speakQlAst.nodesWithName(nothingElmt)$}  
-                \STATE $ruleNode.rename(selElmt)$    
-            \ENDFOR
-            \STATE $elmtsByTbl \gets speakQlAst.getAllTablesAndElements()$
-            \STATE $selElmtsRlNd' \gets speakQlAst.nodesWithName(selElmts)[0]$
-            \STATE $newChildren \gets [ \varnothing ]$
-            \FORALL {$tblItm \in elmtsByTbl$}
-                \FORALL {$selectElmt \in elmtsByTbl[tblItm]$}
-                    \STATE $newChildren.append(tblItm . selectElmt)$
-                \ENDFOR
-            \ENDFOR
-            \STATE $selElmtsRlNd'.children \gets newChildren$
-            \FORALL {$ruleNode \in speakQlAst.nodesWithName(selElmts)$ such that $ruleNode != selElmtsRlNd'$}
-                \STATE $speakQlAst.removeNode(ruleNode)$
-            \ENDFOR
-        \end{algorithmic}
-        \label{alg:transformfunctionselectelements}
-    \end{algorithm}
-}
-\newcommand{\TransformFunctionWhereStatements} {
-    \begin{algorithm}
-        \caption{Unbundled Function: bundleWhereStatements}
-        \begin{algorithmic}
-            \STATE $speakQlAst \gets parseSpeakQL(query)$
-            \REQUIRE $\exists whereExpr \in speakQlAst$
-            \STATE $unbdlExprs \gets speakQlAst.nodesWithName(unbdlQryOrdSpc)$
-            \STATE $unbdlExpr' \gets unbdlExprs[0]$
-            \STATE $whereExpr' \gets unbdlExpr'.nodeWithName(whereExpr)$
-            \FORALL{$exprNode \in unbdlExprs[1:]$}
-                \STATE $tblName \gets exprNode.nodeWithName(tblName)$
-                \STATE $exprWhereExpr \gets exprNode.nodeWithName(whereExpr)$
-                \STATE $exprWhereKw \gets exprWhereExpr.nodeWithName(whereKW)$
-                \STATE $exprWhereExpr.removeNode(exprWhereKw)$
-            \ENDFOR
-        \end{algorithmic}
-        \label{alg:transformfunctionwherestatements}
-    \end{algorithm}
-}
-\newcommand{\TransformFunctionJoinParts} {
-    \begin{algorithm}
-        \caption{Unbundled Function: bundleJoinParts}
-        \begin{algorithmic}
-            \STATE $speakQlAst \gets parseSpeakQL(query)$
-            
-            
-        \end{algorithmic}
-        \label{alg:transformfunctionjoinparts}
-    \end{algorithm}
-}
-\newcommand{\TransformFunctionTables} {
-    \begin{algorithm}
-        \caption{Unbundled Function: bundleTables}
-        \begin{algorithmic}
-            \STATE $speakQlAst \gets parseSpeakQL(query)$
-            
-            
-        \end{algorithmic}
-        \label{alg:transformfunctiontables}
-    \end{algorithm}
-}
-\usepackage{tabularx}
 \newcommand{\synonymgrammartable} {
     \noindent
     \begin{tabularx}{\linewidth}{l l}
@@ -322,7 +124,14 @@
         | "limit" <limitClsAtom> "offset" <limitClsAtom>
         } \\
 }
-
+\newcommand{\selectStatementTable} {
+    \noindent
+    \begin{tabularx}{\linewidth}{l l}
+        \hline
+        \selectStatement
+        \hline
+    \end{tabularx} 
+}
 \newcommand{\selectStatement} {
     \noindent\parbox[t]{0.3\linewidth}{
         <selStmt> ::=
@@ -361,14 +170,6 @@
         <tabExprNoJoin> <whereExpr>? <selExpr>
         } \\
 }
-\newcommand{\selectStatementTable} {
-    \noindent
-    \begin{tabularx}{\linewidth}{l l}
-        \hline
-        \selectStatement
-        \hline
-    \end{tabularx} 
-}
 \newcommand{\unbundleQueryTable} {
     \noindent
     \begin{tabularx}{\linewidth}{l l}
@@ -379,8 +180,26 @@
 }
 \newcommand{\unbundleQueryRules} {
 \noindent\parbox[t]{0.3\linewidth}{
-<tabExprNoJoin> ::=
-} 
+    <qrySpec> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <qryOrdSpec> <selModExpr>\\
+    | (<multiJoinExpr exprDelim)? (<selModExpr> <exprDelim>)? <ubndQryOrdSpc> (<exprDelim> (<ubndQryOrdSpc> | <multiJoinExpr)) (<exprDelim> <selModExpr)?
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <ubndQryOrdSpc> ::=
+    } 
+& \noindent\parbox[t]{0.6\linewidth}{
+    <selExpr> <whereExpr>? <tabExprNoJoin> \\|
+    <selExpr> <tabExprNoJoin> <whereExpr>? \\|
+    <tabExprNoJoin> <selExpr> <whereExpr>? \\|
+    <tabExprNoJoin> <whereExpr>? <selExpr>
+    } \\
+
+\noindent\parbox[t]{0.3\linewidth}{
+    <tabExprNoJoin> ::=
+    } 
 & \noindent\parbox[t]{0.6\linewidth}{
     <frmClsNoJoin>
     } \\
@@ -874,38 +693,478 @@
 
 \end{tabularx}
 }
+\newcommand{\TestAlgorithm}{
+    \begin{algorithm}
+        \caption{Calculate $y = x^n$}
+    \begin{algorithmic} 
+        \REQUIRE $n \geq 0 \vee x \neq 0$
+        \ENSURE $y = x^n$
+        \STATE $y \leftarrow 1$
+        \IF{$n < 0$}
+        \STATE $X \leftarrow 1 / x$
+        \STATE $N \leftarrow -n$
+        \ELSE
+        \STATE $X \leftarrow x$
+        \STATE $N \leftarrow n$
+        \ENDIF
+        \WHILE{$N \neq 0$}
+        \IF{$N$ is even}
+        \STATE $X \leftarrow X \times X$
+        \STATE $N \leftarrow N / 2$
+        \ELSE[$N$ is odd]
+        \STATE $y \leftarrow y \times X$
+        \STATE $N \leftarrow N - 1$
+        \ENDIF
+        \ENDWHILE
+    \end{algorithmic}
+    \end{algorithm}
+}
+\newcommand{\ReplaceSynonymsAlgorithm}{
+    \begin{algorithm}
+        \caption{Find and Replace Synonyms}
+        \begin{algorithmic}
+        \STATE $speakQlAst \gets parseSpeakQL(query)$ 
+        \STATE $synonymKwRuleset \gets \{selectKW, fromKW, joinKW, ...\}$
+        \STATE $syntaxSugarRs \gets \{theKW, tableKW, ofKW, isKW\}$
+        \STATE $synonymHashMap \gets \{(selectKW : SELECT), (fromKW : FROM) , ...\}$
+        \FORALL{$nodes$ such that $node \in speakQlAst$}
+            \IF{$node.rule \in synonymKwRuleset$}
+                \STATE $node.replaceKW(synonymHashMap[node.rule])$
+            \ENDIF
+            \IF{$node.rule \in syntaxSugarRs$}
+                \STATE $speakQlAst.removeNode(node)$
+            \ENDIF
+        \ENDFOR
+        \end{algorithmic}
+        \label{alg:synonyms}
+    \end{algorithm}
+}
+\newcommand{\ReorderParseTreeAlgorithm}{
+    \begin{algorithm}
+        \caption{Reorder Select, From and Where Expressions}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \FORALL{$ruleNodes$ such that $ruleNode \in speakQlAst$}
+            \IF{$ruleNode == qryOrdSpec$}
+                \STATE $expr \gets ruleNode.children$
+                \STATE $reorderedExpr \gets [\varnothing]$
+                \STATE $reorderedExpr.append(expr.selExpr)$
+                \STATE $reorderedExpr.append(expr.tabExpr)$
+                \STATE $reorderedExpr.append(expr.whereExpr)$
+                \STATE $ruleNode.children \gets reorderedExpr$
+            \ENDIF
+        \ENDFOR
+        \end{algorithmic}
+        \label{alg:reorder}
+    \end{algorithm}
+}
+\newcommand{\ReorderModifiersAlgorithm} {
+    \begin{algorithm}
+        \caption{Reorder Select Modifier Items}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \FORALL{$ruleNodes$ such that $ruleNode \in speakQlAst$}
+            \IF{$ruleNode == selModExpr$}
+                \STATE $reorderedItms \gets [\varnothing]$
+                \STATE $grpByCls \gets ruleNode.getChildByRule(grpByCls)$
+                \STATE $havingCls \gets ruleNode.getChildByRule(hvingCls)$
+                \STATE $ordrByCls \gets ruleNode.getChildByRule(ordrByCls)$
+                \STATE $limitCls \gets ruleNode.getChildByRule(limitCls)$
+                \STATE $reorderedItms.append(grpByCls)$
+                \STATE $reorderedItms.append(havingCls)$
+                \STATE $reorderedItms.append(ordrByCls)$
+                \STATE $reorderedItms.append(limitCls)$
+                \STATE $selModExpr.children \gets reorderedItms$
+            \ENDIF
+            \ENDFOR
+        \end{algorithmic}
+        \label{alg:reordermodifiers}
+    \end{algorithm}
+}
+\newcommand{\TransformUnbundledQuery} {
+    \begin{algorithm}
+        \caption{Transform Unbundled Query (High Level)}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \REQUIRE $\exists unbndQryOrdSpc \in speakQlAst$
+            \STATE $speakQlAst.inferGroupBy()$
+            \STATE $speakQlAst.bundleSelectElements()$
+            \STATE $speakQlAst.bundleWhereStatements()$
+            \STATE $speakQlAst.bundleJoinParts()$
+            \STATE $speakQlAst.bundleTables()$
+            \FORALL {$ruleNodes$ such that $ruleNode \in speakQlAst$}
+                \IF{$ruleNode \in \{qryOrdSpec, multQryOrdSpec, exprDelim\}$}
+                    \STATE $speakQlAst.removeNode(ruleNode)$
+                \ENDIF
+            \ENDFOR
+        \end{algorithmic}
+        \label{alg:transformunbundled}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionInferGroupBy} {
+    \begin{algorithm}
+        \caption{Unbundled Function: Infer GroupBy}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \REQUIRE $\exists grpByCls \in speakQlAst \land \exists autoMtcKW \in speakQlAst$
+            \STATE $autoKws \gets speakQlAst.nodesWithName(autoMtcKW)$
+            \FORALL {$autoKw \in autoKws$}
+                \STATE $speakQlAst.removeNode(autoKw)$
+            \ENDFOR
+            \STATE $gbNode \gets speakQlAst.nodeWithName(grpByCls)$
+            \STATE $elmtsByTbl \gets speakQlAst.getAllTablesAndElements()$
+            \STATE $gbItms \gets [\varnothing]$
+            \FORALL {$selElmt \in elmtsBtTbl$}
+                \IF{$selElmt $ is $column$}
+                    \STATE $gbItems.append(selElmt)$
+                    \STATE $gbItems.append(delim)$
+                \ENDIF
+            \ENDFOR
+            \STATE $gbNode.children \gets gbItms$
+        \end{algorithmic}
+        \label{alg:infergroupby}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionSelectElements} {
+    \begin{algorithm}
+        \caption{Unbundled Function: bundleSelectElements}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \FORALL {$ruleNode \in speakQlAst.nodesWithName(nothingElmt)$}  
+                \STATE $ruleNode.rename(selElmt)$    
+            \ENDFOR
+            \STATE $elmtsByTbl \gets speakQlAst.getAllTablesAndElements()$
+            \STATE $selElmtsRlNd' \gets speakQlAst.nodesWithName(selElmts)[0]$
+            \STATE $newChildren \gets [ \varnothing ]$
+            \FORALL {$tblItm \in elmtsByTbl$}
+                \FORALL {$selectElmt \in elmtsByTbl[tblItm]$}
+                    \STATE $newChildren.append(tblItm . selectElmt)$
+                \ENDFOR
+            \ENDFOR
+            \STATE $selElmtsRlNd'.children \gets newChildren$
+            \FORALL {$ruleNode \in speakQlAst.nodesWithName(selElmts)$ such that $ruleNode != selElmtsRlNd'$}
+                \STATE $speakQlAst.removeNode(ruleNode)$
+            \ENDFOR
+        \end{algorithmic}
+        \label{alg:transformfunctionselectelements}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionWhereStatements} {
+    \begin{algorithm}
+        \caption{Unbundled Function: bundleWhereStatements}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \REQUIRE $\exists whereExpr \in speakQlAst$
+            \STATE $unbdlExprs \gets speakQlAst.nodesWithName(unbdlQryOrdSpc)$
+            \STATE $unbdlExpr' \gets unbdlExprs[0]$
+            \STATE $whereExpr' \gets unbdlExpr'.nodeWithName(whereExpr)$
+            \FORALL{$exprNode \in unbdlExprs[1:]$}
+                \STATE $tblName \gets exprNode.nodeWithName(tblName)$
+                \STATE $exprWhereExpr \gets exprNode.nodeWithName(whereExpr)$
+                \STATE $exprWhereKw \gets exprWhereExpr.nodeWithName(whereKW)$
+                \STATE $exprWhereExpr.removeNode(exprWhereKw)$
+            \ENDFOR
+        \end{algorithmic}
+        \label{alg:transformfunctionwherestatements}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionJoinParts} {
+    \begin{algorithm}
+        \caption{Unbundled Function: bundleJoinParts}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            
+            
+        \end{algorithmic}
+        \label{alg:transformfunctionjoinparts}
+    \end{algorithm}
+}
+\newcommand{\TransformFunctionTables} {
+    \begin{algorithm}
+        \caption{Unbundled Function: bundleTables}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            
+            
+        \end{algorithmic}
+        \label{alg:transformfunctiontables}
+    \end{algorithm}
+}
+\newcommand{\TransformNaturalFunctions} {
+    \begin{algorithm}
+        \caption{Natural Function Transformation}
+        \begin{algorithmic}
+            \STATE $speakQlAst \gets parseSpeakQL(query)$
+            \STATE $syntaxSugarRs \gets \{theKW, ofKW\}$
+            \FORALL {$ruleNode \in speakQlAst.nodesWithName(natFun)$}  
+                \FORALL {$child \in ruleNode.children$}   
+                    \IF{$child.rule \in syntaxSugarRs$}
+                        \STATE $speakQlAst.removenode(child)$
+                    \ENDIF
+                \ENDFOR
+                \STATE $functionArgs \gets ruleNode.getChildWithName(funArgs)$
+                \STATE $speakQlAst.surroundNodeWithParens(functionArgs)$
+            \ENDFOR
+        \end{algorithmic}
+    \end{algorithm}
+}
+\newcommand{\singlerelationqueryalgebra} {
+    $$[\pi_{a, b}(P)] ++ [\pi_{c, d}(\sigma_{d = 2}(S))] ++ [P \bowtie_{P.id=S.id} S] \mapsto \pi_{a, b, c, d}(\sigma_{d = 2}(P \bowtie_{P.id=S.id} S))$$ 
+}
+\newcommand{\simpleunbundlealgebra} {
+    \begin{flalign}
+        \nonumber [\pi_{a, b}(R)]
+        \&\& [\pi_{c, d}(S)]
+        \&\& [R \bowtie_{P.id=S.id} S] \\
+        \mapsto \pi_{R.a, R.b, S.c, S.d}(R \bowtie_{R.id=S.id} S)
+        \label{alg:simpleunbundle}
+    \end{flalign}
+}
+\newcommand{\predicateunbundlealgebra} {
+    \begin{flalign}
+        \nonumber [\pi_{a, b}(\sigma_{a=2 \lor b=1}(R))]
+        \&\& [\pi_{c}(\sigma_{d < 3}(S))]
+        \&\& [R \bowtie_{R.id=S.id} S] \\
+        \mapsto \pi_{R.a, R.b, S.c}(\sigma_{(a=2 \lor b=1) \land (d < 3)}(R \bowtie_{R.id=S.id} S))
+        \label{alg:predicateunbundle}
+    \end{flalign}
+}
 \newcommand{\thematiccoding} {
     \begin{table}
+        \centering
         \begin{tabular}{| l | c |}
           \hline
-              & \textbf{Frequency} \\
+              & \textbf{\# Participants} \\
           \hline
-          \textbf{-- Positive --} & \textbf{31} \\
+          \textbf{-- Positive --} & \textbf{13} \\
           \hline
-          General Positive Impressions & 12 \\
+          General Positive Impressions & 8 \\
           \hline
-          Positive Unbundling Impressions & 14 \\
+          Positive Unbundling Impressions & 7 \\
           \hline
           Positive Natural Function Impressions & 4 \\
           \hline
           Positive Ordering Impressions & 1 \\
           \hline
-          \textbf{-- Negative --} & \textbf{23} \\
+          \textbf{-- Negative --} & \textbf{9} \\
           \hline
-          Syntax Difficulty & 9 \\
+          Syntax Difficulty & 6 \\
           \hline
-          Unfamiliar Language, Needs Practice & 8 \\
+          Unfamiliar Language, Needs Practice & 7 \\
           \hline
-          Faux Natural Language & 6 \\
+          Faux Natural Language & 5 \\
           \hline
-          \textbf{-- Improvement Ideas -- } & \textbf{10} \\
+          \textbf{-- Improvement Ideas -- } & \textbf{5} \\
           \hline
-          Minimize Punctuation & 5 \\
+          Minimize Punctuation & 4 \\
           \hline
-          Syntax Improvements & 5 \\
+          Syntax Improvements & 3 \\
           \hline
         \end{tabular}
-        \caption{Thematic Analysis - Category and Code Frequencies}
+        \caption{Thematic Category and Code Frequencies}
         \label{tab:categories-and-codes}
     \end{table}
+}
+\newcommand{\queryweights} {
+    \begin{table}[H]
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{Attribute} & \textbf{Weight} \\
+            \hline
+            Number of Tables & 0.8 \\
+            \hline
+            Number of Columns & 0.25 \\
+            \hline
+            Number of Functions & 1.0 \\
+            \hline
+            Number of Selections (Where Predicates) & 0.8 \\
+            \hline
+            Number of Joins & 1.2 \\
+            \hline
+            Number of Modifiers & 1.0 \\
+            \hline
+        \end{tabular}
+        \caption{Query Complexity Attribute Weights}
+        \label{tab:complexityweights}
+    \end{table}
+}
+\newcommand{\queriestable} {
+    \begin{table*}
+        \begin{tabular}{|c|p{3cm}|p{5.5cm}|p{5.5cm}|p{2cm}|}
+        \hline
+        \textbf{No.} & \textbf{Prompt} & \textbf{SQL Example} & \textbf{SpeakQL Example} & \textbf{Complexity}\\
+        \hline
+        P-1 & which term years are present in the database? & SELECT DISTINCT year FROM term & in the term table get distinct year & W: 1.05 \newline S: -1.28\\
+        \hline
+        P-2 & how many rooms have at least two wheelchair spaces? & select count(*) as "Number of Rooms"" from room where wheelchairSpaces >= 2" & find the count of roomNumber where wheelchairSpaces >= 2 & W: 2.85 \newline S: -0.69\\
+        \hline
+        P-3 & during which terms is the course with id 'anth1' taught by faculty named 'Jane Doe'? Include the term year and term period in the result. & SELECT term.id, term.termPeriod, term.year
+        FROM term
+        INNER JOIN courseOffering ON term.id = courseOffering.termId
+        INNER JOIN course ON courseOffering.courseId = course.id
+        WHERE course.id = 'anth1' AND facultyName = 'Jane Doe' & get year and termperiod from the term table AND THEN get nothing from the course table where id = 'anth1 AND THEN get nothing from the courseoffering table where facultyname = 'Jane Doe' AND THEN join course with courseoffering on course.id = courseoffering.id AND THEN join courseoffering with the term table on term.it = courseoffering.termid & W: 8.50 \newline S: 1.29 \\
+        \hline
+        Q-1 & how many buildings does UCSD have? & SELECT COUNT(*) FROM building & what is the count of buildingNumber in the building table & W: 2.05 \newline S: -0.95\\
+        \hline
+        Q-2 & How many deparments does UCSD have? & SELECT COUNT(*) FROM department & get the count of distinct departmentname from the department table & W: 2.05 \newline S: -0.95 \\
+        \hline
+        Q-3 & make a list of courses offered by the CSE department that includes the course title and units columns. The CSE department ID is 'CSE'. & SELECT course.title, course.units FROM course WHERE course.deptId = 'CSE' & find title and units in the course table where deptId = 'CSE' &  W: 2.10 \newline S: -0.94\\
+        \hline
+        Q-4 & Display the building names for buildings that have a room with roomnumber 2001.  & SELECT building.buildingName FROM building JOIN room ON building.id = room.buildingId WHERE room.roomNumber = '2001' & from the room table get nothing where roomnumber = 2001 AND THEN from the buildingtable get buildingname AND THEN join room with building on room.buildingid = building.id & W: 3.85 \newline S: -0.94\\
+        \hline
+        Q-5 & How many buildings have a room with at least three wheelchair spaces? & SELECT COUNT(DISTINCT buildingId) FROM room WHERE wheelchairSpaces >= 3 & what is the count of buildingname in the building table joined with the room table on room.buildingid = building.id where wheelchairspaces >= 3 & W: 2.85 \newline S: -0.69\\
+        \hline
+        Q-6 & what is the sum total number of wheelchair spaces in each building? Show the building name and the number of spaces in each building in the result. & SELECT buildingName, SUM(wheelchairSpaces) AS totalWheelchairSpaces FROM building JOIN room ON building.id = room.buildingId GROUP BY buildingName ORDER BY totalWheelchairSpaces DESC & show me the sum of wheelchair spaces in the room table AND THEN in the building table get buildingname AND THEN join room with building on room.buildingid = building.id AND THEN group automatically & W: 5.05 \newline S: 0.02\\
+        \hline
+        Q-7 & Find the titles of all courses offered in terms with the year 2022. & SELECT title FROM course JOIN courseOffering ON course.id = courseOffering.courseId JOIN term ON courseOffering.termId = term.id WHERE year = 2022 & get title from course AND THEN get nothing from term where year = 2022 AND THEN join course with courseoffering on course.id = courseoffering.id AND THEN join courseoffering with the term table on term.it = courseoffering.termid & W: 5.85 \newline S: 0.28\\
+        \hline
+        Q-8 & Find the five departments that have the the highest count of courses and display them in descending order. Include department name in the result. & SELECT departmentName, COUNT(courseId) FROM courseOffering JOIN department ON department.id = courseOffering.deptId GROUP BY departmentName ORDER BY COUNT(courseId) DESC LIMIT 5 & what is the count of id in the course table AND THEN show me departmentName in department AND THEN join department with course on course.deptID = department.id AND THEN group automatically limit 5 order by departmentName descending & W: 6.05 \newline S: 0.35 \newline \newline W: Weighted \newline S: Standardized\\      
+        \hline
+        \end{tabular}
+        \caption{User Study Queries (Practice - Query 8)}
+        \label{tab:queries1}
+    \end{table*}
+
+    \begin{table*}
+        \begin{tabular}{|c|p{3cm}|p{5.5cm}|p{5.5cm}|p{2cm}|}
+        \hline
+        \textbf{No.} & \textbf{Prompt} & \textbf{SQL Example} & \textbf{SpeakQL Example} & \textbf{Complexity}\\
+        \hline
+        Q-9 & Generate a list of departments that offer more than 100 courses. Include the count of all courses associated with the department, and the department name in the result. & SELECT departmentName, COUNT(*) AS numCourses FROM department JOIN course ON department.id = course.deptId GROUP BY departmentName HAVING COUNT(*) > 100 & from department get departmentname AND THEN from course get the count of id AND THEN group automatically having count of course.id >= 100 AND THEN join the course table with the department table on course.deptid = department.id & W: 6.05 \newline S: 0.35\\
+        \hline
+        Q-10 & Make a list that shows the building name, building number, and average room area for buildings that have rooms with an average area that is greater than 1000 & SELECT building.buildingName, building.buildingNumber, AVG(room.area) FROM building JOIN room ON building.id = room.buildingId GROUP BY building.id HAVING AVG(room.area) > 1000 & show me buildingName and buildingNumber in the building table AND THEN get nothing from room AND THEN group automatically having average room.area > 1000 AND THEN join building with room on building.id = room.buildingId & W: 6.30 \newline S: 0.43\\
+        \hline
+        Q-11 & list the three buildings with the highest average room area. Include the building name and building number in the result. & select buildingNumber, buildingName, avg(area) as avgArea from building join room on building.id = room.buildingId group by buildingNumber, buildingName order by avgArea desc limit 3 & show me buildingname in the building table AND THEN show me the average area in the room table AND THEN join the room table with the building table on room.buildingid = building.id AND THEN order by average area descending limit 3 group automatically & W: 7.30 \newline S: 0.75\\
+        \hline
+        Q-12 & what are the titles of the classes being held in the building 'York Hall' in room with room number 2622 during the fall 2020 term? Include the course title in the result. NOTE: the termPeriod column in the term table contains the values 'fall', 'spring', 'winter', and 'summer'. & SELECT title FROM courseOffering INNER JOIN course ON courseOffering.courseId = course.id INNER JOIN room ON courseOffering.roomId = room.id INNER JOIN building ON room.buildingId = building.id INNER JOIN term ON courseOffering.termId = term.id WHERE building.buildingName = 'York Hall' AND room.roomNumber = '2622' AND term.termPeriod = 'Fall' AND term.year = 2020 & from the course table show me title AND THEN show me nothing in the room table where roomnumber = 2622 AND THEN show me nothing in the building table where buildingName = 'York Hall' AND THEN join the course table with the courseoffering table on course.id = courseoffering.courseID AND THEN join courseoffering with the term table on term.id = courseoffering.termid AND THEN join the courseoffering table with the room table on courseoffering.roomid = room.id and then join room with building on room.buildingid = building.id & W: 12.25 \newline S: 2.36 \newline \newline W: Weighted \newline S: Standardized\\
+        \hline
+        \end{tabular}
+        \caption{User Study Queries (Query 9 - 12)}
+        \label{tab:queries2}
+    \end{table*}
+}
+\newcommand{\pvalues} {
+    \begin{table}[H]
+        \begin{tabular}{| p{1in} | c | p{.5in} | p{.5in} |}
+          \hline
+              & \textbf{P Val} & \textbf{SQL Median} &\textbf{SpeakQL Median} \\
+          \hline
+          First Planning Time - Simple & 0.144 & 31.5 & 38.5 \\
+          \hline
+          First Planning Time - Complex & 0.295 & 72.0 & 66.0 \\
+          \hline
+          Recording Time - Simple & 0.214 & 13.5 & 15.5 \\
+          \hline
+          Recording Time - Complex & 0.122 & 32.0 & 34.0 \\
+          \hline
+          Total Time - Simple & 0.222 & 55.5 & 55.8 \\
+          \hline
+          Total Time - Complex & 0.336 & 137 & 131 \\
+          \hline
+        \end{tabular}
+        \caption{Mann Whitney U Test Results for Simple and Complex Queries}
+        \label{tab:mwuresults}
+    \end{table}
+}
+\newcommand{\querypvalfirstpt} {
+    \begin{table}[H]
+    \begin{tabular}{llrrr}
+        \toprule
+                 &   Query   &  P Val &  SQL Median &  SpeakQL Median \\
+        \midrule
+                 & 1  &     0.247740 &        20.5 &            22.0 \\
+                 & 2  &     0.348923 &        10.5 &            11.0 \\
+                 & 3  &     0.336262 &        53.0 &            58.5 \\
+                 & 4  &     0.069565 &        51.5 &            66.5 \\
+                 & 5  &     0.380095 &        45.5 &            48.5 \\
+                 & 6  &     0.340583 &        69.5 &            68.5 \\
+                 & 7  &     0.481270 &        79.0 &            65.0 \\
+                 & 8  &     0.420244 &       105.0 &            96.0 \\
+                 & 9  &     0.175026 &        52.0 &            50.0 \\
+                 & 10 &     0.470904 &        73.0 &            68.0 \\
+                 & 11 &     0.330556 &        37.0 &            42.0 \\
+                 & 12 &     0.330713 &       147.0 &           119.0 \\
+        \bottomrule
+        \end{tabular}
+        \caption{Mann Whitney U Test Results by Query - First Planning Time}
+        \label{tab:mwufirstpt}
+    \end{table}
+}
+\newcommand{\querypvaltotaltime} {
+    \begin{table}[H]
+    \begin{tabular}{llrrr}
+        \toprule
+        &   Query   &  P Val &  SQL Median &  SpeakQL Median \\
+        \midrule
+        & 1  &     0.495315 &        34.5 &            32.5 \\
+        & 2  &     0.420752 &        20.0 &            20.5 \\
+        & 3  &     0.259258 &        78.5 &            93.5 \\
+        & 4  &     0.012856 &        78.0 &           115.5 \\
+        & 5  &     0.319349 &        83.5 &            91.0 \\
+        & 6  &     0.140103 &       113.5 &           137.5 \\
+        & 7  &     0.148052 &       115.0 &           130.5 \\
+        & 8  &     0.329868 &       160.0 &           192.0 \\
+        & 9  &     0.046561 &       137.0 &           115.0 \\
+        & 10 &     0.206796 &       142.0 &           116.0 \\
+        & 11 &     0.206694 &        92.0 &            89.0 \\
+        & 12 &     0.476718 &       260.0 &           270.0 \\
+        \bottomrule
+        \end{tabular}
+        \caption{Mann Whitney U Test Results by Query - Total Time}
+        \label{tab:mwutotaltime}
+    \end{table}
+}
+\newcommand{\querypvalrecordingtime} {
+    \begin{table}[H]
+    \begin{tabular}{llrrr}
+        \toprule
+        &   Query   &  P Val &  SQL Median &  SpeakQL Median \\
+        \midrule
+        & 1  &     0.002310 &        10.0 &             7.5 \\
+        & 2  &     0.001484 &        10.0 &             6.0 \\
+        & 3  &     0.179456 &        16.5 &            19.0 \\
+        & 4  &     0.147531 &        24.0 &            24.0 \\
+        & 5  &     0.302412 &        21.0 &            20.0 \\
+        & 6  &     0.318916 &        26.0 &            25.0 \\
+        & 7  &     0.012078 &        29.0 &            38.5 \\
+        & 8  &     0.224763 &        32.0 &            34.0 \\
+        & 9  &     0.385004 &        34.0 &            34.0 \\
+        & 10 &     0.488340 &        33.0 &            35.0 \\
+        & 11 &     0.447685 &        30.0 &            32.0 \\
+        & 12 &     0.047982 &        66.0 &            79.0 \\
+        \bottomrule
+        \end{tabular}
+        \caption{Mann Whitney U Test Results by Query - Recording Time}
+        \label{mwurecordingtime}
+    \end{table}
+}
+\newcommand{\querypvalfirsthalffirstpt} {
+    \begin{table*}
+    \begin{tabular}{lrrrrrrrrrrrr}
+    \toprule
+    {} &  1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
+    \midrule
+    MWU-test P Val    &    0.078 &  0.146 &  0.188 &  0.003 &  0.033 &   0.065 &   0.100 &   0.085 &  0.196 &   0.196 &  0.244 &   0.135 \\
+    median SQL     &   24.0 & 13.0 & 70.0 & 52.0 & 45.0 &  72.0 &  81.0 & 133.0 & 60.5 &  83.5 & 35.5 & 156.5 \\
+    median SpeakQL &   33.0 & 17.0 & 75.0 & 88.0 & 74.0 & 111.0 & 113.0 & 217.0 & 89.0 & 100.0 & 52.0 & 252.0 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Mann Whitney U Test Results by Query for attempts in the first dialect used per group - First attempt planning time}
+    \label{tab:mwufirsthalffirstpt}
+    \end{table*}
+}
+\newcommand{\querypvalfirsthalftotaltime} {
+    \begin{table*}
+    \begin{tabular}{lrrrrrrrrrrrr}
+    \toprule
+    {} &  1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
+    \midrule
+    MWU-test P Val    &  0.187 &  0.422 &   0.311 & 0.000 &   0.225 &   0.013 &   0.006 &   0.085 &   0.244 &   0.484 &   0.451 &   0.019 \\
+    median SQL     & 34.0 & 20.0 &  92.0 &  80.0 &  78.0 & 127.0 & 117.0 & 195.0 & 158.5 & 160.0 & 100.0 & 261.0 \\
+    median SpeakQL & 42.0 & 23.0 & 108.0 & 130.0 & 104.0 & 203.0 & 158.0 & 268.5 & 122.0 & 143.0 &  90.0 & 356.0 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Mann Whitney U Test Results by Query for attempts in the first dialect used per group - Total attempt time}
+    \label{tab:mwutotaltimefirstpt}
+    \end{table*}
 }

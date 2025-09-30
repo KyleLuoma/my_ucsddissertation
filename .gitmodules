@@ -7,3 +7,6 @@
 [submodule "skalpel-paper"]
 	path = skalpel-paper
 	url = https://www.github.com/kyleluoma/skalpel-paper
+[submodule "speakql-vldb-2022"]
+	path = speakql-vldb-2022
+	url = https://github.com/KyleLuoma/speakql-vldb-2022

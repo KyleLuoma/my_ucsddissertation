@@ -1,0 +1,672 @@
+
+% Journals
+
+% First the Full Name is given, then the abbreviation used in the AMS Math
+% Reviews, with an indication if it could not be found there.
+% Note the 2nd overwrites the 1st, so swap them if you want the full name.
+
+ %{AMS}
+ @String{AMSTrans = "American Mathematical Society Translations" }
+ @String{AMSTrans = "Amer. Math. Soc. Transl." }
+ @String{BullAMS = "Bulletin of the American Mathematical Society" }
+ @String{BullAMS = "Bull. Amer. Math. Soc." }
+ @String{ProcAMS = "Proceedings of the American Mathematical Society" }
+ @String{ProcAMS = "Proc. Amer. Math. Soc." }
+ @String{TransAMS = "Transactions of the American Mathematical Society" }
+ @String{TransAMS = "Trans. Amer. Math. Soc." }
+
+ %ACM
+ @String{CACM = "Communications of the {ACM}" }
+ @String{CACM = "Commun. {ACM}" }
+ @String{CompServ = "Comput. Surveys" }
+ @String{JACM = "J. ACM" }
+ @String{ACMMathSoft = "{ACM} Transactions on Mathematical Software" }
+ @String{ACMMathSoft = "{ACM} Trans. Math. Software" }
+ @String{SIGNUM = "{ACM} {SIGNUM} Newsletter" }
+ @String{SIGNUM = "{ACM} {SIGNUM} Newslett." }
+
+ @String{AmerSocio = "American Journal of Sociology" }
+ @String{AmerStatAssoc = "Journal of the American Statistical Association" }
+ @String{AmerStatAssoc = "J. Amer. Statist. Assoc." }
+ @String{ApplMathComp = "Applied Mathematics and Computation" }
+ @String{ApplMathComp = "Appl. Math. Comput." }
+ @String{AmerMathMonthly = "American Mathematical Monthly" }
+ @String{AmerMathMonthly = "Amer. Math. Monthly" }
+ @String{BIT = "{BIT}" }
+ @String{BritStatPsych = "British Journal of Mathematical and Statistical
+          Psychology" }
+ @String{BritStatPsych = "Brit. J. Math. Statist. Psych." }
+ @String{CanMathBull = "Canadian Mathematical Bulletin" }
+ @String{CanMathBull = "Canad. Math. Bull." }
+ @String{CompApplMath = "Journal of Computational and Applied Mathematics" }
+ @String{CompApplMath = "J. Comput. Appl. Math." }
+ @String{CompPhys = "Journal of Computational Physics" }
+ @String{CompPhys = "J. Comput. Phys." }
+ @String{CompStruct = "Computers and Structures" }
+ @String{CompStruct = "Comput. \& Structures" }
+ @String{CompJour = "The Computer Journal" }
+ @String{CompJour = "Comput. J." }
+ @String{CompSysSci = "Journal of Computer and System Sciences" }
+ @String{CompSysSci = "J. Comput. System Sci." }
+ @String{Computing = "Computing" }
+ @String{ContempMath = "Contemporary Mathematics" }
+ @String{ContempMath = "Contemp. Math." }
+ @String{Crelle = "Crelle's Journal" }
+ @String{GiornaleMath = "Giornale di Mathematiche" }
+ @String{GiornaleMath = "Giorn. Mat." } % didn't find in AMS MR., ibid.
+
+ %IEEE
+ @String{Computer = "{IEEE} Computer" }
+ @String{IEEETransComp = "{IEEE} Transactions on Computers" }
+ @String{IEEETransComp = "{IEEE} Trans. Comput." }
+ @String{IEEETransAC = "{IEEE} Transactions on Automatic Control" }
+ @String{IEEETransAC = "{IEEE} Trans. Automat. Control" }
+ @String{IEEESpec = "{IEEE} Spectrum" } % didn't find in AMS MR
+ @String{ProcIEEE = "Proceedings of the {IEEE}" }
+ @String{ProcIEEE = "Proc. {IEEE}" } % didn't find in AMS MR
+ @String{IEEETransAeroElec = "{IEEE} Transactions on Aerospace and Electronic
+     Systems" }
+ @String{IEEETransAeroElec = "{IEEE} Trans. Aerospace Electron. Systems" }
+
+ @String{IMANumerAna = "{IMA} Journal of Numerical Analysis" }
+ @String{IMANumerAna = "{IMA} J. Numer. Anal." }
+ @String{InfProcLet = "Information Processing Letters" }
+ @String{InfProcLet = "Inform. Process. Lett." }
+ @String{InstMathApp = "Journal of the Institute of Mathematics and
+     its Applications" }
+ @String{InstMathApp = "J. Inst. Math. Appl." }
+ @String{IntControl = "International Journal of Control" }
+ @String{IntControl = "Internat. J. Control" }
+ @String{IntNumerEng = "International Journal for Numerical Methods in
+     Engineering" }
+ @String{IntNumerEng = "Internat. J. Numer. Methods Engrg." }
+ @String{IntSuper = "International Journal of Supercomputing Applications" }
+ @String{IntSuper = "Internat. J. Supercomputing Applic." } % didn't find
+%% in AMS MR
+ @String{Kibernetika = "Kibernetika" }
+ @String{JResNatBurStand = "Journal of Research of the National Bureau
+     of Standards" }
+ @String{JResNatBurStand = "J. Res. Nat. Bur. Standards" }
+ @String{LinAlgApp = "Linear Algebra and its Applications" }
+ @String{LinAlgApp = "Linear Algebra Appl." }
+ @String{MathAnaAppl = "Journal of Mathematical Analysis and Applications" }
+ @String{MathAnaAppl = "J. Math. Anal. Appl." }
+ @String{MathAnnalen = "Mathematische Annalen" }
+ @String{MathAnnalen = "Math. Ann." }
+ @String{MathPhys = "Journal of Mathematical Physics" }
+ @String{MathPhys = "J. Math. Phys." }
+ @String{MathComp = "Mathematics of Computation" }
+ @String{MathComp = "Math. Comp." }
+ @String{MathScand = "Mathematica Scandinavica" }
+ @String{MathScand = "Math. Scand." }
+ @String{TablesAidsComp = "Mathematical Tables and Other Aids to Computation" }
+ @String{TablesAidsComp = "Math. Tables Aids Comput." }
+ @String{NumerMath = "Numerische Mathematik" }
+ @String{NumerMath = "Numer. Math." }
+ @String{PacificMath = "Pacific Journal of Mathematics" }
+ @String{PacificMath = "Pacific J. Math." }
+ @String{ParDistComp = "Journal of Parallel and Distributed Computing" }
+ @String{ParDistComp = "J. Parallel and Distrib. Comput." } % didn't find
+%% in AMS MR
+ @String{ParComputing = "Parallel Computing" }
+ @String{ParComputing = "Parallel Comput." }
+ @String{PhilMag = "Philosophical Magazine" }
+ @String{PhilMag = "Philos. Mag." }
+ @String{ProcNAS = "Proceedings of the National Academy of Sciences
+                    of the USA" }
+ @String{ProcNAS = "Proc. Nat. Acad. Sci. U. S. A." }
+ @String{Psychometrika = "Psychometrika" }
+ @String{QuartMath = "Quarterly Journal of Mathematics, Oxford, Series (2)" }
+ @String{QuartMath = "Quart. J. Math. Oxford Ser. (2)" }
+ @String{QuartApplMath = "Quarterly of Applied Mathematics" }
+ @String{QuartApplMath = "Quart. Appl. Math." }
+ @String{RevueInstStat = "Review of the International Statisical Institute" }
+ @String{RevueInstStat = "Rev. Inst. Internat. Statist." }
+
+ %SIAM
+ @String{JSIAM = "Journal of the Society for Industrial and Applied
+     Mathematics" }
+ @String{JSIAM = "J. Soc. Indust. Appl. Math." }
+ @String{JSIAMB = "Journal of the Society for Industrial and Applied
+     Mathematics, Series B, Numerical Analysis" }
+ @String{JSIAMB = "J. Soc. Indust. Appl. Math. Ser. B Numer. Anal." }
+ @String{SIAMAlgMeth = "{SIAM} Journal on Algebraic and Discrete Methods" }
+ @String{SIAMAlgMeth = "{SIAM} J. Algebraic Discrete Methods" }
+ @String{SIAMAppMath = "{SIAM} Journal on Applied Mathematics" }
+ @String{SIAMAppMath = "{SIAM} J. Appl. Math." }
+ @String{SIAMComp = "{SIAM} Journal on Computing" }
+ @String{SIAMComp = "{SIAM} J. Comput." }
+ @String{SIAMMatrix = "{SIAM} Journal on Matrix Analysis and Applications" }
+ @String{SIAMMatrix = "{SIAM} J. Matrix Anal. Appl." }
+ @String{SIAMNumAnal = "{SIAM} Journal on Numerical Analysis" }
+ @String{SIAMNumAnal = "{SIAM} J. Numer. Anal." }
+ @String{SIAMReview = "{SIAM} Review" }
+ @String{SIAMReview = "{SIAM} Rev." }
+ @String{SIAMSciStat = "{SIAM} Journal on Scientific and Statistical
+     Computing" }
+ @String{SIAMSciStat = "{SIAM} J. Sci. Statist. Comput." }
+
+ @String{SoftPracExp = "Software Practice and Experience" }
+ @String{SoftPracExp = "Software Prac. Experience" } % didn't find in AMS MR
+ @String{StatScience = "Statistical Science" }
+ @String{StatScience = "Statist. Sci." }
+ @String{Techno = "Technometrics" }
+ @String{USSRCompMathPhys = "{USSR} Computational Mathematics and Mathematical
+     Physics" }
+ @String{USSRCompMathPhys = "{U. S. S. R.} Comput. Math. and Math. Phys." }
+ @String{VLSICompSys = "Journal of {VLSI} and Computer Systems" }
+ @String{VLSICompSys = "J. {VLSI} Comput. Syst." }
+ @String{ZAngewMathMech = "Zeitschrift fur Angewandte Mathematik und
+     Mechanik" }
+ @String{ZAngewMathMech = "Z. Angew. Math. Mech." }
+ @String{ZAngewMathPhys = "Zeitschrift fur Angewandte Mathematik und Physik" }
+ @String{ZAngewMathPhys = "Z. Angew. Math. Phys." }
+
+% Publishers % ================================================= |
+
+ @String{Academic = "Academic Press" }
+ @String{ACMPress = "{ACM} Press" }
+ @String{AdamHilger = "Adam Hilger" }
+ @String{AddisonWesley = "Addison-Wesley" }
+ @String{AllynBacon = "Allyn and Bacon" }
+ @String{AMS = "American Mathematical Society" }
+ @String{Birkhauser = "Birkha{\"u}ser" }
+ @String{CambridgePress = "Cambridge University Press" }
+ @String{Chelsea = "Chelsea" }
+ @String{ClaredonPress = "Claredon Press" }
+ @String{DoverPub = "Dover Publications" }
+ @String{Eyolles = "Eyolles" }
+ @String{HoltRinehartWinston = "Holt, Rinehart and Winston" }
+ @String{Interscience = "Interscience" }
+ @String{JohnsHopkinsPress = "The Johns Hopkins University Press" }
+ @String{JohnWileySons = "John Wiley and Sons" }
+ @String{Macmillan = "Macmillan" }
+ @String{MathWorks = "The Math Works Inc." }
+ @String{McGrawHill = "McGraw-Hill" }
+ @String{NatBurStd = "National Bureau of Standards" }
+ @String{NorthHolland = "North-Holland" }
+ @String{OxfordPress = "Oxford University Press" }  %address Oxford or London?
+ @String{PergamonPress = "Pergamon Press" }
+ @String{PlenumPress = "Plenum Press" }
+ @String{PrenticeHall = "Prentice-Hall" }
+ @String{SIAMPub = "{SIAM} Publications" }
+ @String{Springer = "Springer-Verlag" }
+ @String{TexasPress = "University of Texas Press" }
+ @String{VanNostrand = "Van Nostrand" }
+ @String{WHFreeman = "W. H. Freeman and Co." }
+
+%Entries
+
+
+% Dependency detection
+
+
+% Abedjan, Z., Golab, L. & Naumann, F. Profiling relational data: a survey. The VLDB Journal 24, 557–581 (2015). https://doi.org/10.1007/s00778-015-0389-y
+@article{abedjan2015profiling,
+    title={Profiling relational data: a survey},
+    author={Abedjan, Ziawasch and Golab, Lukasz and Naumann, Felix},
+    journal={The VLDB Journal},
+    volume={24},
+    pages={557--581},
+    year={2015},
+    publisher={Springer},
+    doi={10.1007/s00778-015-0389-y}
+}
+ 
+
+% Knowledge Graphs
+@misc{pan2023unifying,
+    title={Unifying Large Language Models and Knowledge Graphs: A Roadmap}, 
+    author={Shirui Pan and Linhao Luo and Yufei Wang and Chen Chen and Jiapu Wang and Xindong Wu},
+    year={2023},
+    eprint={2306.08302},
+    archivePrefix={arXiv},
+    primaryClass={cs.CL}
+}
+
+% Join path inference
+@INPROCEEDINGS{8731607,
+    author={Baik, Christopher and Jagadish, H. V. and Li, Yunyao},
+    booktitle={2019 IEEE 35th International Conference on Data Engineering (ICDE)}, 
+    title={Bridging the Semantic Gap with SQL Query Logs in Natural Language Interfaces to Databases}, 
+    year={2019},
+    volume={},
+    number={},
+    pages={374-385},
+    doi={10.1109/ICDE.2019.00041}
+}
+
+% LLM and NLP related
+@inproceedings{
+    hsieh2024ruler,
+    title={{RULER}: What{\textquoteright}s the Real Context Size of Your Long-Context Language Models?},
+    author={Cheng-Ping Hsieh and Simeng Sun and Samuel Kriman and Shantanu Acharya and Dima Rekesh and Fei Jia and Boris Ginsburg},
+    booktitle={First Conference on Language Modeling},
+    year={2024},
+    url={https://openreview.net/forum?id=kIoBbc76Sy}
+}
+
+@misc{vodrahalli2024michelangelolongcontextevaluations,
+      title={Michelangelo: Long Context Evaluations Beyond Haystacks via Latent Structure Queries}, 
+      author={Kiran Vodrahalli and Santiago Ontanon and Nilesh Tripuraneni and Kelvin Xu and Sanil Jain and Rakesh Shivanna and Jeffrey Hui and Nishanth Dikkala and Mehran Kazemi and Bahare Fatemi and Rohan Anil and Ethan Dyer and Siamak Shakeri and Roopali Vij and Harsh Mehta and Vinay Ramasesh and Quoc Le and Ed Chi and Yifeng Lu and Orhan Firat and Angeliki Lazaridou and Jean-Baptiste Lespiau and Nithya Attaluri and Kate Olszewska},
+      year={2024},
+      eprint={2409.12640},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2409.12640}, 
+}
+
+@misc{openai2025gpt41,
+    title={Introducing GPT-4.1 in the API},
+    author={OpenAI},
+    year={2025},
+    url={https://openai.com/index/gpt-4-1/},
+    note={Accessed: 2025-05-02}
+}
+
+
+% Benchmarks
+
+@inproceedings{benchmark-spider,
+  title     = {Spider: A Large-Scale Human-Labeled Dataset for Complex and Cross-Domain Semantic Parsing and Text-to-SQL Task},
+  author    = {Tao Yu and Rui Zhang and Kai Yang and Michihiro Yasunaga and Dongxu Wang and Zifan Li and James Ma and Irene Li and Qingning Yao and Shanelle Roman and Zilin Zhang and Dragomir Radev},
+  booktitle = {Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing},
+  address   = "Brussels, Belgium",
+  publisher = "Association for Computational Linguistics",
+  year      = 2018
+}
+
+@misc{benchmark-bird,
+  title={Can LLM Already Serve as A Database Interface? A BIg Bench for Large-Scale Database Grounded Text-to-SQLs},
+  author={Jinyang Li and Binyuan Hui and Ge Qu and Binhua Li and Jiaxi Yang and Bowen Li and Bailin Wang and Bowen Qin and Rongyu Cao and Ruiying Geng and Nan Huo and Chenhao Ma and Kevin C. C. Chang and Fei Huang and Reynold Cheng and Yongbin Li},
+  year={2023},
+  eprint={2305.03111},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL}
+}
+
+@inproceedings{cidr-goby,
+  author       = {Moe Kayali and Fabian Wenz and Nesime Tatbul and Cagatay Demiralp},
+  title        = {Mind the Data Gap: Bridging Large Language Models (LLMs) to Enterprise Data Integration},
+  booktitle    = {15th Conference on Innovative Data Systems Research, {CIDR} 2025,
+  Amsterdam, The Netherlands  January 19-22, 2025},
+  publisher    = {www.cidrdb.org},
+  year         = {2025}
+}
+
+@article{benchmark-snails,
+author = {Luoma, Kyle and Kumar, Arun},
+title = {SNAILS: Schema Naming Assessments for Improved LLM-Based SQL Inference},
+year = {2025},
+issue_date = {February 2025},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {3},
+number = {1},
+url = {https://doi.org/10.1145/3709727},
+doi = {10.1145/3709727},
+journal = {Proc. ACM Manag. Data},
+month = feb,
+articleno = {77},
+numpages = {26},
+keywords = {benchmark, database, llm, natural language to sql, relational database schema, schema design, schema linking, schema naturalness}
+}
+
+@article{benchmark-spider2,
+  title={Spider 2.0: Evaluating language models on real-world enterprise text-to-sql workflows},
+  author={Lei, Fangyu and Chen, Jixuan and Ye, Yuxiao and Cao, Ruisheng and Shin, Dongchan and Su, Hongjin and Suo, Zhaoqing and Gao, Hongcheng and Hu, Wenjing and Yin, Pengcheng and others},
+  journal={arXiv preprint arXiv:2411.07763},
+  year={2024}
+}
+
+
+% NL-to-SQL Methods
+
+% AskData BIRD Leader as of 6-4-2025
+@misc{shkapenyuk2025automaticmetadataextractiontexttosql,
+      title={Automatic Metadata Extraction for Text-to-SQL}, 
+      author={Vladislav Shkapenyuk and Divesh Srivastava and Theodore Johnson and Parisa Ghane},
+      year={2025},
+      eprint={2505.19988},
+      archivePrefix={arXiv},
+      primaryClass={cs.DB},
+      url={https://arxiv.org/abs/2505.19988}, 
+}
+
+% XiyanSQL
+@misc{gao2025previewxiyansqlmultigeneratorensemble,
+      title={A Preview of XiYan-SQL: A Multi-Generator Ensemble Framework for Text-to-SQL}, 
+      author={Yingqi Gao and Yifu Liu and Xiaoxia Li and Xiaorong Shi and Yin Zhu and Yiming Wang and Shiqi Li and Wei Li and Yuntao Hong and Zhiling Luo and Jinyang Gao and Liyu Mou and Yu Li},
+      year={2025},
+      eprint={2411.08599},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2411.08599}, 
+}
+
+% Opensearch
+@misc{xie2025opensearchsqlenhancingtexttosqldynamic,
+      title={OpenSearch-SQL: Enhancing Text-to-SQL with Dynamic Few-shot and Consistency Alignment}, 
+      author={Xiangjin Xie and Guangwei Xu and Lingyan Zhao and Ruijie Guo},
+      year={2025},
+      eprint={2502.14913},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2502.14913}, 
+}
+
+% GenaSQL
+@misc{donder2025cheaperbetterfasterstronger,
+      title={Cheaper, Better, Faster, Stronger: Robust Text-to-SQL without Chain-of-Thought or Fine-Tuning}, 
+      author={Yusuf Denizay Dönder and Derek Hommel and Andrea W Wen-Yi and David Mimno and Unso Eun Seo Jo},
+      year={2025},
+      eprint={2505.14174},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2505.14174}, 
+}
+
+% Interactive-T2S, uses column retrieval via embeddings and a find shortest path tool, compares to DINSQL and CodeS
+@misc{xiong2024interactivet2smultiturninteractionstexttosql,
+      title={Interactive-T2S: Multi-Turn Interactions for Text-to-SQL with Large Language Models}, 
+      author={Guanming Xiong and Junwei Bao and Hongfei Jiang and Yang Song and Wen Zhao},
+      year={2024},
+      eprint={2408.11062},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2408.11062}, 
+}
+
+%TASQL - task aligned sql, subsetting method is LLM based by generating dummy SQL queries then extracting the identifiers
+@misc{qu2024generationalignitnovel,
+      title={Before Generation, Align it! A Novel and Effective Strategy for Mitigating Hallucinations in Text-to-SQL Generation}, 
+      author={Ge Qu and Jinyang Li and Bowen Li and Bowen Qin and Nan Huo and Chenhao Ma and Reynold Cheng},
+      year={2024},
+      eprint={2405.15307},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2405.15307}, 
+}
+
+% Chess: Current bird leader with an actual published paper
+@misc{talaei2024chesscontextualharnessingefficient,
+      title={CHESS: Contextual Harnessing for Efficient SQL Synthesis}, 
+      author={Shayan Talaei and Mohammadreza Pourreza and Yu-Chen Chang and Azalia Mirhoseini and Amin Saberi},
+      year={2024},
+      eprint={2405.16755},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2405.16755}, 
+}
+
+%Din SQL (Uses LLM-based schema reduction)
+@misc{pourreza2023dinsql,
+      title={DIN-SQL: Decomposed In-Context Learning of Text-to-SQL with Self-Correction}, 
+      author={Mohammadreza Pourreza and Davood Rafiei},
+      year={2023},
+      eprint={2304.11015},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+%C3 (Uses LLM-based schema reduction)
+@misc{dong2023c3,
+      title={C3: Zero-shot Text-to-SQL with ChatGPT}, 
+      author={Xuemei Dong and Chao Zhang and Yuhang Ge and Yuren Mao and Yunjun Gao and lu Chen and Jinshu Lin and Dongfang Lou},
+      year={2023},
+      eprint={2307.07306},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% RESDSQL Fine Tuned schema linking
+@misc{li2023resdsql,
+      title={RESDSQL: Decoupling Schema Linking and Skeleton Parsing for Text-to-SQL}, 
+      author={Haoyang Li and Jing Zhang and Cuiping Li and Hong Chen},
+      year={2023},
+      eprint={2302.05965},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% MAC-SQL uses LLM-based schema selector
+@misc{wang2024macsql,
+      title={MAC-SQL: A Multi-Agent Collaborative Framework for Text-to-SQL}, 
+      author={Bing Wang and Changyu Ren and Jian Yang and Xinnian Liang and Jiaqi Bai and Linzheng Chai and Zhao Yan and Qian-Wen Zhang and Di Yin and Xing Sun and Zhoujun Li},
+      year={2024},
+      eprint={2312.11242},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+%Code-S uses ML-based schema filter
+@misc{li2024codes,
+    author = {Li, Haoyang and Zhang, Jing and Liu, Hanbing and Fan, Ju and Zhang, Xiaokang and Zhu, Jun and Wei, Renjie and Pan, Hongyan and Li, Cuiping and Chen, Hong},
+    title = {CodeS: Towards Building Open-source Language Models for Text-to-SQL},
+    year = {2024},
+    issue_date = {June 2024},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    volume = {2},
+    number = {3},
+    url = {https://doi.org/10.1145/3654930},
+    doi = {10.1145/3654930},
+    abstract = {Language models have shown promising performance on the task of translating natural language questions into SQL queries (Text-to-SQL). However, most of the state-of-the-art (SOTA) approaches rely on powerful yet closed-source large language models (LLMs), such as ChatGPT and GPT-4, which may have the limitations of unclear model architectures, data privacy risks, and expensive inference overheads. To address the limitations, we introduce CodeS, a series of pre-trained language models with parameters ranging from 1B to 15B, specifically designed for the text-to-SQL task. CodeS is a fully open-source language model, which achieves superior accuracy with much smaller parameter sizes. This paper studies the research challenges in building CodeS. To enhance the SQL generation abilities of CodeS, we adopt an incremental pre-training approach using a specifically curated SQL-centric corpus. Based on this, we address the challenges of schema linking and rapid domain adaptation through strategic prompt construction and a bi-directional data augmentation technique. We conduct comprehensive evaluations on multiple datasets, including the widely used Spider benchmark, the newly released BIRD benchmark, robustness-diagnostic benchmarks such as Spider-DK, Spider-Syn, Spider-Realistic, and Dr.Spider, as well as two real-world datasets created for financial and academic applications. The experimental results show that our CodeS achieves new SOTA accuracy and robustness on nearly all challenging text-to-SQL benchmarks.},
+    journal = {Proc. ACM Manag. Data},
+    month = {may},
+    articleno = {127},
+    numpages = {28},
+    keywords = {language model, natural language interface for databases, text-to-SQL}
+}
+
+% StarCoder - CodeS base model
+@misc{li2023starcodersourceyou,
+      title={StarCoder: may the source be with you!}, 
+      author={Raymond Li and Loubna Ben Allal and Yangtian Zi and Niklas Muennighoff and Denis Kocetkov and Chenghao Mou and Marc Marone and Christopher Akiki and Jia Li and Jenny Chim and Qian Liu and Evgenii Zheltonozhskii and Terry Yue Zhuo and Thomas Wang and Olivier Dehaene and Mishig Davaadorj and Joel Lamy-Poirier and João Monteiro and Oleh Shliazhko and Nicolas Gontier and Nicholas Meade and Armel Zebaze and Ming-Ho Yee and Logesh Kumar Umapathi and Jian Zhu and Benjamin Lipkin and Muhtasham Oblokulov and Zhiruo Wang and Rudra Murthy and Jason Stillerman and Siva Sankalp Patel and Dmitry Abulkhanov and Marco Zocca and Manan Dey and Zhihan Zhang and Nour Fahmy and Urvashi Bhattacharyya and Wenhao Yu and Swayam Singh and Sasha Luccioni and Paulo Villegas and Maxim Kunakov and Fedor Zhdanov and Manuel Romero and Tony Lee and Nadav Timor and Jennifer Ding and Claire Schlesinger and Hailey Schoelkopf and Jan Ebert and Tri Dao and Mayank Mishra and Alex Gu and Jennifer Robinson and Carolyn Jane Anderson and Brendan Dolan-Gavitt and Danish Contractor and Siva Reddy and Daniel Fried and Dzmitry Bahdanau and Yacine Jernite and Carlos Muñoz Ferrandis and Sean Hughes and Thomas Wolf and Arjun Guha and Leandro von Werra and Harm de Vries},
+      year={2023},
+      eprint={2305.06161},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2305.06161}, 
+}
+
+% XLM-RoBERTA-XL
+@misc{goyal2021largerscaletransformersmultilingualmasked,
+      title={Larger-Scale Transformers for Multilingual Masked Language Modeling}, 
+      author={Naman Goyal and Jingfei Du and Myle Ott and Giri Anantharaman and Alexis Conneau},
+      year={2021},
+      eprint={2105.00572},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2105.00572}, 
+}
+
+% RSL-SQL uses bi-directional
+@misc{cao2024rslsqlrobustschemalinking,
+      title={RSL-SQL: Robust Schema Linking in Text-to-SQL Generation}, 
+      author={Zhenbiao Cao and Yuanlei Zheng and Zhihao Fan and Xiaojin Zhang and Wei Chen and Xiang Bai},
+      year={2024},
+      eprint={2411.00073},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2411.00073}, 
+}
+
+% DTS-SQL table-level subsetting using DeepCode 7B
+@misc{pourreza2024dtssql,
+      title={DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models}, 
+      author={Mohammadreza Pourreza and Davood Rafiei},
+      year={2024},
+      eprint={2402.01117},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% LLM used by DTS-SQL
+@misc{deepseek-coder,
+  author = {Daya Guo and Qihao Zhu and Dejian Yang and Zhenda Xieand Kai Dong and Wentao Zhang and Guanting Chen and Xiao Bi and Y. Wu and Y.K. Li and Fuli Luo and Yingfei Xiong and Wenfeng Liang},
+  title = {DeepSeek-Coder: When the Large Language Model Meets Programming -- The Rise of Code Intelligence},
+  journal = {CoRR},
+  volume = {abs/2401.14196},
+  year = {2024},
+  url = {https://arxiv.org/abs/2401.14196}
+}
+
+% Other schema linking analysis
+
+@inproceedings{Katsogiannis-Meimarakis2026,
+  author    = {George Katsogiannis-Meimarakis and Katsiaryna Mirylenka and Paolo Scotton and Francesco Fusco and Abdel Labbi},
+  title     = {In-depth Analysis of LLM-based Schema Linking},
+  booktitle = {Proceedings of the 29th International Conference on Extending Database Technology (EDBT 2026)},
+  address   = {Tampere, Finland},
+  month     = {March},
+  year      = {2026},
+  series    = {Advances in Database Technology},
+  volume    = {29},
+  pages     = {117-130},
+  issn      = {2367-2005}
+}
+
+@inproceedings{kothyari-etal-2023-crush4sql,
+    title = "{CRUSH}4{SQL}: Collective Retrieval Using Schema Hallucination For {T}ext2{SQL}",
+    author = "Kothyari, Mayank  and
+      Dhingra, Dhruva  and
+      Sarawagi, Sunita  and
+      Chakrabarti, Soumen",
+    editor = "Bouamor, Houda  and
+      Pino, Juan  and
+      Bali, Kalika",
+    booktitle = "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing",
+    month = dec,
+    year = "2023",
+    address = "Singapore",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.emnlp-main.868",
+    doi = "10.18653/v1/2023.emnlp-main.868",
+    pages = "14054--14066",
+    abstract = "Existing Text-to-SQL generators require the entire schema to be encoded with the user text. This is expensive or impractical for large databases with tens of thousands of columns. Standard dense retrieval techniques are inadequate for schema subsetting of a large structured database, where the correct semantics of retrieval demands that we rank sets of schema elements rather than individual documents. In response, we propose a two-stage process for effective coverage during retrieval. First, we use an LLM to hallucinate a minimal DB schema that it deems adequate to answer the query. We use the hallucinated schema to retrieve a subset of the actual schema, by composing the results from multiple dense retrievals. Remarkably, hallucination {---} generally considered a nuisance {---} turns out to be actually useful as a bridging mechanism. Since no existing benchmarks exist for schema subsetting on large databases, we introduce two benchmarks: (1) A semi-synthetic dataset of 4502 schema elements, by taking a union of schema on the well-known SPIDER dataset, and (2) A real-life benchmark called SocialDB sourced from an actual large data warehouse comprising of 17844 schema elements. We show that our method leads to significantly higher recall than SOTA retrieval-based augmentation methods.",
+}
+
+@misc{maamari2024deathschemalinkingtexttosql,
+  author       = {Karime Maamari and
+                  Fadhil Abubaker and
+                  Daniel Jaroslawicz and
+                  Amine Mhedhbi},
+  title        = {The Death of Schema Linking? Text-to-SQL in the Age of Well-Reasoned
+                  Language Models},
+  journal      = {CoRR},
+  volume       = {abs/2408.07702},
+  year         = {2024},
+  url          = {https://doi.org/10.48550/arXiv.2408.07702},
+  doi          = {10.48550/ARXIV.2408.07702},
+  eprinttype    = {arXiv},
+  eprint       = {2408.07702},
+  timestamp    = {Mon, 23 Sep 2024 16:09:04 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2408-07702.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+% DB Copilot
+@inproceedings{DBLP:conf/edbt/WangCLH0WZ25,
+  author       = {Tianshu Wang and
+                  Xiaoyang Chen and
+                  Hongyu Lin and
+                  Xianpei Han and
+                  Le Sun and
+                  Hao Wang and
+                  Zhenyu Zeng},
+  editor       = {Alkis Simitsis and
+                  Bettina Kemme and
+                  Anna Queralt and
+                  Oscar Romero and
+                  Petar Jovanovic},
+  title        = {DBCopilot: Natural Language Querying over Massive Databases via Schema
+                  Routing},
+  booktitle    = {Proceedings 28th International Conference on Extending Database Technology,
+                  {EDBT} 2025, Barcelona, Spain, March 25-28, 2025},
+  pages        = {707--721},
+  publisher    = {OpenProceedings.org},
+  year         = {2025},
+  url          = {https://doi.org/10.48786/edbt.2025.57},
+  doi          = {10.48786/EDBT.2025.57},
+  timestamp    = {Mon, 10 Mar 2025 16:32:47 +0100},
+  biburl       = {https://dblp.org/rec/conf/edbt/WangCLH0WZ25.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+% Keyword Searches in Databases
+@INPROCEEDINGS{6059816,
+  author={Fakhraee, Sina and Fotouhi, Farshad},
+  booktitle={2011 22nd International Workshop on Database and Expert Systems Applications}, 
+  title={Effective Keyword Search over Relational Databases Considering Keywords Proximity and Keywords N-grams}, 
+  year={2011},
+  volume={},
+  number={},
+  pages={190-194},
+  keywords={Relational databases;Keyword search;Motion pictures;Barium;USA Councils;Relational databases;Keyword Search},
+  doi={10.1109/DEXA.2011.28}}
+
+
+% Tools and technology used in analysis
+
+@misc{zhang2025jasperstelladistillationsota,
+      title={Jasper and Stella: distillation of SOTA embedding models}, 
+      author={Dun Zhang and Jiacheng Li and Ziyang Zeng and Fulong Wang},
+      year={2025},
+      eprint={2412.19048},
+      archivePrefix={arXiv},
+      primaryClass={cs.IR},
+      url={https://arxiv.org/abs/2412.19048}, 
+}
+
+@misc{pgvectorrepo,
+      author = {PGVector Team},
+      title = {PGVector: Open-source vector similarity search for Postgres},
+      howpublished = {\url{https://github.com/pgvector/pgvector/}},
+      year = {2021},
+      note = {Accessed: 2025-09-25}
+}
+
+% LLM Citations
+
+@misc{geminiteam2024gemini,
+      title={Gemini: A Family of Highly Capable Multimodal Models}, 
+      author={Gemini Team},
+      year={2024},
+      eprint={2312.11805},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+
+@online{openai_gpt4.1_2024,
+  author       = {{OpenAI}},
+  title        = {Introducing {GPT‑4.1} in the {API}},
+  author       = {OpenAI},
+  year         = {2025},
+  month        = apr,
+  url          = {https://openai.com/index/gpt-4-1/},
+  note         = {Accessed: 2025-09-23},
+  keywords     = {artificial intelligence, language models, OpenAI, GPT‑4.1},
+}
+
+@misc{grattafiori2024llama3herdmodels,
+      title={The Llama 3 Herd of Models}, 
+      author={Llama Team},
+      year={2024},
+      eprint={2407.21783},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2407.21783}
+}
+
+@misc{openai2025gptoss120bgptoss20bmodel,
+      title={gpt-oss-120b and gpt-oss-20b Model Card}, 
+      author={OpenAI},
+      year={2025},
+      eprint={2508.10925},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2508.10925}
+}
