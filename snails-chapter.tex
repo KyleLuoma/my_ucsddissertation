@@ -133,13 +133,27 @@ In summary, this paper makes the following contributions:
   \item We propose a realistic workflow that enables the preservation of existing database integrations while offering LLM-based NLIs a natural view of a target schema.
 \end{itemize}
 
-% 
-\section{Background}
-
 
 
 \section{Schema Identifier Naturalness}
 
+
+\begin{table}[t]
+  \centering
+  \caption{Example identifiers and their naturalness levels, from the SNAILS naturalness labeled dataset (Artifact 2).}
+  \begin{tabular}{p{4.5cm}p{3.1cm}p{3.1cm}}
+  \toprule
+  \textbf{Regular} & \textbf{Low} & \textbf{Least}\\
+  \midrule
+  airbag & AccountChk & AdCtTxIRWT \\
+  AdaptiveCruiseControl & IsueFrDate & COGM\_Act \\
+  ModelYear & RecvAsst & DfltSlp \\
+  service\_name & UsrQuery & FNDAbs \\
+  Research\_Staff & ValueOfT & CSI22 \\
+  \bottomrule
+  \end{tabular}
+  \label{table:nat-cat-examples}
+\end{table}
 
 Intuitively, naturalness can be thought of as the degree to which a phrase, or word, resembles natural language. 
 Naturalness is a concept and target of research in field of controlled natural languages~\cite{10.1162/COLI_a_00168}, where controlled language syntax is evaluated in terms of naturalness levels. 
@@ -158,23 +172,6 @@ In order to achieve this goal, we propose a three-category naturalness classific
   \label{fig:meantokenindictionary}
 \end{figure}
 
-\begin{table}[t]
-  \centering
-  \begin{tabular}{|p{3.5cm}|p{2.1cm}|p{2.1cm}|}
-  \hline
-  \textbf{Regular} & \textbf{Low} & \textbf{Least}\\
-  \hline
-  airbag & AccountChk & AdCtTxIRWT \\
-  AdaptiveCruiseControl & IsueFrDate & COGM\_Act \\
-  ModelYear & RecvAsst & DfltSlp \\
-  service\_name & UsrQuery & FNDAbs \\
-  Research\_Staff & ValueOfT & CSI22 \\
-  \hline
-  \end{tabular}
-  \caption{Example identifiers and their naturalness levels, from the SNAILS naturalness labeled dataset\\ (Artifact 2).}
-  \label{table:nat-cat-examples}
-\end{table}
-
 As the first work on this topic of how schema identifier naturalness affects LLMs, we seek to define a preliminary metric--one that is consistent and descriptive enough to differentiate between naturalness levels and to measure their effects.
 
 To gain insights into naturalness-related trends in the SNAILS datasets, we create a \emph{mean token-in-dictionary} measurement that describes the proportion of tokens in an identifier that exactly match a word in a comprehensive English word list.
@@ -186,9 +183,9 @@ We define these categories with the underlying assumption that the identifiers a
 That is, identifiers are assumed to not be random character sequences or random words that do not correspond to the content of the database entities they represent.
 With this assumption in mind, we categorize naturalness into 3 discrete levels as follows: 
 \begin{itemize}
-  \item Regular: The identifier contains complete English words with no abbreviations or acronyms, or contains only acronyms in common usage (e.g., ID or GPS).
-  \item Low: The identifier contains abbreviated English words and less common acronyms that are usually recognizable by non-domain experts (e.g., UTM or  CPI). The meaning of the identifier can be inferred without consulting external documentation.
-  \item Least: The identifier's meaning cannot be inferred by non-experts due to indecipherable acronyms or abbreviations, and external metadata or other documentation must be consulted in order to determine its purpose.
+  \item \textbf{Regular}: The identifier contains complete English words with no abbreviations or acronyms, or contains only acronyms in common usage (e.g., ID or GPS).
+  \item \textbf{Low}: The identifier contains abbreviated English words and less common acronyms that are usually recognizable by non-domain experts (e.g., UTM or  CPI). The meaning of the identifier can be inferred without consulting external documentation.
+  \item \textbf{Least}: The identifier's meaning cannot be inferred by non-experts due to indecipherable acronyms or abbreviations, and external metadata or other documentation must be consulted in order to determine its purpose.
 \end{itemize}
 
 While we recognize that naturalness can also be treated as a continuous spectrum, between the choices of continuous scoring and discrete categories, we select the latter as an initial approach to naturalness evaluation.
@@ -223,12 +220,7 @@ two best-performing classifiers fine-tuned GPT 3.5 and BERT-based CANINE~\cite{C
   \label{fig:naturalnesscompare}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/classify-modify-pipeline.pdf}
-    \caption{Schema identifiers are classified (Artifact 2) and modified to increase or decrease naturalness as appropriate. Modified identifiers comprise the schema crosswalks used for schema modification during NL-to-SQL experimentation (Artifact 3).}
-    \label{fig:classify-modify-pipeline-main}
-\end{figure}
+
 
 Figure \ref{fig:naturalnesscompare} provides a visual comparison between the SNAILS schema collection and common NL-to-SQL benchmarks including Spider, Spider Realistic, and BIRD.
 Additionally, we compare the SNAILS collection to the real-world SchemaPile collection and find that SNAILS collection proportions generally align to SchemaPile naturalness, more so than other existing benchmarks, which creates a more realistic and challenging benchmark in terms of schema naturalness.
@@ -243,6 +235,13 @@ These findings reinforce the importance of the naturalness problem by confirming
 
 \subsection{Identifier Schema Naturalness Mapping}
 \label{subsection:naturalnessmapping}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/classify-modify-pipeline.pdf}
+    \caption{Schema identifiers are classified (Artifact 2) and modified to increase or decrease naturalness as appropriate. Modified identifiers comprise the schema crosswalks used for schema modification during NL-to-SQL experimentation (Artifact 3).}
+    \label{fig:classify-modify-pipeline-main}
+\end{figure}
 
 In addition to measuring the effects of identifier naturalness in existing schemas, we also seek to evaluate the effects of modifying schema naturalness.
 For this purpose, we create Artifact 4, naturalness-modified identifiers.
@@ -309,38 +308,25 @@ Of the 17,223 identifiers reviewed, 15,527 naturalness scores, or 90.1 percent, 
 We manually scored the incorrectly-predicted 1,696 identifiers.
 For model finetuning, we randomly split the resulting data into training (n = 10,327), validation (n = 3,457), and test (n = 3,457).
 
-\begin{figure*}
-  \centering
-  \includegraphics[width=\linewidth]{figures/classify-modify-pipeline.pdf}
-  \caption{Schema identifiers in our benchmark dataset are classified into a naturalness category and modified to increase or decrease naturalness as appropriate. Modified identifiers comprise the schema crosswalks used for schema modification during experiment query inference.}
-  \label{fig:classify-modify-pipeline}
-\end{figure*}
-
 \subsection{ML Classifier-based scoring}
 
 % Table template generated by GPT3.5 and modified by GPT4
 \begin{table}[t]
   \centering
-  \begin{tabular}{|p{2cm}|cccc|}
-  \hline
-  \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
-  \hline
-  GPT-3.5-FewShot & 0.646 & 0.623 & 0.638 & 0.630 \\
-  \hline
-  CANINE-Seq C1 & 0.719 & 0.699 & 0.727 & 0.712 \\
-  \hline
-  GPT-4-FewShot & 0.742 & 0.742 & 0.792 & 0.766 \\
-  \hline
-  CANINE-Seq+TG C1 & 0.829 & 0.829 & 0.838 & 0.833 \\
-  \hline
-  GPT-3.5-FineTune & 0.899 & 0.878 & 0.877 & 0.878 \\
-  \hline
-  GPT-3.5-FineTune+TG & 0.896 & 0.896 & 0.897 & 0.896 \\
-  \hline
-  CANINE-Seq+TG C2 & 0.896 & 0.896 & 0.898 & 0.897 \\
-  \hline
-  \end{tabular}
   \caption{Performance comparison of different language models for classifying a database identifier's naturalness}
+  \begin{tabular}{p{4cm}|cccc}
+  \toprule
+  \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+  \midrule
+  GPT-3.5-FewShot & 0.646 & 0.623 & 0.638 & 0.630 \\
+  CANINE-Seq C1 & 0.719 & 0.699 & 0.727 & 0.712 \\
+  GPT-4-FewShot & 0.742 & 0.742 & 0.792 & 0.766 \\
+  CANINE-Seq+TG C1 & 0.829 & 0.829 & 0.838 & 0.833 \\
+  GPT-3.5-FineTune & \textbf{0.899} & 0.878 & 0.877 & 0.878 \\
+  GPT-3.5-FineTune+TG & 0.896 & \textbf{0.896} & 0.897 & 0.896 \\
+  CANINE-Seq+TG C2 & 0.896 & \textbf{0.896} & \textbf{0.898} & \textbf{0.897} \\
+  \bottomrule
+  \end{tabular}
   \label{table:classifierperformance}
 \end{table}
 
@@ -458,21 +444,21 @@ This class provides a simple \emph{classify\_identifier} method for using the CA
 
 \subsection{Tokenizers}
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=0.5\linewidth]{figures/identifier-char-count-cdf.pdf}
   \caption{Cumulative distribution of schema identifier character counts by naturalness level. More natural (less abbreviated) identifiers logically have more characters.}
   \label{fig:charcountcdf}
 \end{figure}
 
-\begin{figure*}
+\begin{figure*}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/identifier-token-count-cdf.pdf}
   \caption{Token count CDF, by naturalness level, for each language model.}
   \label{fig:tokencountcdf}
 \end{figure*}
 
-\begin{figure*}
+\begin{figure*}[ht]
   \centering
   \begin{subfigure}{\textwidth}
     \centering
@@ -492,7 +478,7 @@ When a character sequence is not present in the vocabulary, the tokenizer will s
   TCR = \frac{|I_{tokens}|}{|I_{characters}|}
 \end{equation}
 
-Because there is not a clear relationship between token count and naturalness, we derive a token-to-character ratio metric (see \ref{eq:ttcr}) which is the count of identifier tokens $I_{tokens}$ divided by the count of identifier characters $I_{characters}$.
+Because there is not a clear relationship between token count and naturalness, we derive a token-to-character ratio metric (Equation \ref{eq:ttcr}) which is the count of identifier tokens $I_{tokens}$ divided by the count of identifier characters $I_{characters}$.
 What we see in Figure \ref{fig:tokencdfs} is a fairly strong differentiation between naturalness levels and TCR, where more natural identifiers have lower TCR than less natural identifiers.
 We believe that this hints at the effects of in- vs. out-of-vocabulary character sequences and the strength of their semantic meaning in latent space.
 However, the relationship is not so strong that TCR alone can serve as a useful classification method for identifier naturalness.
@@ -500,7 +486,7 @@ We leave additional exploration of this topic to future research.
 
 
 
-\section{Naturalness-modified Identifiers}
+\section{Naturalness-Modified Identifiers}
 
 
 Naturalness modification is the process of changing an identifier in such a way that it assumes a naturalness category that is not its original classification (see Figure \ref{fig:classify-modify-pipeline}).
@@ -658,10 +644,11 @@ To reduce bias due to benchmark data exposure, and to create a benchmark more re
 
 \begin{table}[t]
   \centering
-  \begin{tabular}{|p{2cm}|c|c|c|c|}
-  \hline
+  \caption{SNAILS Real-World Database Schemas}
+  \begin{tabular}{p{2cm}cccc}
+  \toprule
   \textbf{Database} & \textbf{Tables} & \textbf{Columns} & \textbf{Questions} & \textbf{Org} \\
-  \hline
+  \midrule
   ASIS & 36 & 245 & 40 & NPS \\
   ATBI & 28 & 192 & 40 & NPS \\
   CWO & 13 & 71 & 40 & NPS \\
@@ -671,9 +658,8 @@ To reduce bias due to benchmark data exposure, and to create a benchmark more re
   NYSED & 27 & 423 & 63 & NYSED \\
   PILB & 21 & 196 & 40 & NPS \\
   SBOD & 2588 & 90,477 & 100 & SAP \\
-  \hline
+  \bottomrule
   \end{tabular}
-  \caption{SNAILS Real-World Database Schemas}
   \label{table:benchmarkschemas}
 \end{table}
 
@@ -723,28 +709,6 @@ From the chart, we can see that the schemas in the SNAILS collection described i
   \label{fig:databasenaturalness}
 \end{figure}
 
-\begin{table*}[!h]
-  \centering
-  \begin{tabular}{lrrrrrrrrrrrr}
-\toprule
-Database & Qs & Top & Funct. & Join & C-Join & Ex & SQ & Where & Neg & Grp & Ord & Hvg \\
-\midrule
-ASIS & 40 & 1 & 24 & 13 & 1 & 0 & 2 & 18 & 0 & 17 & 1 & 0 \\
-ATBI & 40 & 5 & 20 & 18 & 0 & 1 & 7 & 21 & 2 & 16 & 7 & 1 \\
-CWO & 40 & 2 & 18 & 5 & 1 & 5 & 10 & 34 & 7 & 12 & 2 & 1 \\
-KIS & 40 & 8 & 26 & 15 & 0 & 0 & 2 & 25 & 1 & 11 & 8 & 0 \\
-NPFM & 40 & 5 & 27 & 21 & 0 & 0 & 1 & 29 & 0 & 16 & 5 & 0 \\
-NTSB & 100 & 8 & 82 & 23 & 21 & 0 & 6 & 62 & 4 & 42 & 23 & 4 \\
-NYSED & 63 & 10 & 36 & 10 & 4 & 1 & 21 & 55 & 1 & 16 & 10 & 1 \\
-PILB & 40 & 6 & 25 & 23 & 0 & 0 & 3 & 20 & 0 & 16 & 11 & 2 \\
-SBOD & 100 & 2 & 33 & 44 & 0 & 0 & 0 & 82 & 0 & 17 & 2 & 1 \\
-\bottomrule
-\end{tabular}
-
-  \caption{Gold query clause counts for each SNAILS database. Columns represent a count of gold queries that contain the listed clause types. Qs is the count of question-query pairs for each database. C-Join is the subset of joins that require a composite key. Ex indicates the use of an exists clause. SQ indicates a subquery. Neg, Grp, Ord, and Hvg represent negation, group by, order by, and having. Note: MS SQL Server dialect replaces the common LIMIT clause with an equivalent TOP clause that precedes select items in the SELECT clause.}
-  \label{table:query-stats}
-\end{table*}
-
 \paragraph{\textbf{Modified (Virtual) Schemas}}
 To control for confounding factors such as schema structure, normalization levels, and constraint variances between native schemas, we perform within-database evaluations of naturalness.
 To accomplish this, we generate 3 additional \emph{virtual} schemas using the naturalness-modified identifiers (Artifact 4) described in Section \ref{subsection:naturalnessmapping}.
@@ -764,19 +728,19 @@ We view the initial 9 schemas as a starting point from which the SNAILS dataset 
 Researchers who wish to extend the SNAILS collection should use the same selection criteria.
 In addition, the extension process must ensure that new databases:  (1) can be represented as MS SQL Server instances, (2) each native identifier's naturalness is classified according to defined criteria using the SNAILS naturalness classifier, and (3) that native identifiers are modified using the SNAILS modification artifacts to create alternate naturalness levels. 
 
-\subsection{Data Sources}
+\subsection{Data Source Details}
 
 \subsubsection{Field Data for Assateague Island National Seashore Amphibian and Reptile Inventory (ASIS)}
 
 \paragraph{Data Description} 
 The ASIS database~\cite{assateague-herp} is sourced from the National Parks Service (NPS) Irma portal~\cite{nps-irma-portal} and contains scientific observation data of wildlife in the Assateague Island National Seashore preserve.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/ASIS_20161108_HerpInv_Database-stats-clause-counts.png}
-  \caption{Gold query clause composition - ASIS database}
-  \label{fig:query-complexity-asis}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/ASIS_20161108_HerpInv_Database-stats-clause-counts.png}
+%   \caption{Gold query clause composition - ASIS database}
+%   \label{fig:query-complexity-asis}
+% \end{figure}
 
 \paragraph{ASIS Database Technical Details}
 \begin{itemize}
@@ -794,12 +758,12 @@ The ASIS database~\cite{assateague-herp} is sourced from the National Parks Serv
 \paragraph{Data Description}
 The ATBI database~\cite{gsmnp-atbi} contains scientific observations of vegetation within the Great Smoky Mountains national park.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/ATBI-stats-clause-counts.png}
-  \caption{Gold query clause composition - ATBI database}
-  \label{fig:query-complexity-atbi}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/ATBI-stats-clause-counts.png}
+%   \caption{Gold query clause composition - ATBI database}
+%   \label{fig:query-complexity-atbi}
+% \end{figure}
 
 \paragraph{ATBI Database Technical Details}
 \begin{itemize}
@@ -817,12 +781,12 @@ The ATBI database~\cite{gsmnp-atbi} contains scientific observations of vegetati
 \paragraph{Data Description}
 The Klamath Invasive Species (KIS) database~\cite{klamath-inventory} contains scientific observations of exoctic and invasive plants observed in Klamath Falls, Oregon.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/KlamathInvasiveSpecies-stats-clause-counts.png}
-  \caption{Gold query clause composition - KIS database}
-  \label{fig:query-complexity-kis}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/KlamathInvasiveSpecies-stats-clause-counts.png}
+%   \caption{Gold query clause composition - KIS database}
+%   \label{fig:query-complexity-kis}
+% \end{figure}
 
 \paragraph{KIS Database Technical Details}
 \begin{itemize}
@@ -840,12 +804,12 @@ The Klamath Invasive Species (KIS) database~\cite{klamath-inventory} contains sc
 \paragraph{Data Description}
 Pacific island landbirds (PILB) database~\cite{pilb-dataset} contains scientific observations of bird observations in various Pacific islands within the US states and territories.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/PacificIslandLandbirds-stats-clause-counts.png}
-  \caption{Gold query clause composition - PILB database}
-  \label{fig:query-complexity-pilb}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/PacificIslandLandbirds-stats-clause-counts.png}
+%   \caption{Gold query clause composition - PILB database}
+%   \label{fig:query-complexity-pilb}
+% \end{figure}
 
 \paragraph{PILB Database Technical Details}
 \begin{itemize}
@@ -864,12 +828,12 @@ Pacific island landbirds (PILB) database~\cite{pilb-dataset} contains scientific
 The Craters Wildlife Observation (CWO) database~\cite{craters-of-the-moon-wildlife} contains observations of wildlife spotted at the Craters of the Moon national monument and preserve.
 It is the smallest and most natural database in the benchmark data set.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/CratersWildlifeObservations-stats-clause-counts.png}
-  \caption{Gold query clause composition - CWO database}
-  \label{fig:query-complexity-cwo}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/CratersWildlifeObservations-stats-clause-counts.png}
+%   \caption{Gold query clause composition - CWO database}
+%   \label{fig:query-complexity-cwo}
+% \end{figure}
 
 \paragraph{CWO Database Technical Details}
 \begin{itemize}
@@ -887,27 +851,12 @@ It is the smallest and most natural database in the benchmark data set.
 \paragraph{Data Description}
 The NPFM database~\cite{ngp-fire} contains observations of various overstory and other flora within the Northern Plains region of the Nationa Parks Service.
 
-\paragraph{Code-Bison Evidence of Familiarity}
-With this dataset, we observe some indications of exposure to the Code-Bison language model.
-We note that we no longer report performance results of Code-Bison inference in our main report.
-
-When prompted with the NL question "How many overstory's have a codominant canopy position?", it generated the query:
-
-\begin{verbatim}
-  SELECT COUNT(*)
-  FROM tbl_Overstory
-  WHERE CanPos = 2;
-\end{verbatim}
-
-Which is a correct reference to the canopy position (CanPos) lookup code of 2, which corresponds to the codominant canopy position.
-The LLM was not provided code lookup information within the prompt, which suggests that some reference to the NPFM schema was included in its training data.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/NorthernPlainsFireManagement-stats-clause-counts.png}
-  \caption{Gold query clause composition - NPFM database}
-  \label{fig:query-complexity-npfm}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/NorthernPlainsFireManagement-stats-clause-counts.png}
+%   \caption{Gold query clause composition - NPFM database}
+%   \label{fig:query-complexity-npfm}
+% \end{figure}
 
 \paragraph{NPFM Database Technical Details}
 \begin{itemize}
@@ -933,12 +882,12 @@ We acquired the data in .csv form, with a single .csv per table.
 Analysis of the files confirmed that although not in database form, the data was relational in nature, and migration involved SQL-based ingestion from .csv files into the target schema.
 The .sql scripts used to generate the database schema and insert table values are available in the project repository.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/NTSB-stats-clause-counts.png}
-  \caption{Gold query clause composition - NTSB database}
-  \label{fig:query-complexity-ntsb}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/NTSB-stats-clause-counts.png}
+%   \caption{Gold query clause composition - NTSB database}
+%   \label{fig:query-complexity-ntsb}
+% \end{figure}
 
 \paragraph{NTSB Database Technical Details}
 \begin{itemize}
@@ -958,14 +907,14 @@ The .sql scripts used to generate the database schema and insert table values ar
 The NYSED database~\cite{nysed-report-card} is sourced from the New York State Education Department.
 It contains standardized testing and demographic data for all public elementary, middle, and high schools in New York State.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/NYSED_SRC2022-stats-clause-counts.png}
-  \caption{Gold query clause composition - NYSED database}
-  \label{fig:query-complexity-nysed}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/NYSED_SRC2022-stats-clause-counts.png}
+%   \caption{Gold query clause composition - NYSED database}
+%   \label{fig:query-complexity-nysed}
+% \end{figure}
 
-\paragraph{NTSB Database Technical Details}
+\paragraph{NYSED Database Technical Details}
 \begin{itemize}
   \item Data source format: Microsoft Access
   \item Migration method: SQL Server Migration Assistant
@@ -984,12 +933,12 @@ It is the largest, and least natural, database within our dataset.
 Given its schema size, we divided it based on SAP module, and further reduced the schemas used in our benchmark based on the training database cardinality (e.g. we removed most tables containing 0 tuples).
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-stats/SBODemoUS-stats-clause-counts.png}
-  \caption{Gold query clause composition - SBOD database module example}
-  \label{fig:query-complexity-sbod}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/query-stats/SBODemoUS-stats-clause-counts.png}
+%   \caption{Gold query clause composition - SBOD database module example}
+%   \label{fig:query-complexity-sbod}
+% \end{figure}
 
 \paragraph{SBOD Database Technical Details}
 \begin{itemize}
@@ -1004,10 +953,13 @@ Given its schema size, we divided it based on SAP module, and further reduced th
 
 \begin{table}[th]
   \centering
-  \begin{tabular}{|p{3.2cm}|c|c|c|}
-  \hline
+  \caption{SBO Demo Module Schemas}
+  \begin{tabular}{p{4cm}ccc}
+  % \hline
+  \toprule
   \textbf{Module} & \textbf{Tables} & \textbf{Columns} & \textbf{Questions} \\
-  \hline
+  % \hline
+  \midrule
   Banking & 40 & 1720 & 10 \\
   Business Partners & 40 & 1443 & 10 \\
   Finance & 61 & 1988 & 10 \\
@@ -1017,9 +969,9 @@ Given its schema size, we divided it based on SAP module, and further reduced th
   Reports & 40 & 734 & 10 \\
   Sales Opportunities & 20 & 283 & 10 \\
   Service & 40 & 875 & 10 \\
-  \hline
+  % \hline
+  \bottomrule
   \end{tabular}
-  \caption{SBO Demo Module Schemas}
   \label{table:sapmodulechemas-appendix}
 \end{table}
 
@@ -1031,7 +983,59 @@ Such a schema size poses a problem for generating schema knowledge representatio
 To overcome this constraint, we divide the SBOD schema into 9 sub-modules based on schema descriptions published by an online community of SAP practicioners~\cite{sap-erpref}.
 We further prune the SBOD schemas using the cardinality of the training database, where tables without data entries were excluded from NL questions and prompt schema knowledge.
 
-\subsection{NL Questions and Gold Queries}
+
+
+\subsection{Benchmark Naturalness Comparisons}
+
+Though we believe the quality of existing benchmarks is excellent, and the hard work of researchers associated with those projects has resulted in significant improvements in NL-to-SQL system design, we find that a large proportion of these benchmark schemas are canonical, small in composition, and highly natural compared to databases and data sets often encountered in real world scenarios.
+Using our naturalness classifier, we determine the naturalness levels of the Spider~\cite{Yu&al.18c} and Bird-SQL~\cite{li2023llm}.
+Our classifier model indicates that both Spider and Bird database schemas are highly natural, moreso than any real-world schema we acquired for our benchmark (see Figure \ref{fig:benchmark-naturalness-comparison-appendix} for a visual comparison).
+Additionally, we evaluate the naturalness of the real-world schema identifiers in the SchemaPile~\cite{doehmen2024schemapile} and find that the SNAILS naturalness better-aligns with SchemaPile than the previously-mentioned benchmarks.
+Figure \ref{fig:databasenaturalness}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/benchmark_naturalness_compare.pdf}
+  \caption{Spider~\cite{Yu&al.18c} and Bird~\cite{li2023llm} benchmarks classified with the Davinci-based classifier reveals that both benchmark databases have highly natural identifiers even compared to the most natural of the databases in our proposed benchmark. Our benchmark more closely aligns with the naturalness of the real-world schema collection SchemaPile~\cite{doehmen2024schemapile}}.
+  \label{fig:benchmark-naturalness-comparison-appendix}
+\end{figure}
+
+
+\subsection{NL Question - SQL Query Pairs}
+
+To evaluate SQL inference performance over the Native and modified schemas in the SNAILS real-world database collection, we create a new set of 503 NL-question and SQL gold query pairs (Artifact 6).
+Schema identifier naturalness are the primary considerations for NL question and gold query composition.
+During question and query formulation we track schema coverage to ensure that the distribution of identifier naturalness within a set of gold queries generally matches the naturalness distribution of target schemas.
+
+To enable accuracy measurements at the identifier level, gold queries contain the minimum identifiers (tables and columns) required to answer its corresponding question.
+For this reason, for questions that require the count aggregation function, where appropriate, we use the COUNT(*) clause (as opposed to selecting an arbitrary column).
+This approach eliminates incorrect penalties to recall if a generated query fails to project an arbitrary column as a function argument.
+
+Gold queries contain only native identifiers, such that all gold queries return valid non-null results from target databases in the real-world database collection (Artifact 1).
+We measure query complexity as a count of its clauses and identifiers.
+Gold queries span a range of complexities, from very simple single table projections, to multi-table joins and nested subqueries (see Table \ref{table:query-stats}).
+
+\begin{table*}[t]
+  \centering
+  \caption{Gold query clause counts for each SNAILS database. Columns represent a count of gold queries that contain the listed clause types. Qs is the count of question-query pairs for each database. C-Join is the subset of joins that require a composite key. Ex indicates the use of an exists clause. SQ indicates a subquery. Neg, Grp, Ord, and Hvg represent negation, group by, order by, and having. Note: MS SQL Server dialect replaces the common LIMIT clause with an equivalent TOP clause that precedes select items in the SELECT clause.}
+  \begin{tabular}{lrrrrrrrrrrrr}
+\toprule
+Database & Qs & Top & Funct. & Join & C-Join & Ex & SQ & Where & Neg & Grp & Ord & Hvg \\
+\midrule
+ASIS & 40 & 1 & 24 & 13 & 1 & 0 & 2 & 18 & 0 & 17 & 1 & 0 \\
+ATBI & 40 & 5 & 20 & 18 & 0 & 1 & 7 & 21 & 2 & 16 & 7 & 1 \\
+CWO & 40 & 2 & 18 & 5 & 1 & 5 & 10 & 34 & 7 & 12 & 2 & 1 \\
+KIS & 40 & 8 & 26 & 15 & 0 & 0 & 2 & 25 & 1 & 11 & 8 & 0 \\
+NPFM & 40 & 5 & 27 & 21 & 0 & 0 & 1 & 29 & 0 & 16 & 5 & 0 \\
+NTSB & 100 & 8 & 82 & 23 & 21 & 0 & 6 & 62 & 4 & 42 & 23 & 4 \\
+NYSED & 63 & 10 & 36 & 10 & 4 & 1 & 21 & 55 & 1 & 16 & 10 & 1 \\
+PILB & 40 & 6 & 25 & 23 & 0 & 0 & 3 & 20 & 0 & 16 & 11 & 2 \\
+SBOD & 100 & 2 & 33 & 44 & 0 & 0 & 0 & 82 & 0 & 17 & 2 & 1 \\
+\bottomrule
+\end{tabular}
+
+  \label{table:query-stats}
+\end{table*}
 
 The NL question - SQL query pair artifact consists of 9 .sql files containing between 40 and 100 entries each.
 Question and query pairs are written in executable .sql files.
@@ -1044,7 +1048,7 @@ We used neither the hints nor columns in any of the experiments described in thi
 While we store the data in .sql file format for readability and ease of use, we also offer a NL question loading script (load\_nl\_questions.py) in our repository. 
 This script performs rudimentary parsing of the .sql files and returns a Pandas DataFrame and optional .xlsx formatted spreadsheet.
 
-\paragraph{NL Question - Query Example 1, ASIS Database Question 8}
+\paragraph{NL Question - SQL Query Example 1, ASIS Database Question 8}
 The focus of this benchmark dataset is on the evaluation of schema linking.
 As such, we were generous with value descriptions, providing literal value strings (e.g. ASIS\_HERPS\_20H location code in example 1) in the prompt.
 
@@ -1059,7 +1063,7 @@ GROUP BY stage
 ;
 \end{verbatim}
 
-\paragraph{NL Question - Query Example 2, NTSB Database Question 13}
+\paragraph{NL Question - SQL Query Example 2, NTSB Database Question 13}
 Example 2 shows additional code value hints provided in the NL question.
 In order to enable the recall evaluation statistic, we limited the use of columns and tables in gold queries to the minimum necessary to form a correct query.
 In the cases where any arbitrary column as an argument in the count function will yield the same result as the $\ast$, we use only the $\ast$ symbol. 
@@ -1077,7 +1081,7 @@ WHERE PARDRUG = 1 AND TOWED = 3
 \end{verbatim}
 
 
-\paragraph{NL Question - Query Example 3, SBOD Database Human Resources Module Question 18}
+\paragraph{NL Question - SQL Query Example 3, SBOD Database Human Resources Module Question 18}
 Questions vary in their complexity.
 This example shows one of the more complex questions that require multiple projections and joins as well as a selection.
 
@@ -1095,42 +1099,6 @@ JOIN OHTM emplTeams
 WHERE emplTeams.name = 'Purchasing'
 ;
 \end{verbatim}
-
-\subsection{Benchmark Naturalness Comparisons}
-
-Though we believe the quality of existing benchmarks is excellent, and the hard work of researchers associated with those projects has resulted in significant improvements in NL-to-SQL system design, we find that a large proportion of these benchmark schemas are canonical, small in composition, and highly natural compared to databases and data sets often encountered in real world scenarios.
-Using our naturalness classifier described in the main report and the appendix section \ref{section:naturalness-classification}, we determine the naturalness levels of the Spider~\cite{Yu&al.18c} and Bird-SQL~\cite{li2023llm}.
-Our classifier model indicates that both Spider and Bird database schemas are highly natural, moreso than any real-world schema we acquired for our benchmark (see Figure \ref{fig:benchmark-naturalness-comparison-appendix} for a visual comparison).
-Additionally, we evaluate the naturalness of the real-world schema identifiers in the SchemaPile~\cite{doehmen2024schemapile} and find that the SNAILS naturalness better-aligns with SchemaPile than the previously-mentioned benchmarks.
-Figure \ref{fig:databasenaturalness}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figures/benchmark_naturalness_compare.pdf}
-  \caption{Spider~\cite{Yu&al.18c} and Bird~\cite{li2023llm} benchmarks classified with the Davinci-based classifier reveals that both benchmark databases have highly natural identifiers even compared to the most natural of the databases in our proposed benchmark. Our benchmark more closely aligns with the naturalness of the real-world schema collection SchemaPile~\cite{doehmen2024schemapile}}.
-  \label{fig:benchmark-naturalness-comparison-appendix}
-\end{figure}
-
-\begin{figure*}
-  \centering
-  \includegraphics[width=\textwidth]{figures/database-naturalness-levels-with-benchmarks.pdf}
-  \caption{At the individual database schema level, the SNAILS  database collection has a diverse arrangement of naturalness levels.}
-  \label{fig:SNAILS-naturalness-db-level}
-\end{figure*}
-
-\subsection{NL Question - SQL Query Pairs}
-
-To evaluate SQL inference performance over the Native and modified schemas in the SNAILS real-world database collection, we create a new set of 503 NL-question and SQL gold query pairs (Artifact 6).
-Schema identifier naturalness are the primary considerations for NL question and gold query composition.
-During question and query formulation we track schema coverage to ensure that the distribution of identifier naturalness within a set of gold queries generally matches the naturalness distribution of target schemas.
-
-To enable accuracy measurements at the identifier level, gold queries contain the minimum identifiers (tables and columns) required to answer its corresponding question.
-For this reason, for questions that require the count aggregation function, where appropriate, we use the COUNT(*) clause (as opposed to selecting an arbitrary column).
-This approach eliminates incorrect penalties to recall if a generated query fails to project an arbitrary column as a function argument.
-
-Gold queries contain only native identifiers, such that all gold queries return valid non-null results from target databases in the real-world database collection (Artifact 1).
-We measure query complexity as a count of its clauses and identifiers.
-Gold queries span a range of complexities, from very simple single table projections, to multi-table joins and nested subqueries (see Table \ref{table:query-stats}).
 
 \paragraph{\textbf{Adding New NL-SQL Pairs to the SNAILS Collection}}
 For researchers interested in extending the SNAILS collection, it is necessary to create new ground truth NL-SQL pairs for evaluation. 
@@ -1512,7 +1480,7 @@ Databases with more natural native schemas did not benefit from identifier renam
 
 \paragraph{\textbf{Statistical Significance}}
 The Kendall-Tau correlation between the naturalness of identifiers in a query and execution accuracy ranges from low ($\tau = 0.09, p < 0.0001$) for Gemini 1.5, to moderate ($\tau = 0.19, p < 0.0001$) for Phind-CodeLlama2 and CodeS.
-The most impactful relationship is between the presence of Least naturalness identifiers and performance, with Kendall-Tau correlations between the proportion of Least  identifiers in a query and execution accuracy between $\tau=-.15$ and $\tau=-.22$ with $p < 0.0001$ for all models.
+The most impactful relationship is between the presence of Least naturalness identifiers and performance, with Kendall-Tau ($\tau$) Correlations between the proportion of Least  identifiers in a query and execution accuracy between $\tau=-.15$ and $\tau=-.22$ with $p < 0.0001$ for all models.
 
 \subsection{Schema Linking Evaluation}
 \label{section:linking-evaluation}
@@ -1614,7 +1582,7 @@ Figure \ref{fig:recall-boxplot-dbs} provides a drill-down view of the effect of 
 The center example (PILB) is a highly natural Native schema where schema naturalness modification would not be required. The leftmost example (NTSB) indicates linking performance improvement across all models for a native schema of lower naturalness converted to a higher naturalness schema, and presents a case where naturalness modification will improve NLI performance. The rightmost database (SBOD) represents a Least naturalness schema, and transformation from Native to Regular yields significant improvements for all models. In all cases, we see that reducing naturalness to the Least level consistently degrades \emph{QueryRecall}. 
 
 \paragraph{\textbf{Statistical Significance}}
-Kendall-Tau correlations between the proportion of Least identifiers and \emph{QueryRecall} range from $\tau=-0.16$ (Gemini) to $\tau=-0.28$ (Phind-CodeLlama2), with $P < 0.001$ for all models.
+Kendall-Tau ($\tau$) Correlations between the proportion of Least identifiers and \emph{QueryRecall} range from $\tau=-0.16$ (Gemini) to $\tau=-0.28$ (Phind-CodeLlama2), with $P < 0.001$ for all models.
 Both Regular and Low identifier proportions are significantly correlated with improved outcomes in terms of \emph{QueryRecall}.
 Identifiers with Regular naturalness show the highest positive Kendall-Tau correlations ranging from $\tau=0.07$ (Gemini) to $\tau=0.20$ (Phind-CodeLlama2).
 Low naturalness identifier proportions correlate positively, but to a lesser degree, with Kendall-Tau values ranging from $\tau=0.05$ (Phind-CodeLlama2) to $\tau=0.07$ (Gemini).
@@ -1637,8 +1605,6 @@ We find that for the CodeS finetuned classifier approach, schema naturalness lev
 For the DIN SQL LLM-based approach, naturalness effects are less pronounced, though still present, particularly for Least level schemas.
 
 \paragraph{\textbf{Performance Over Modified Spider Schemas}}
-Figure \ref{fig:spiderresults} shows that with the SNAILS schema renaming artifacts applied to the Spider NL-to-SQL benchmark dev dataset~\cite{Yu&al.18c}, naturalness effects are the most significant between Low and Least levels of naturalness.
-Performance differences across naturalness levels for the highly natural Spider schemas resemble performance over similarly-natural schemas in the SNAILS collection.
 
 \begin{figure}
   \centering
@@ -1646,6 +1612,10 @@ Performance differences across naturalness levels for the highly natural Spider 
   \caption{QueryRecall and Execution Accuracy differences over the Spider~\cite{Yu&al.18c} dev set modified using SNAILS renaming artifacts.}
   \label{fig:spiderresults}
 \end{figure}
+
+Figure \ref{fig:spiderresults} shows that with the SNAILS schema renaming artifacts applied to the Spider NL-to-SQL benchmark dev dataset~\cite{Yu&al.18c}, naturalness effects are the most significant between Low and Least levels of naturalness.
+Performance differences across naturalness levels for the highly natural Spider schemas resemble performance over similarly-natural schemas in the SNAILS collection.
+
 
 \paragraph{\textbf{Mean token to character ratio effect on schema linking}}
 
@@ -1823,917 +1793,800 @@ The remaining pages contain several figures and tables of fine-grained analysis 
 
 \paragraph{Kendall-Tau Correlation Experiment Result Tables}
 
-Figures \ref{table:tokenratio-recall-ktau-native}-\ref{table:precisionktauall} provide Kendall-Tau experiment results for naturalness and token ratio correlations with linking performance (F1, Recall, and Precision).
+Tables \ref{table:tokenratio-recall-ktau-native}-\ref{table:executionktauall} provide Kendall-Tau experiment results for naturalness and token ratio correlations with linking performance (f1, recall, and precision) and execution accuracy.
 
 \begin{itemize}
-  \item Figure \ref{table:tokenratio-recall-ktau-native}: Token-Character ratio--Recall
-  \item Figures \ref{table:recallktaunative}--\ref{table:precisionktauall}: Combined naturalness--[Recall, F1, Precision]
-  \item Figures \ref{table:nathigh-recall-ktau-native}--\ref{table:natlow-recall-ktau-all}: [Regular, Low, Least] naturalness--recall
-  \item Figures \ref{table:nathigh-f1-ktau-native}--\ref{table:natlow-f1-ktau-all}: [Regular, Low, Least] naturalness--F1
-  \item Figures \ref{table:nathigh-precision-ktau-native}--\ref{table:natlow-precision-ktau-all}: [Regular, Low, Least] naturalness--precision
-  \item Figures \ref{table:nathigh-manual-match-ktau-native}--\ref{table:precisionktauall}: [Combined, Regular, Low, Least] naturalness--execution accuracy
+  \item Table \ref{table:tokenratio-recall-ktau-native}: Token-Character ratio--Recall
+  \item Tables \ref{table:recallktaunative}--\ref{table:precisionktauall}: Combined naturalness--[Recall, f1, Precision]
+  \item Tables \ref{table:nathigh-recall-ktau-native}--\ref{table:natlow-recall-ktau-all}: [Regular, Low, Least] naturalness--recall
+  \item Tables \ref{table:nathigh-f1-ktau-native}--\ref{table:natlow-f1-ktau-all}: [Regular, Low, Least] naturalness--f1
+  \item Tables \ref{table:nathigh-precision-ktau-native}--\ref{table:natlow-precision-ktau-all}: [Regular, Low, Least] naturalness--precision
+  \item Tables \ref{table:nathigh-manual-match-ktau-native}--\ref{table:executionktauall}: [Combined, Regular, Low, Least] naturalness--execution accuracy
 \end{itemize}
 
 \paragraph{Database-level Schema Linking Box and Whisker Plots}
 
 Figures \ref{fig:db-level-boxplots-f1-1}-\ref{fig:db-level-boxplots-recall-2} show additional database-level box and whisker plots depicting schema linking performance over individual database schemas and their naturalness levels for each LLM.
 
-% 
-\begin{figure*}
-    \centering
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-gpt-3.5-combined-nat--recall-with-distributions.pdf}
-    \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-bison-32k-combined-nat--recall-with-distributions.pdf}
-    \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-llama-7b-combined-nat--recall-with-distributions.pdf}
-    \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-llama-34b-combined-nat--recall-with-distributions.pdf}
-    \end{subfigure}
-    \caption{Schema linking performance (Recall Score) in terms of naturalness (Combined) by model on native schema identifiers. Histograms indicate non-parametric distributions of naturalness and Recall scores.}
-    \label{fig:distribution-jointplot-native-recall}
-  \end{figure*}
-  
-  \begin{figure*}
-    \centering
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-gpt-3.5-combined-nat-all-schemas-recall-with-distributions.pdf}
-    \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-bison-32k-combined-nat-all-schemas-recall-with-distributions.pdf}
-    \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-llama-7b-combined-nat-all-schemas-recall-with-distributions.pdf}
-    \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-llama-34b-combined-nat-all-schemas-recall-with-distributions.pdf}
-    \end{subfigure}
-    \caption{Schema linking performance (Recall Score) in terms of naturalness (Combined) by model on all schema identifiers (native and modified). Histograms indicate non-parametric distributions of naturalness and Recall scores with naturalness concentrations around modified schema identifier levels.}
-    \label{fig:distribution-jointplot-combined-recall}
-  \end{figure*}
-  
-  \begin{figure*}
-    \centering
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-gpt-3.5-combined-nat--f1-with-distributions.pdf}
-    \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-bison-32k-combined-nat--f1-with-distributions.pdf}
-    \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-llama-7b-combined-nat--f1-with-distributions.pdf}
-    \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-llama-34b-combined-nat--f1-with-distributions.pdf}
-    \end{subfigure}
-    \caption{Schema linking performance (F1 Score) in terms of naturalness (Combined) by model on native schema identifiers. Histograms indicate non-parametric distributions of naturalness and F1 scores.}
-    \label{fig:distribution-jointplot-native-f1}
-  \end{figure*}
-  
-  \begin{figure*}
-    \centering
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-gpt-3.5-combined-nat-all-schemas-f1-with-distributions.pdf}
-    \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-bison-32k-combined-nat-all-schemas-f1-with-distributions.pdf}
-    \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-llama-7b-combined-nat-all-schemas-f1-with-distributions.pdf}
-    \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
-      \centering
-      \includegraphics[height=3in]{figures/distribution-jointplots/jointplot-code-llama-34b-combined-nat-all-schemas-f1-with-distributions.pdf}
-    \end{subfigure}
-    \caption{Schema linking performance (F1 Score) in terms of naturalness (Combined) by model on all schema identifiers (native and modified). Histograms indicate non-parametric distributions of naturalness and F1 scores with naturalness concentrations around modified schema identifier levels.}
-    \label{fig:distribution-jointplot-combined-f1}
-  \end{figure*}
-
-
-  % \begin{figure*}
-  %   \centering
-  %   \begin{subfigure}{\textwidth}
-  %     \centering
-  %     \includegraphics[width=\textwidth]{figures/combined-query-identifier-naturalness-and-f1-performance-nativeschema-model-facet.pdf}
-  %     \label{fig:recall-native}
-  %   \end{subfigure}
-  %   \begin{subfigure}{\textwidth}
-  %     \centering
-  %     \includegraphics[width=\textwidth]{figures/combined-query-identifier-naturalness-and-f1-performance-allschema-model-facet.pdf}
-  %     \label{fig:recall-allschema-appendix}
-  %   \end{subfigure}
-  %   \caption{Schema linking performance (F1) of NL-SQL pairs relating to original schema naturalness levels. Regression line set with 0.95 confidence interval. Mean X value estimations for identical X values.}
-  % \end{figure*}
-
-  % \begin{figure*}
-  %   \centering
-  %   \begin{subfigure}{\textwidth}
-  %     \centering
-  %     \includegraphics[width=\textwidth]{figures/mean-token-char-ratio-and-recall-performance-nativeschema-model-facet.pdf}
-  %     \label{fig:mtr-recall-native}
-  %   \end{subfigure}
-  %   \begin{subfigure}{\textwidth}
-  %     \centering
-  %     \includegraphics[width=\textwidth]{figures/mean-token-char-ratio-and-recall-performance-allschema-model-facet.pdf}
-  %     \label{fig:mtrrecall-allschema-appendix}
-  %   \end{subfigure}
-  %   \caption{Schema linking performance (Recall) of NL-SQL pairs relating to query mean token-character ratios. Regression line set with 0.95 confidence interval. Mean X value estimations for identical X values.}
-  %   \label{fig:mtr-recall-plots}
-  % \end{figure*}
-
 
 
 % Mean token char ratio K tau tables for Recall
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between the \emph{Mean Token-to-Character Ratio} and \emph{Query Recall}.}
   \begin{subfigure}{.5\linewidth}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.142596 & 0.000023 & 492 \\
-gpt-4o & -0.125236 & 0.000182 & 512 \\
-DINSQL & -0.155634 & 0.000003 & 503 \\
-gpt-3.5 & -0.259029 & 0.000000 & 500 \\
-Phnd-Llama2 & -0.269220 & 0.000000 & 484 \\
-CodeS & -0.218149 & 0.000000 & 501 \\
+Gem-1.5-ZS & -0.147 & 0.000 & 503 \\
+GPT-4o-ZS & -0.126 & 0.000 & 513 \\
+DINSQL & -0.156 & 0.000 & 503 \\
+GPT-3.5-ZS & -0.254 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & -0.273 & 0.000 & 503 \\
+CodeS & -0.221 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:tokenratio-recall-ktau-native}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.130732 & 0.000000 & 1978 \\
-gpt-4o & -0.136292 & 0.000000 & 2009 \\
-DINSQL & -0.131631 & 0.000000 & 2007 \\
-gpt-3.5 & -0.170698 & 0.000000 & 1998 \\
-Phnd-Llama2 & -0.263657 & 0.000000 & 1936 \\
-CodeS & -0.270844 & 0.000000 & 2008 \\
+Gem-1.5-ZS & -0.132 & 0.000 & 2012 \\
+GPT-4o-ZS & -0.139 & 0.000 & 2022 \\
+DINSQL & -0.133 & 0.000 & 2012 \\
+GPT-3.5-ZS & -0.167 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & -0.255 & 0.000 & 2012 \\
+CodeS & -0.270 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:tokenratio-recall-ktau-all}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between the \emph{Mean Token-to-Character Ratio} and \emph{Query Recall}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Query Combined Naturalness} and \emph{Query Recall}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.137770 & 0.000066 & 492 \\
-gpt-4o & 0.146350 & 0.000020 & 512 \\
-DINSQL & 0.182666 & 0.000000 & 503 \\
-gpt-3.5 & 0.209031 & 0.000000 & 500 \\
-Phnd-Llama2 & 0.254438 & 0.000000 & 484 \\
-CodeS & 0.199335 & 0.000000 & 501 \\
+Gem-1.5-ZS & 0.138 & 0.000 & 492 \\
+GPT-4o-ZS & 0.146 & 0.000 & 512 \\
+DINSQL & 0.183 & 0.000 & 503 \\
+GPT-3.5-ZS & 0.209 & 0.000 & 500 \\
+Ph-CdLlm2-ZS & 0.254 & 0.000 & 484 \\
+CodeS & 0.199 & 0.000 & 501 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:recallktaunative}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.113625 & 0.000000 & 1978 \\
-gpt-4o & 0.154416 & 0.000000 & 2009 \\
-DINSQL & 0.151862 & 0.000000 & 2007 \\
-gpt-3.5 & 0.171700 & 0.000000 & 1998 \\
-Phnd-Llama2 & 0.250113 & 0.000000 & 1936 \\
-CodeS & 0.285891 & 0.000000 & 2008 \\
+Gem-1.5-ZS & 0.114 & 0.000 & 1978 \\
+GPT-4o-ZS & 0.154 & 0.000 & 2009 \\
+DINSQL & 0.152 & 0.000 & 2007 \\
+GPT-3.5-ZS & 0.172 & 0.000 & 1998 \\
+Ph-CdLlm2-ZS & 0.250 & 0.000 & 1936 \\
+CodeS & 0.286 & 0.000 & 2008 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:recallktauall}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Query Combined Naturalness} and \emph{Query Recall}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Query Combined Naturalness} and \emph{Query f1}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.151056 & 0.000005 & 492 \\
-gpt-4o & 0.130006 & 0.000069 & 512 \\
-DINSQL & 0.137414 & 0.000027 & 503 \\
-gpt-3.5 & 0.214360 & 0.000000 & 500 \\
-Phnd-Llama2 & 0.253227 & 0.000000 & 484 \\
-CodeS & 0.216096 & 0.000000 & 501 \\
+Gem-1.5-ZS & 0.151 & 0.000 & 492 \\
+GPT-4o-ZS & 0.130 & 0.000 & 512 \\
+DINSQL & 0.137 & 0.000 & 503 \\
+GPT-3.5-ZS & 0.214 & 0.000 & 500 \\
+Ph-CdLlm2-ZS & 0.253 & 0.000 & 484 \\
+CodeS & 0.216 & 0.000 & 501 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:f1ktaunative}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.110138 & 0.000000 & 1978 \\
-gpt-4o & 0.141699 & 0.000000 & 2009 \\
-DINSQL & 0.147045 & 0.000000 & 2007 \\
-gpt-3.5 & 0.185058 & 0.000000 & 1998 \\
-Phnd-Llama2 & 0.249083 & 0.000000 & 1936 \\
-CodeS & 0.285834 & 0.000000 & 2008 \\
+Gem-1.5-ZS & 0.110 & 0.000 & 1978 \\
+GPT-4o-ZS & 0.142 & 0.000 & 2009 \\
+DINSQL & 0.147 & 0.000 & 2007 \\
+GPT-3.5-ZS & 0.185 & 0.000 & 1998 \\
+Ph-CdLlm2-ZS & 0.249 & 0.000 & 1936 \\
+CodeS & 0.286 & 0.000 & 2008 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:f1ktauall}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Query Combined Naturalness} and \emph{Query f1}.}
-\end{figure*}
+  
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Query Combined Naturalness} and \emph{Query Precision}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.165627 & 0.000001 & 492 \\
-gpt-4o & 0.117021 & 0.000444 & 512 \\
-DINSQL & 0.084476 & 0.012116 & 503 \\
-gpt-3.5 & 0.213515 & 0.000000 & 500 \\
-Phnd-Llama2 & 0.240645 & 0.000000 & 484 \\
-CodeS & 0.222640 & 0.000000 & 501 \\
+Gem-1.5-ZS & 0.166 & 0.000 & 492 \\
+GPT-4o-ZS & 0.117 & 0.000 & 512 \\
+DINSQL & 0.084 & 0.012 & 503 \\
+GPT-3.5-ZS & 0.214 & 0.000 & 500 \\
+Ph-CdLlm2-ZS & 0.241 & 0.000 & 484 \\
+CodeS & 0.223 & 0.000 & 501 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:precisionktaunative}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.099675 & 0.000000 & 1978 \\
-gpt-4o & 0.130333 & 0.000000 & 2009 \\
-DINSQL & 0.149127 & 0.000000 & 2007 \\
-gpt-3.5 & 0.193870 & 0.000000 & 1998 \\
-Phnd-Llama2 & 0.240081 & 0.000000 & 1936 \\
-CodeS & 0.279425 & 0.000000 & 2008 \\
+Gem-1.5-ZS & 0.100 & 0.000 & 1978 \\
+GPT-4o-ZS & 0.130 & 0.000 & 2009 \\
+DINSQL & 0.149 & 0.000 & 2007 \\
+GPT-3.5-ZS & 0.194 & 0.000 & 1998 \\
+Ph-CdLlm2-ZS & 0.240 & 0.000 & 1936 \\
+CodeS & 0.279 & 0.000 & 2008 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:precisionktauall}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Query Combined Naturalness} and \emph{Query Precision}.}
-\end{figure*}
+  
+\end{table*}
 
 % Naturalness proportion K tau tables for recall:
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Regular Identifier Proportion} and \emph{Query Recall}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.117594 & 0.000720 & 492 \\
-gpt-4o & 0.139545 & 0.000053 & 512 \\
-DINSQL & 0.162703 & 0.000002 & 503 \\
-gpt-3.5 & 0.179904 & 0.000000 & 500 \\
-Phnd-Llama2 & 0.214458 & 0.000000 & 484 \\
-CodeS & 0.155772 & 0.000003 & 501 \\
+Gem-1.5-ZS & 0.109 & 0.002 & 503 \\
+GPT-4o-ZS & 0.140 & 0.000 & 513 \\
+DINSQL & 0.163 & 0.000 & 503 \\
+GPT-3.5-ZS & 0.180 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & 0.209 & 0.000 & 503 \\
+CodeS & 0.158 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:nathigh-recall-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.069195 & 0.000265 & 1978 \\
-gpt-4o & 0.113739 & 0.000000 & 2009 \\
-DINSQL & 0.098608 & 0.000000 & 2007 \\
-gpt-3.5 & 0.122796 & 0.000000 & 1998 \\
-Phnd-Llama2 & 0.198193 & 0.000000 & 1936 \\
-CodeS & 0.229038 & 0.000000 & 2008 \\
+Gem-1.5-ZS & 0.065 & 0.000 & 2012 \\
+GPT-4o-ZS & 0.117 & 0.000 & 2022 \\
+DINSQL & 0.102 & 0.000 & 2012 \\
+GPT-3.5-ZS & 0.121 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & 0.187 & 0.000 & 2012 \\
+CodeS & 0.227 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:nathigh-recall-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Regular Identifier Proportion} and \emph{Query Recall}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Low Identifier Proportion} and \emph{Query Recall}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.020559 & 0.555850 & 492 \\
-gpt-4o & -0.033719 & 0.330627 & 512 \\
-DINSQL & -0.027539 & 0.424527 & 503 \\
-gpt-3.5 & -0.012805 & 0.704874 & 500 \\
-Phnd-Llama2 & -0.031016 & 0.359014 & 484 \\
-CodeS & 0.019808 & 0.553404 & 501 \\
+Gem-1.5-ZS & -0.007 & 0.848 & 503 \\
+GPT-4o-ZS & -0.037 & 0.292 & 513 \\
+DINSQL & -0.028 & 0.425 & 503 \\
+GPT-3.5-ZS & -0.015 & 0.648 & 503 \\
+Ph-CdLlm2-ZS & -0.024 & 0.460 & 503 \\
+CodeS & 0.025 & 0.462 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:natmedium-recall-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.073173 & 0.000115 & 1978 \\
-gpt-4o & 0.044010 & 0.020955 & 2009 \\
-DINSQL & 0.084950 & 0.000006 & 2007 \\
-gpt-3.5 & 0.073867 & 0.000058 & 1998 \\
-Phnd-Llama2 & 0.055309 & 0.002677 & 1936 \\
-CodeS & 0.073957 & 0.000049 & 2008 \\
+Gem-1.5-ZS & 0.071 & 0.000 & 2012 \\
+GPT-4o-ZS & 0.044 & 0.021 & 2022 \\
+DINSQL & 0.084 & 0.000 & 2012 \\
+GPT-3.5-ZS & 0.075 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & 0.055 & 0.002 & 2012 \\
+CodeS & 0.073 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:natmedium-recall-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Low Identifier Proportion} and \emph{Query Recall}.}
-\end{figure*}
 
-\begin{figure*}
+\end{table*}
+
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Least Identifier Proportion} and \emph{Query Recall}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.165916 & 0.000010 & 492 \\
-gpt-4o & -0.154217 & 0.000032 & 512 \\
-DINSQL & -0.207309 & 0.000000 & 503 \\
-gpt-3.5 & -0.239186 & 0.000000 & 500 \\
-Phnd-Llama2 & -0.285738 & 0.000000 & 484 \\
-CodeS & -0.255086 & 0.000000 & 501 \\
+Gem-1.5-ZS & -0.174 & 0.000 & 503 \\
+GPT-4o-ZS & -0.151 & 0.000 & 513 \\
+DINSQL & -0.207 & 0.000 & 503 \\
+GPT-3.5-ZS & -0.237 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & -0.289 & 0.000 & 503 \\
+CodeS & -0.260 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:natlow-recall-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.158525 & 0.000000 & 1978 \\
-gpt-4o & -0.174026 & 0.000000 & 2009 \\
-DINSQL & -0.198730 & 0.000000 & 2007 \\
-gpt-3.5 & -0.212258 & 0.000000 & 1998 \\
-Phnd-Llama2 & -0.279290 & 0.000000 & 1936 \\
-CodeS & -0.310967 & 0.000000 & 2008 \\
+Gem-1.5-ZS & -0.156 & 0.000 & 2012 \\
+GPT-4o-ZS & -0.175 & 0.000 & 2022 \\
+DINSQL & -0.200 & 0.000 & 2012 \\
+GPT-3.5-ZS & -0.212 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & -0.270 & 0.000 & 2012 \\
+CodeS & -0.310 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:natlow-recall-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Least Identifier Proportion} and \emph{Query Recall}.}
-\end{figure*}
+\end{table*}
 
 
 
 
 % Naturalness proportion K tau tables for F1:
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Regular Identifier Proportion} and \emph{Query f1}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.131560 & 0.000074 & 492 \\
-gpt-4o & 0.139678 & 0.000022 & 512 \\
-DINSQL & 0.123802 & 0.000172 & 503 \\
-gpt-3.5 & 0.182707 & 0.000000 & 500 \\
-Phnd-Llama2 & 0.226842 & 0.000000 & 484 \\
-CodeS & 0.173666 & 0.000000 & 501 \\
+Gem-1.5-ZS & 0.123 & 0.000 & 503 \\
+GPT-4o-ZS & 0.140 & 0.000 & 513 \\
+DINSQL & 0.124 & 0.000 & 503 \\
+GPT-3.5-ZS & 0.183 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & 0.221 & 0.000 & 503 \\
+CodeS & 0.175 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:nathigh-f1-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.070395 & 0.000111 & 1978 \\
-gpt-4o & 0.109530 & 0.000000 & 2009 \\
-DINSQL & 0.104732 & 0.000000 & 2007 \\
-gpt-3.5 & 0.137642 & 0.000000 & 1998 \\
-Phnd-Llama2 & 0.201929 & 0.000000 & 1936 \\
-CodeS & 0.231121 & 0.000000 & 2008 \\
+Gem-1.5-ZS & 0.067 & 0.000 & 2012 \\
+GPT-4o-ZS & 0.112 & 0.000 & 2022 \\
+DINSQL & 0.107 & 0.000 & 2012 \\
+GPT-3.5-ZS & 0.135 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & 0.191 & 0.000 & 2012 \\
+CodeS & 0.230 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:nathigh-f1-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Regular Identifier Proportion} and \emph{Query f1}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Low Identifier Proportion} and \emph{Query f1}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.027036 & 0.417304 & 492 \\
-gpt-4o & -0.064241 & 0.051686 & 512 \\
-DINSQL & -0.021415 & 0.517452 & 503 \\
-gpt-3.5 & -0.016076 & 0.623934 & 500 \\
-Phnd-Llama2 & -0.061160 & 0.059740 & 484 \\
-CodeS & 0.009374 & 0.771977 & 501 \\
+Gem-1.5-ZS & -0.014 & 0.662 & 503 \\
+GPT-4o-ZS & -0.066 & 0.044 & 513 \\
+DINSQL & -0.021 & 0.517 & 503 \\
+GPT-3.5-ZS & -0.018 & 0.573 & 503 \\
+Ph-CdLlm2-ZS & -0.053 & 0.098 & 503 \\
+CodeS & 0.014 & 0.667 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:natmedium-f1-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.062756 & 0.000573 & 1978 \\
-gpt-4o & 0.036763 & 0.043163 & 2009 \\
-DINSQL & 0.068013 & 0.000170 & 2007 \\
-gpt-3.5 & 0.066247 & 0.000221 & 1998 \\
-Phnd-Llama2 & 0.044565 & 0.012124 & 1936 \\
-CodeS & 0.075927 & 0.000017 & 2008 \\
+Gem-1.5-ZS & 0.061 & 0.001 & 2012 \\
+GPT-4o-ZS & 0.037 & 0.042 & 2022 \\
+DINSQL & 0.068 & 0.000 & 2012 \\
+GPT-3.5-ZS & 0.068 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & 0.045 & 0.009 & 2012 \\
+CodeS & 0.075 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:natmedium-f1-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Low Identifier Proportion} and \emph{Query f1}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Least Identifier Proportion} and \emph{Query f1}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.158945 & 0.000009 & 492 \\
-gpt-4o & -0.095678 & 0.006756 & 512 \\
-DINSQL & -0.136164 & 0.000124 & 503 \\
-gpt-3.5 & -0.243548 & 0.000000 & 500 \\
-Phnd-Llama2 & -0.240116 & 0.000000 & 484 \\
-CodeS & -0.244016 & 0.000000 & 501 \\
+Gem-1.5-ZS & -0.167 & 0.000 & 503 \\
+GPT-4o-ZS & -0.093 & 0.008 & 513 \\
+DINSQL & -0.136 & 0.000 & 503 \\
+GPT-3.5-ZS & -0.242 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & -0.247 & 0.000 & 503 \\
+CodeS & -0.249 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:natlow-f1-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.147469 & 0.000000 & 1978 \\
-gpt-4o & -0.149285 & 0.000000 & 2009 \\
-DINSQL & -0.175018 & 0.000000 & 2007 \\
-gpt-3.5 & -0.220154 & 0.000000 & 1998 \\
-Phnd-Llama2 & -0.263193 & 0.000000 & 1936 \\
-CodeS & -0.305808 & 0.000000 & 2008 \\
+Gem-1.5-ZS & -0.145 & 0.000 & 2012 \\
+GPT-4o-ZS & -0.150 & 0.000 & 2022 \\
+DINSQL & -0.176 & 0.000 & 2012 \\
+GPT-3.5-ZS & -0.220 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & -0.256 & 0.000 & 2012 \\
+CodeS & -0.305 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:natlow-f1-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Least Identifier Proportion} and \emph{Query f1}.}
-\end{figure*}
+\end{table*}
 
 % Naturalness proportion K tau tables for precision:
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Regular Identifier Proportion} and \emph{Query Precision}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.140165 & 0.000039 & 492 \\
-gpt-4o & 0.118622 & 0.000406 & 512 \\
-DINSQL & 0.070004 & 0.038987 & 503 \\
-gpt-3.5 & 0.177250 & 0.000000 & 500 \\
-Phnd-Llama2 & 0.220023 & 0.000000 & 484 \\
-CodeS & 0.174968 & 0.000000 & 501 \\
+Gem-1.5-ZS & 0.131 & 0.000 & 503 \\
+GPT-4o-ZS & 0.119 & 0.000 & 513 \\
+DINSQL & 0.070 & 0.039 & 503 \\
+GPT-3.5-ZS & 0.177 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & 0.214 & 0.000 & 503 \\
+CodeS & 0.177 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:nathigh-precision-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.063466 & 0.000685 & 1978 \\
-gpt-4o & 0.103105 & 0.000000 & 2009 \\
-DINSQL & 0.110165 & 0.000000 & 2007 \\
-gpt-3.5 & 0.148501 & 0.000000 & 1998 \\
-Phnd-Llama2 & 0.196175 & 0.000000 & 1936 \\
-CodeS & 0.225452 & 0.000000 & 2008 \\
+Gem-1.5-ZS & 0.060 & 0.001 & 2012 \\
+GPT-4o-ZS & 0.106 & 0.000 & 2022 \\
+DINSQL & 0.113 & 0.000 & 2012 \\
+GPT-3.5-ZS & 0.146 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & 0.186 & 0.000 & 2012 \\
+CodeS & 0.224 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:nathigh-precision-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Regular Identifier Proportion} and \emph{Query Precision}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Low Identifier Proportion} and \emph{Query Precision}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.025641 & 0.453269 & 492 \\
-gpt-4o & -0.040198 & 0.232741 & 512 \\
-DINSQL & 0.014076 & 0.679299 & 503 \\
-gpt-3.5 & 0.003413 & 0.919671 & 500 \\
-Phnd-Llama2 & -0.060758 & 0.065561 & 484 \\
-CodeS & 0.028242 & 0.397195 & 501 \\
+Gem-1.5-ZS & -0.012 & 0.715 & 503 \\
+GPT-4o-ZS & -0.043 & 0.205 & 513 \\
+DINSQL & 0.014 & 0.679 & 503 \\
+GPT-3.5-ZS & 0.001 & 0.985 & 503 \\
+Ph-CdLlm2-ZS & -0.052 & 0.106 & 503 \\
+CodeS & 0.033 & 0.324 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:natmedium-precision-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.054467 & 0.003577 & 1978 \\
-gpt-4o & 0.034060 & 0.066693 & 2009 \\
-DINSQL & 0.067157 & 0.000305 & 2007 \\
-gpt-3.5 & 0.056122 & 0.002463 & 1998 \\
-Phnd-Llama2 & 0.041782 & 0.020555 & 1936 \\
-CodeS & 0.084470 & 0.000003 & 2008 \\
+Gem-1.5-ZS & 0.053 & 0.004 & 2012 \\
+GPT-4o-ZS & 0.034 & 0.065 & 2022 \\
+DINSQL & 0.067 & 0.000 & 2012 \\
+GPT-3.5-ZS & 0.058 & 0.002 & 2012 \\
+Ph-CdLlm2-ZS & 0.043 & 0.016 & 2012 \\
+CodeS & 0.084 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:natmedium-precision-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Low Identifier Proportion} and \emph{Query Precision}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Least Identifier Proportion} and \emph{Query Precision}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.170160 & 0.000004 & 492 \\
-gpt-4o & -0.097043 & 0.007088 & 512 \\
-DINSQL & -0.093633 & 0.010346 & 503 \\
-gpt-3.5 & -0.248686 & 0.000000 & 500 \\
-Phnd-Llama2 & -0.215408 & 0.000000 & 484 \\
-CodeS & -0.248516 & 0.000000 & 501 \\
+Gem-1.5-ZS & -0.178 & 0.000 & 503 \\
+GPT-4o-ZS & -0.094 & 0.009 & 513 \\
+DINSQL & -0.094 & 0.010 & 503 \\
+GPT-3.5-ZS & -0.247 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & -0.225 & 0.000 & 503 \\
+CodeS & -0.254 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:natlow-precision-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.135749 & 0.000000 & 1978 \\
-gpt-4o & -0.136779 & 0.000000 & 2009 \\
-DINSQL & -0.170463 & 0.000000 & 2007 \\
-gpt-3.5 & -0.222732 & 0.000000 & 1998 \\
-Phnd-Llama2 & -0.247999 & 0.000000 & 1936 \\
-CodeS & -0.300108 & 0.000000 & 2008 \\
+Gem-1.5-ZS & -0.134 & 0.000 & 2012 \\
+GPT-4o-ZS & -0.138 & 0.000 & 2022 \\
+DINSQL & -0.172 & 0.000 & 2012 \\
+GPT-3.5-ZS & -0.222 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & -0.242 & 0.000 & 2012 \\
+CodeS & -0.299 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:natlow-precision-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Least Identifier Proportion} and \emph{Query Precision}.}
-\end{figure*}
+\end{table*}
 
 % Naturalness proportion K tau tables for execution accuracy:
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Regular Identifier Proportion} and \emph{Execution Accuracy}.}
+
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.031553 & 0.402105 & 503 \\
-gpt-4o & 0.117580 & 0.001612 & 513 \\
-DINSQL & 0.050126 & 0.183182 & 503 \\
-gpt-3.5 & 0.130571 & 0.000526 & 503 \\
-Phnd-Llama2 & 0.133928 & 0.000376 & 503 \\
-CodeS & 0.100636 & 0.007539 & 503 \\
+Gem-1.5-ZS & 0.032 & 0.402 & 503 \\
+GPT-4o-ZS & 0.118 & 0.002 & 513 \\
+DINSQL & 0.050 & 0.183 & 503 \\
+GPT-3.5-ZS & 0.131 & 0.001 & 503 \\
+Ph-CdLlm2-ZS & 0.134 & 0.000 & 503 \\
+CodeS & 0.101 & 0.008 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:nathigh-manual-match-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.051044 & 0.013769 & 2012 \\
-gpt-4o & 0.118405 & 0.000000 & 2022 \\
-DINSQL & 0.055010 & 0.007940 & 2012 \\
-gpt-3.5 & 0.113802 & 0.000000 & 2012 \\
-Phnd-Llama2 & 0.156595 & 0.000000 & 2012 \\
-CodeS & 0.154301 & 0.000000 & 2012 \\
+Gem-1.5-ZS & 0.051 & 0.014 & 2012 \\
+GPT-4o-ZS & 0.118 & 0.000 & 2022 \\
+DINSQL & 0.055 & 0.008 & 2012 \\
+GPT-3.5-ZS & 0.114 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & 0.157 & 0.000 & 2012 \\
+CodeS & 0.154 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:nathigh-manual-match-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Regular Identifier Proportion} and \emph{Execution Accuracy}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Low Identifier Proportion} and \emph{Execution Accuracy}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.067135 & 0.075780 & 503 \\
-gpt-4o & -0.050377 & 0.178385 & 513 \\
-DINSQL & 0.005675 & 0.880684 & 503 \\
-gpt-3.5 & -0.013996 & 0.711227 & 503 \\
-Phnd-Llama2 & -0.051436 & 0.173713 & 503 \\
-CodeS & 0.007070 & 0.851558 & 503 \\
+Gem-1.5-ZS & 0.067 & 0.076 & 503 \\
+GPT-4o-ZS & -0.050 & 0.178 & 513 \\
+DINSQL & 0.006 & 0.881 & 503 \\
+GPT-3.5-ZS & -0.014 & 0.711 & 503 \\
+Ph-CdLlm2-ZS & -0.051 & 0.174 & 503 \\
+CodeS & 0.007 & 0.852 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:natmedium-manual-match-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.065896 & 0.001482 & 2012 \\
-gpt-4o & 0.044061 & 0.032993 & 2022 \\
-DINSQL & 0.069761 & 0.000767 & 2012 \\
-gpt-3.5 & 0.059034 & 0.004410 & 2012 \\
-Phnd-Llama2 & 0.025475 & 0.219203 & 2012 \\
-CodeS & 0.036122 & 0.081613 & 2012 \\
+Gem-1.5-ZS & 0.066 & 0.001 & 2012 \\
+GPT-4o-ZS & 0.044 & 0.033 & 2022 \\
+DINSQL & 0.070 & 0.001 & 2012 \\
+GPT-3.5-ZS & 0.059 & 0.004 & 2012 \\
+Ph-CdLlm2-ZS & 0.025 & 0.219 & 2012 \\
+CodeS & 0.036 & 0.082 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:natmedium-manual-match-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Low Identifier Proportion} and \emph{Execution Accuracy}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Least Identifier Proportion} and \emph{Execution Accuracy}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.170360 & 0.000027 & 503 \\
-gpt-4o & -0.114226 & 0.004359 & 513 \\
-DINSQL & -0.092923 & 0.021956 & 503 \\
-gpt-3.5 & -0.209644 & 0.000000 & 503 \\
-Phnd-Llama2 & -0.167881 & 0.000035 & 503 \\
-CodeS & -0.185003 & 0.000005 & 503 \\
+Gem-1.5-ZS & -0.170 & 0.000 & 503 \\
+GPT-4o-ZS & -0.114 & 0.004 & 513 \\
+DINSQL & -0.093 & 0.022 & 503 \\
+GPT-3.5-ZS & -0.210 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & -0.168 & 0.000 & 503 \\
+CodeS & -0.185 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:natlow-manual-match-ktau-native}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & -0.153130 & 0.000000 & 2012 \\
-gpt-4o & -0.171591 & 0.000000 & 2022 \\
-DINSQL & -0.141735 & 0.000000 & 2012 \\
-gpt-3.5 & -0.193995 & 0.000000 & 2012 \\
-Phnd-Llama2 & -0.210597 & 0.000000 & 2012 \\
-CodeS & -0.221692 & 0.000000 & 2012 \\
+Gem-1.5-ZS & -0.153 & 0.000 & 2012 \\
+GPT-4o-ZS & -0.172 & 0.000 & 2022 \\
+DINSQL & -0.142 & 0.000 & 2012 \\
+GPT-3.5-ZS & -0.194 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & -0.211 & 0.000 & 2012 \\
+CodeS & -0.222 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:natlow-manual-match-ktau-all}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Least Identifier Proportion} and \emph{Execution Accuracy}.}
-\end{figure*}
+\end{table*}
 
-\begin{figure*}
+\begin{table*}
   \centering
+  \caption{Kendall-Tau ($\tau$) Correlations between \emph{Query Combined Naturalness} and \emph{Execution Accuracy}.}
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{Native schemas}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.077353 & 0.038579 & 503 \\
-gpt-4o & 0.115466 & 0.001818 & 513 \\
-DINSQL & 0.059435 & 0.111967 & 503 \\
-gpt-3.5 & 0.161218 & 0.000016 & 503 \\
-Phnd-Llama2 & 0.151421 & 0.000051 & 503 \\
-CodeS & 0.136525 & 0.000259 & 503 \\
+Gem-1.5-ZS & 0.077 & 0.039 & 503 \\
+GPT-4o-ZS & 0.115 & 0.002 & 513 \\
+DINSQL & 0.059 & 0.112 & 503 \\
+GPT-3.5-ZS & 0.161 & 0.000 & 503 \\
+Ph-CdLlm2-ZS & 0.151 & 0.000 & 503 \\
+CodeS & 0.137 & 0.000 & 503 \\
 \bottomrule
 \end{tabular}
 
-      \caption{Native schemas}
       \label{table:executionktaunative}
     % \end{table}
   \end{subfigure}%
   \begin{subfigure}{.5\linewidth}
     % \begin{table}
       \centering
-      \begin{tabular}{lrrr}
+      \caption{All schemas (native + modified)}
+      \begin{tabular}{lllr}
 \toprule
-Model & Kendall-Tau & P Value & n \\
+Model & $\tau$ & p & n \\
 \midrule
-gemini-1.5-pro & 0.095640 & 0.000002 & 2012 \\
-gpt-4o & 0.154441 & 0.000000 & 2022 \\
-DINSQL & 0.096971 & 0.000001 & 2012 \\
-gpt-3.5 & 0.156622 & 0.000000 & 2012 \\
-Phnd-Llama2 & 0.195768 & 0.000000 & 2012 \\
-CodeS & 0.196615 & 0.000000 & 2012 \\
+Gem-1.5-ZS & 0.096 & 0.000 & 2012 \\
+GPT-4o-ZS & 0.154 & 0.000 & 2022 \\
+DINSQL & 0.097 & 0.000 & 2012 \\
+GPT-3.5-ZS & 0.157 & 0.000 & 2012 \\
+Ph-CdLlm2-ZS & 0.196 & 0.000 & 2012 \\
+CodeS & 0.197 & 0.000 & 2012 \\
 \bottomrule
 \end{tabular}
 
-      \caption{All schemas (native + modified)}
       \label{table:executionktauall}
     % \end{table}
   \end{subfigure}
-  \caption{Kendall-Tau Correlations between \emph{Query Combined Naturalness} and \emph{Execution Accuracy}.}
-\end{figure*}
+\end{table*}
 
 
 
