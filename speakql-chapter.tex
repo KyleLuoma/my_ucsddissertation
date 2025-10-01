@@ -214,8 +214,9 @@ This is a simple feature designed to increase the naturalness of an SQL query by
 This feature is motivated in-part by early human-computer interface research performed on SQL users~\cite{Reisner1977} that recognized the benefit of syntax synonyms and optional word stemming, as well as more recent observations on tendencies toward synonyms~\cite{10.1145/3514214}.
 We introduce SQL keyword-equivalent synonyms for the most common DML syntax keywords: SELECT, FROM, and JOIN, as well as for the comma as a column- or table-delimiter within the SELECT and FROM clauses, respectively. 
 
-\begin{center}
 \begin{table}
+  \centering
+  \caption{Synonyms in SpeakQL for SQL keywords.}
   \begin{tabular}{|m{6em} m{18em}|}
     \hline
     \textbf{SQL Keyword} & \textbf{SpeakQL Synonyms} \\
@@ -229,10 +230,8 @@ We introduce SQL keyword-equivalent synonyms for the most common DML syntax keyw
     JOIN & Join, Join Table, Join With Table, By Joining, By Joining Table, By Joining With Table, Joined With, Joined With Table \\
     \hline
   \end{tabular}
-  \caption{Synonyms in SpeakQL for SQL keywords.}
   \label{tab:keyword-synonyms}
 \end{table}
-\end{center}
 
 Keyword synonyms are listed in Figure \ref{fig:synonymsslide}.
 
@@ -270,6 +269,13 @@ Appending the TABLE keyword to the expression provides further context and clari
 
 \subsection{Natural Functions}
 
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/natural_functions.png}
+    \caption{Natural Functions}
+    \label{fig:naturalfunctions}
+\end{figure*}
+
 The SQL subset we support includes aggregator functions such as SUM, AVG, and COUNT. 
 In the prior work on the SpeakQL interface, users had to verbalize the parentheses symbols, which reduces the naturalness of dictation. 
 While parentheses are often essential for disambiguation, for the SpeakQL dialect we identified a set of function references in which parentheses could be omitted safely without affecting the query's semantic meaning. 
@@ -280,12 +286,6 @@ However, if the query intent involves the inclusion of an expression as a functi
 
 Natural function syntax and examples are portrayed in Figure \ref{fig:naturalfunctions}.
 
-\begin{figure*}
-    \centering
-    \includegraphics[width=\textwidth]{figures/natural_functions.png}
-    \caption{Natural Functions}
-    \label{fig:naturalfunctions}
-\end{figure*}
 
 \subsubsection{\textbf{Examples}}
 
@@ -307,6 +307,13 @@ Natural function syntax and examples are portrayed in Figure \ref{fig:naturalfun
 
 \subsection{Query Clause Ordering}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/alternate_ordering.png}
+  \caption{Alternate Ordering}
+  \label{fig:alternate_ordering}
+\end{figure}
+
 This feature allows for optionally reordering the SELECT, FROM/JOIN, and WHERE clauses, as well as the GROUP BY, HAVING, ORDER BY, and LIMIT clauses. 
 That is, these clauses may appear in any order within a SpeakQL statement. 
 
@@ -316,12 +323,7 @@ Intuitively, we recognize that there are alternate paths to forming a SQL query.
 \subsubsection{\textbf{Modifier Ordering}} 
 The \emph{modifier}  optional ordering feature (in this paper modifiers refer to the GROUP BY, HAVING, ORDER BY, and LIMIT expressions) is partially motivated by the observation that queries that require multiple modifier statements such as GROUP BY and HAVING tend to be more complex than simple single table queries or queries with a single modifier such as GROUP BY \cite{10.1145/2729094.2742620}. SQL syntax requires that these clauses occur in the strict order GROUP BY, HAVING, ORDER BY, and LIMIT. If these clauses appear out of order within a query, it is invalid and requires correction. While this is not a significant problem for typed queries, as they can easily be rearranged in a text editor, if such an error is introduced during the spoken querying process, more sophisticaed error correction is required and the query speaker must likely re-dictate the entire query.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figures/alternate_ordering.png}
-  \caption{Alternate Ordering}
-  \label{fig:alternate_ordering}
-\end{figure}
+
 
 
 \subsubsection{\textbf{Examples}}
@@ -345,6 +347,13 @@ The \emph{modifier}  optional ordering feature (in this paper modifiers refer to
 
 
 \subsection{Query Unbundling}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/unbundling_1.png}
+  \caption{Query Unbundling}
+  \label{fig:unbundling}
+\end{figure}
 
 This features aims to make it easier to formulate more complex queries joining multiple tables. 
 In SQL, the SELECT clause requires the user to specify \textit{all} columns, scalars, and functions from across all tables in one go, followed by naming \textit{all} table sources, subqueries, and joins in one go, followed by expressing \textit{all} constraints in the form of WHERE predicates. 
@@ -446,12 +455,7 @@ We currently do not support cross-table disjunctive predicates due to the additi
 As such, users always have the option of falling back on regular SQL syntax in SpeakSQL for such cases.
 
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{figures/unbundling_1.png}
-  \caption{Query Unbundling}
-  \label{fig:unbundling}
-\end{figure}
+
 
 \paragraph{\textbf{Detailed Example}}
 
@@ -589,87 +593,88 @@ The root query specification rule, abbreviated as \emph{querySpec}, is the point
 Unbundled queries may lead with any of the three unbundled query part type rules--\emph{multiJoinExpr}, \emph{selModExpr}, or \emph{unbdQryOrdSpc}--followed by the \emph{exprDelim} rule that contains the \emph{AND THEN}, \emph{THEN}, and \emph{NEXT} terminal tokens. 
 Although unbundled and non-unbundled SpeakQL queries may share the parser rules that describe SELECT clauses and WHERE clauses, unbundled queries have distinct FROM clause rules. 
 The \emph{tabExprNoJoin} and \emph{fromClsNoJoin}, as their names suggest, omit any possible join expressions. That ensures that individual unbundled query parts reference only one table and leaves the join operations to the \emph{multiJoinExpr} rule and its descendants.
+The following Figures \ref{fig:unbundlegrammar} through \ref{fig:selectexprgrammar} contain the grammar for all of the SpeakQL features described in this section.
 
-\begin{figure}
+\begin{figure}[H]
   \unbundleQueryTable
   \caption{SpeakQL Unbundled Query Grammar Excerpt}
   \label{fig:unbundlegrammar}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \synonymgrammartable
 \caption{SpeakQL Synonym Keywords Grammar Excerpt}
 \label{fig:synonymgrammar}
 \end{figure}
 
-\begin{figure}
-\unbundleQueryTable
-\caption{SpeakQL Unbundled Query Grammar Excerpt}
-\end{figure}
-
-\begin{figure}
+\begin{figure}[H]
 \whereExpressionTable
 \caption{SpeakQL Where Expression Grammar Excerpt}
 \label{fig:wheregrammar}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \tableExpressionTable
 \caption{SpeakQL Table (From) Expression Grammar Excerpt}
 \label{fig:tablegrammar}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \selectModifierTable
 \caption{SpeakQL Select Modifier Expression Grammar Excerpt}
 \label{fig:modifiergrammar}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \naturalFunctionTable
 \caption{SpeakQL Natural Function Expression Grammar Excerpt}
 \label{fig:naturalfunctiongrammar}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \sqlSelectStatementTable
 \caption{SQL Select Statement Grammar Excerpt}
 \label{fig:sqlselectgrammar}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \selectStatementTable
 \caption{SpeakQL Select Statement Grammar Excerpt}
 \label{fig:speakqlselectgrammar}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \selectExpressionTable
 \caption{SpeakQL Select Expression Grammar Excerpt}
 \label{fig:selectexprgrammar}
 \end{figure}
 
-Figures \ref{fig:speakqlselectgrammar} and \ref{fig:sqlselectgrammar} are excerpts of SpeakQL and SQL select statement grammar in a modified BNF format. The \emph{'?'} symbol appended to a rule indicates that the rule is optional. The \emph{'*'} symbol indicates that 0 to many occurences of a rule are allowed. Symbols or tokens surrounded by double quotes indicate that the content enclosed within the quotes is a terminal symbol. Both figures contain only a subset of child and descendant rules and both are limited to two levels of depth below the \emph{selectStatement} rule, and certain SQL rules including \emph{union}, \emph{window}, and \emph{into} are omitted for the sake of brevity. Figure \ref{fig:selectexprgrammar} is an example of a child expression to the SpeakQL select statement grammar defined in figure \ref{fig:speakqlselectgrammar} and is provided as an example implementation of the extension strategy that facilitates SpeakQL to SQL translation. Additional examples are available in this paper's corresponding technical report.
+Figures \ref{fig:speakqlselectgrammar} and \ref{fig:sqlselectgrammar} are excerpts of SpeakQL and SQL select statement grammar in a modified BNF format. The \emph{'?'} symbol appended to a rule indicates that the rule is optional. The \emph{'*'} symbol indicates that 0 to many occurences of a rule are allowed. Symbols or tokens surrounded by double quotes indicate that the content enclosed within the quotes is a terminal symbol. Both figures contain only a subset of child and descendant rules and both are limited to two levels of depth below the \emph{selectStatement} rule, and certain SQL rules including \emph{union}, \emph{window}, and \emph{into} are omitted for the sake of brevity. Figure \ref{fig:selectexprgrammar} is an example of a child expression to the SpeakQL select statement grammar defined in figure \ref{fig:speakqlselectgrammar} and is provided as an example implementation of the extension strategy that facilitates SpeakQL to SQL translation.
+
 
 \subsection{SpeakQL to SQL Translation}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/SpeakQL 2 to SQL Translation}
+  \caption{ASR to SpeakQL to SQL translation workflow.}
+  \label{fig:translationprocess}
+\end{figure}
 
 Our translator takes a valid SpeakQL query as input and returns a semantically equivalent SQL query. Figure~\ref{fig:translationprocess} shows its place in the overall workflow. 
 The translator performs a series of steps that we summarize next. 
 
 The translator performs translation through a series of steps. The first step takes a valid SpeakQL query as input, where correctness is determined upstream of this task, and sends it to the Java-based SpeakQL parser via an HTTP post request. The parser responds with a Lisp-formatted abstract syntax tree AST that the Python-based translator transforms into an editable AST. The translator performs operations on the SpeakQL AST in order to transform it into a valid SQL query which include finding and replacing SpeakQL synonyms with SQL syntax, reordering expressions, reordering modifier items, and transforming unbundled queries into a single SQL select statement. The unbundling transformation step includes additional substeps including inference of a group by expression, consolidation of select elements (i.e. columns, functions, and scalars), consolidation of where statements, consolidation of join expressions, and finally consolidation of any table sources not included within join expressions.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figures/SpeakQL 2 to SQL Translation}
-  \caption{ASR to SpeakQL to SQL translation workflow.}
-  \label{fig:translationprocess}
-\end{figure}
+
 
 \paragraph{\textbf{Synonym Replacement}} 
 In this step performs a scan search of all active nodes in the AST for rules that are a member of the keyword and delimiter categories for which SpeakQL synonyms exist. 
 This includes \emph{selectKeyword}, \emph{fromKeyword}, \emph{selectElementDelimiter}, and more. 
 When a keyword or delimiter rule is identified during the search, the translator performs an update on the rule node that replaces the terminal token representative of a SpeakQL synonym with its corresponding SQL keyword. 
 Optional keywords such as THE and TABLE are identified in the same manner and removed from the AST.
+
+\ReplaceSynonymsAlgorithm
 
 \paragraph{\textbf{Clause Reordering}}
 This step includes reordering SELECT, FROM, WHERE, GROUP BY, ORDER BY, HAVING, and LIMIT clauses. 
@@ -678,8 +683,13 @@ Specifically, it is guaranteed that the query order clause parser rules will onl
 We also know that the \emph{selectModifierExpression} has no more than four children of type \emph{selectModifierItem}, each of which may have a single child of type \emph{groupByClause}, \emph{havingClause}, \emph{orderByClause}, or \emph{limitClause}. 
 With these guarantees, the translator simply collects and reorders the AST's parser rules' children into the correct SQL clause order.
 
+\ReorderParseTreeAlgorithm
+\ReorderModifiersAlgorithm
+
 \paragraph{\textbf{Natural Function Transformation}}
 Translating natural functions to valid SQL function clauses involves locating and removing the optional keyword parser rules and inserting parentheses for all occurrences of the \emph{noParenAggregateWindowedFunction} parse rule in the AST.
+
+\TransformNaturalFunctions
 
 \paragraph{\textbf{Query Bundling}}
 This is a series of up to 5 steps to consolidate a set of unbundled query parts into a valid SQL query. 
@@ -699,11 +709,6 @@ The steps in order are:
 
 \end{enumerate}
 
-
-\ReplaceSynonymsAlgorithm
-\ReorderParseTreeAlgorithm
-\ReorderModifiersAlgorithm
-\TransformNaturalFunctions
 
 \paragraph{Translating Unbundled Queries}
 
@@ -775,7 +780,7 @@ A comparison of the SQL and SpeakQL grammar implementations reveals that SpeakQL
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/parser-performance-plot.png}
+    \includegraphics[width=0.5\linewidth]{figures/parser-performance-plot.png}
     \caption{Grammar Parser Performance Comparison}
     \label{fig:parserperformanceplot}
 \end{figure}
@@ -826,29 +831,6 @@ We expect that unbundling a complex multi-table query into single-table query pa
 
 \subsection{Study Protocol and Design}
 
-\begin{figure*}[t]
-  \centering
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[height=1.3in]{figures/query-total-time-boxplot.pdf}
-    \caption{Total Time, All Attempts, By Individual Query}
-    \label{fig:querytotaltime}
-  \end{subfigure}%
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[height=1.3in]{figures/query-planning-time-boxplot.pdf}
-    \caption{Planning Time, First Attempts, By Individual Query}
-    \label{fig:queryplanningtime}
-  \end{subfigure}
-  \begin{subfigure}{\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures/query-attemptnum-histplot-excel.png}
-    \caption{Number of Attempts By Individual Query}
-    \label{fig:queryattemptnum}
-  \end{subfigure}
-  \caption{Quantitative results from the user study.}
-  \label{fig:quant}
-\end{figure*}
 
 \paragraph{\textbf{Participants}}
 We recruited participants from academic programs that teach SQL and data analytics.  
@@ -914,9 +896,10 @@ Data from one participant was omitted from analysis due to a violation of the no
 
 
 
+
 \subsection{Quantitative Results and Hypotheses Tests}
 
-The plots in Figure~\ref{fig:quant} present the key quantitative results for each query: the distributions of the total time to finish each prompt, as well as the planning time for the first attempt, and the number of attempts till correct query. We explain these next. 
+
 
 
 \paragraph{\textbf{Feature Usage Impact}} 
@@ -924,6 +907,22 @@ Hypotheses H1 and H2 are feature-focused tests to analyze the impact of specific
 But since SpeakQL feature usage was optional, it turned out that participants did not consistently use many SpeakQL features across many prompts. 
 Feature usage was also not consistent between participant groups (SpeakQL-first vs.~SQL-first) and participants who had SQL as their first condition were less likely to use SpeakQL features as often as participants who had SpeakQL as their first condition. 
 Due to this unexpected imbalanced voluntary usage rate for some features, we are unable to make any significant observations of feature usage effects on dependent variables. 
+
+\begin{figure*}[t]
+  \centering
+  \begin{subfigure}{.4\textwidth}
+    \centering
+    \includegraphics[height=1.0in]{figures/query-total-time-boxplot.pdf}
+    \caption{Total Time, All Attempts,\\By Individual Query}
+    \label{fig:querytotaltime}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[height=1.0in]{figures/query-planning-time-boxplot.pdf}
+    \caption{Planning Time, First Attempts,\\By Individual Query}
+    \label{fig:queryplanningtime}
+  \end{subfigure}
+\end{figure*}
 
 \paragraph{\textbf{Planning Time}} 
 Planning time is a part of H1 and H2. 
@@ -934,6 +933,13 @@ Figure~\ref{fig:queryplanningtime} shows the distribution for each query.
 The median planning time for simple queries ended up \textit{longer} for SpeakQL than SQL: 38.5s vs.~31.5s, although this difference is not statistically significant (p~=~0.14). (The p-values are derived using the Mann-Whitney U Test.) 
 For complex queries, the median planning time is \textit{shorter} for SpeakQL than SQL: 66.0s vs.~72.0s, but again this difference is not statistically significant (p~=~0.295). 
 We also compared these results for each individual query and find no statistically significant difference in median planning times for SpeakQL vs.~SQL for any query (p-values between 0.07 and 0.48). 
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/query-attemptnum-histplot-excel.png}
+  \caption{Number of Attempts By Individual Query}
+  \label{fig:queryattemptnum}
+\end{figure}
 
 \paragraph{\textbf{Number of Attempts}}
 This is a part of all three hypotheses. 
@@ -946,7 +952,21 @@ Additionally, we observe a slightly higher improvement advantage for SpeakQL ove
 
 
 \subsection{Feature Usage and Usefulness}
-
+\begin{figure}
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/feature_usage.png}
+  \caption{SpeakQL Feature Usage - Observed}
+  \label{fig:featureusage}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/feature_unused_reasons_excel.png}
+  \caption{Participant Reasons for Not Using a Feature}
+  \label{fig:unusedfeatures}
+\end{subfigure}
+\caption{Feature Usage Observations and Avoidance Reasons}
+\end{figure}
 Analysis of feature usage shows varying levels of popularity for SpeakQL features. 
 Since feature usage was optional, some participants relied more heavily on regular SQL syntax than others even for the SpeakQL condition. 
 Figure~\ref{fig:featureusage} shows a significant disparity in popularity of the four main features. 
@@ -956,71 +976,78 @@ As expected, SQL familiarity is a top reason that dissuaded some participants fr
 In particular, clause/modifier reordering were not used due to that reason the most. 
 Some also could not remember how to use unbundling or natural functions, perhaps due to their novelty.
 
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/survey-feedback/function-feedback.pdf}
+  \end{subfigure}%
+  \begin{subfigure}{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/survey-feedback/synonym-feedback-1.pdf}
+  \end{subfigure}
+  \begin{subfigure}{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/survey-feedback/synonym-feedback-2.pdf}
+  \end{subfigure}%
+  \begin{subfigure}{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/survey-feedback/ordering-feedback-1.pdf}
+  \end{subfigure}
+  \begin{subfigure}{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/survey-feedback/ordering-feedback-2.pdf}
+  \end{subfigure}%
+  \begin{subfigure}{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/survey-feedback/unbundling-feedback.pdf}
+  \end{subfigure}
+  \caption{SpeakQL feature usefulness compared to SQL.}
+  \label{fig:surveyusefulnessgraphs}
+\end{figure}
+
 We also asked participants who used a feature to rate its usefulness. 
 Figure~\ref{fig:surveyusefulnessgraphs} shows the results for all features. 
 These results reveal interesting nuances on the low-popularity synonym feature: participants preferred punctuation and join synonyms but they did not care for SELECT or FROM synonyms. 
 The other ratings are consistent with the feature usage observations. 
 
 
-\begin{figure}
-\begin{subfigure}{\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{figures/feature_usage.png}
-  \caption{SpeakQL Feature Usage - Observed}
-  \label{fig:featureusage}
-\end{subfigure}
-\begin{subfigure}{\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{figures/feature_unused_reasons_excel.png}
-  \caption{Participant Reasons for Not Using a Feature}
-  \label{fig:unusedfeatures}
-\end{subfigure}
-\caption{Feature Usage Observations and Avoidance Reasons}
-\end{figure}
 
-\eat{
-\begin{figure*}[t]
-  \centering
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[height=1.3in]{figures/Total-Time-first-half-boxplot.pdf}
-    \caption{First half - Total Time, All Attempts, By Individual Query}
-    \label{fig:querytotaltimefirsthalf}
-  \end{subfigure}%
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[height=1.3in]{figures/First-Attempt-Planning-Time-first-half-boxplot.pdf}
-    \caption{First half - Planning Time, First Attempts, By Individual Query}
-    \label{fig:queryplanningtimefirsthalf}
-  \end{subfigure}
-  \begin{subfigure}{\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures/query-attemptnum-firsthalf-histplot-excel.png}
-    \caption{First half - Number of Attempts By Individual Query}
-    \label{fig:queryattemptnumfirsthalf}
-  \end{subfigure}
-  \caption{Quantitative results from the first dialect as an approximation of a between-subjects design.}
-  \label{fig:quant_firsthalf}
-\end{figure*}
-}
-
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figures/error-type-counts.png}
-  \caption{Attempt error categories by dialect}
-  \label{fig:errorcounts}
-\end{figure}
 
 \subsection{Failure Analysis} 
 
 \paragraph{\textbf{Failure Categories}}
 We analyzed the transcripts and audio files of incorrect attempts in order to organize failures into the following categories: 1) Syntax, where the participant's query had at least one syntax error (e.g. missing a delimiter or parenthesis, using an invalid keyword, or omitting a clause such as group by); 2) Dictation, where the participant appeared to lose their train of though and terminated their attempt voluntarily; 3) Schema, where the participant referenced a table or column that either did not exist in the schema or was not valid in the context of the clause in which it appeared (e.g. referencing a table instead of a column); 4) Semantic, where the participant's query was syntactically correct but did not return the correct answer.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/error-type-counts.png}
+  \caption{Attempt error categories by dialect}
+  \label{fig:errorcounts}
+\end{figure}
 \paragraph{\textbf{Observations}}
+
 Figure \ref{fig:errorcounts} shows the breakdown of error types by dialect and failure category. The total number of failures analyzed was 190, 95 SpeakQL and 95 SQL. All failure categories occured for both dialects; but syntax and dictation failures were more commmon for SpeakQL than SQL. Conversely, schema and semantic failures were more common for SQL than SpeakQL. The higher rate of syntax and dictation errors for SpeakQL is likely due to the fact that SpeakQL is a new language and participants were not as familiar with it, though we did observe a much higher rate of SpeakQL syntax errors where participants used incorrect keywords or invalid synonyms. The lower rate of schema and semantic error hints at the possibility that some aspect of SpeakQL may have made it easier for participants to reason about the schema and the query prompt.
 
+
+
 \subsection{Learning Effect Impacts on Results}
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=\linewidth]{figures/query-planning-total-time-withgroups-boxplot.pdf}
+  \caption{Dialect performance measured by total time and separated by group dialect order.}
+  \label{fig:performancebygrouptotaltime}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=\linewidth]{figures/query-planning-first-attempt-time-withgroups-boxplot.pdf}
+  \caption{Dialect performance measured by first attempt planning time and separated by group dialect order.}
+  \label{fig:performancebygroupfirstattempttime}
+\end{figure*}
+
+
 During the study design process, we elected to use a within-subjects design in order to reduce the number of participants needed to achieve statistical significance. 
 The drawback of this approach is that it introduces a learning effect bias. 
 We attempted to mitigate this effect through counterbalancing the dialect order between participants so that half of our participants would have SpeakQL as their first dialect and half would have SQL as their first dialect. 
@@ -1029,9 +1056,8 @@ Despite our learning effect mitigation strategy, we observed evidence of asymmet
 Specifically, members of group 2 (those who used SQL first) exhibited higher improvement using the second dialect relative to their first-dialect performance than members of group 1 (those who used SpeakQL first). 
 Figures \ref{fig:performancebygrouptotaltime} and \ref{fig:performancebygroupfirstattempttime} replicate figures \ref{fig:querytotaltime} and \ref{fig:queryplanningtime} but split by participant group and provide an impression of the assymetry between groups. 
 
-We also performed post-hoc analysis of participant data and compared only first dialect performance between groups.
-Figures \ref{fig:performancebygrouptotaltime} and \ref{fig:performancebygroupfirstattempttime} disaggregate the plots in Figure \ref{fig:quant} to separate results by participant group and dialect used.
-This provides an approximate view of the results of what would have been a between-subjects study design, though it is important to note that the study protocol was setup to be within-subjects; and the results of this analysis are not necessarily a valid comparison of the two groups because within-subjects bias reducing design techniques such as participant stratification based on skill levels or other attributes were not implemented. 
+Post-hoc analysis of participant data, comparing only first dialect performance between groups, provides an approximate view of the results of what would have been a between-subjects study design, though it is important to note that the study protocol was setup to be within-subjects.
+The results of this analysis are not necessarily a valid comparison of the two groups because within-subjects bias reducing design techniques such as participant stratification based on skill levels or other attributes were not implemented. 
 
 With the limitations of the post-hoc between-subjects approximation in mind, we observe that the median first attempt planning time and total attempt time for both simple and complex query types were lower for SQL than for SpeakQL (p value < 0.05 for all observations). 
 There were no apparent advantages for either dialect in terms of number of attempts. 
@@ -1044,40 +1070,12 @@ We also consider that the naturalness of the SpeakQL syntax is not inherrently e
 \subsection{Qualitative Survey Feedback}
 
 \paragraph{\textbf{Thematic Analysis}} 
+
+\thematiccoding
+
 We categorized the survey feedback and sentiment into three thematic categories: positive, negative, and improvement suggestion. 13 participants provided at least one positive feedback. 
 9 provided at least one negative feedback. 5 provided at least one improvement suggestion. 
 Table~\ref{tab:categories-and-codes} lists the number of participants who gave each type of feedback, including the key content within each category. 
-
-\begin{figure}
-  \centering
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{figures/survey-feedback/function-feedback.pdf}
-  \end{subfigure}
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{figures/survey-feedback/synonym-feedback-1.pdf}
-  \end{subfigure}
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{figures/survey-feedback/synonym-feedback-2.pdf}
-  \end{subfigure}
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{figures/survey-feedback/ordering-feedback-1.pdf}
-  \end{subfigure}
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{figures/survey-feedback/ordering-feedback-2.pdf}
-  \end{subfigure}
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{figures/survey-feedback/unbundling-feedback.pdf}
-  \end{subfigure}
-  \caption{SpeakQL feature usefulness compared to SQL.}
-  \label{fig:surveyusefulnessgraphs}
-\end{figure}
-
 
 \paragraph{\textbf{Positive Comments}} 
 8 participants made positive comments that were not feature-specific. 
@@ -1136,24 +1134,6 @@ Quantitative analysis of the within-subjects study revealed no statistically sig
 
 Participant feedback on the survey indicates that more than half of participants seemed to have a positive experience using SpeakQL, with some indicating that using SpeakQL for dication was easier than using SQL. We find this interesting considering that SpeakQL performance was not measurably better than SQL in terms of time and number of attempts. Our post-hoc failure analysis provides some clues as to what may be driving this sentiment--that is, it appears that participants may have had fewer challenges reasoning about the schema and forming semantically correct queries when using SpeakQL.
 
-
-
-
-\begin{figure*}
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-planning-total-time-withgroups-boxplot.pdf}
-  \caption{Dialect performance measured by total time and separated by group dialect order.}
-  \label{fig:performancebygrouptotaltime}
-\end{figure*}
-
-\begin{figure*}
-  \centering
-  \includegraphics[width=\linewidth]{figures/query-planning-first-attempt-time-withgroups-boxplot.pdf}
-  \caption{Dialect performance measured by first attempt planning time and separated by group dialect order.}
-  \label{fig:performancebygroupfirstattempttime}
-\end{figure*}
-
-\thematiccoding
 
 \textbf{Synonyms.} Although the simplest feature, they were only the third-most popular feature in the actual usage data. They also attracted the most negative feedback, with the crux being they caused more uncertainty about the valid keywords. We observed that 12 of the SpeakQL attempt failures were due to incorrect synonym usage. We plan to drop some synonyms in future implementations of SpeakQL. 
 

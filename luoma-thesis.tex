@@ -16,19 +16,19 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{float}
-\usepackage{tabularx}
 \usepackage{array}
 \usepackage{subcaption}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{algorithm}
+\usepackage{amsmath}
+\usepackage[title, page]{appendix}
 \usepackage{balance}
+\usepackage{xcolor}
+\usepackage{placeins}
 \usepackage{multirow}
 \usepackage{framed}
-\usepackage[title, page]{appendix}
-\usepackage{algorithm}
-\usepackage{placeins}
 \usepackage{algorithmic}
-\usepackage{xcolor}
-\usepackage{amsmath}
-\usepackage{setspace}
 
 
 \AtBeginDocument{%
@@ -67,20 +67,19 @@
 \techreporttrue
 
 % Required information
-\title{This is the Title of My Dissertation}
-\author{My Full Legal Name}
-\degree{My Degree Title}{Doctor of Philosophy/Doctor of Musical
-Arts/\par Doctor of Education}
+\title{Making Database Interactions More Natural Through Speech-Focused Query Syntax and Improved Natural Languate to SQL Translation}
+\author{Kyle Richard Luoma}
+\degree{Computer Science}{Doctor of Philosophy}
 % Each member of the committee should be listed as Professor Foo Bar.
 % If Professor is not the correct title for one, then titles should be
 % omitted entirely.
-\chair{Professor Eta Theta}
-\cochair{Professor Gamma Delta} % Optional
+\chair{Professor Arun Kumar}
+% \cochair{Professor Gamma Delta} % Optional
 % Your committee members (other than the chairs) must be in alphabetical order
-\committee{Professor Lambda Kappa}
-\committee{Professor Iota Mu}
-\committee{Professor Epsilon Zeta}
-\degreeyear{2018}
+\committee{Professor Alin Deutsch}
+\committee{Professor Zhiting Hu}
+\committee{Professor Jingo Shang}
+\degreeyear{2025}
 
 % Start the document
 \begin{document}
@@ -94,16 +93,13 @@ Arts/\par Doctor of Education}
 \setsinglespacing
 \raggedright % It would be better to use \RaggedRight from ragged2e
 \parindent0pt\parskip\baselineskip
-In recognition of reading this manual before beginning to format the
-doctoral dissertation or master's thesis; for following the
-instructions written herein; for consulting with OGS Academic Affairs
-Advisers; and for not relying on other completed manuscripts, this
-manual is dedicated to all graduate students about to complete the
-doctoral dissertation or master's thesis.
+I dedicate this dissertation to my loving wife Michelle who has shown nothing but love and support throughout my academic journey.
 
-In recognition that this is my one chance to use whichever
-justification, spacing, writing style, text size, and/or textfont that
-I want to while still keeping my headings and margins consistent.
+To my sons Constantine and Conrad, may this research in some small way improve the future that belongs to you.
+
+and to my parents \emph{Debbie} the English teacher, and \emph{Jack} the Engineer whos examples and willingness to spend long days and nights teaching and shaping me directly contributed to an excellent life;
+
+and to the memory of my good friend \emph{Ethan Clark}, whose passion prompted my first steps toward a lifetime of exploration in the field of computing. No matter how hard I study, I will never reach the level of skill that Ethan always demonstrated so effortlessly.
 \end{dedication}
 % Optional
 \begin{epigraph}
@@ -158,7 +154,7 @@ and may be omitted.
 % use. See the examples here. In addition, each chapter ack needs to
 % be repeated at the end of the relevant chapter.
 \begin{acknowledgements}
-I would like to acknowledge Professor Eta Theta for his support as the
+I would like to acknowledge Professor Arun Kumar for his support as the
 chair of my committee. Through multiple drafts and many long nights,
 his guidance has proved to be invaluable.
 
@@ -166,20 +162,9 @@ I would also like to acknowledge the ``Smith Clan'' of lab~28, without
 whom my research would have no doubt taken fives times as long. It is
 their support that helped me in an immeasureable way.
 
-Chapter 2, in full, is a reprint of the material as it appears in
-Numerical Grid Generational in Computational Fluid Mechanics~2009.
-Smith, Laura; Smith, Jane~D., Pineridge Press,~2009. The dissertation
-author was the primary investigator and author of this paper.
+Chapter 2, contains material from ``SNAILS: Schema Naming Assessments for Improved LLM-based SQL Inference'' by Kyle Luoma, and Arun Kumar, which appears in Proceedings of the 2025 International Conference on Management of Data (SIGMOD'25). The dissertation author was the primary investigator and author of this paper.
 
-Chapter 3, in part, has been submitted for publication of the material
-as it may appear in Education Mechanics,~2009, Smith, Laura; Smith,
-Jane~D., Trailor Press,~2009. The dissertation author was the primary
-investigator and author of this paper.
-
-Chapter 5, in part is currently being prepared for submission for
-publication of the material. Smith, Laura; Smith, Jane~D\@. The
-dissertation author was the primary investigator and author of this
-material.
+Chapter 3, contains material from ``SKALPEL: Schema Knowledge Adjustments for LLM NL-to-SQL Performance Enhancements for Large Databases'' by Kyle Luoma, and Arun Kumar, which has been submitted for publication of the material. The dissertation author was the primary investigator and author of this material.
 \end{acknowledgements}
 
 % Stupid vita goes next
