@@ -17,18 +17,18 @@
 \usepackage{amsmath}
 \usepackage{float}
 \usepackage{array}
-\usepackage{setspace}
-\usepackage{algorithm}
-\usepackage{algorithmic}
-\usepackage[title, page]{appendix}
-\usepackage{framed}
-\usepackage{multirow}
-\usepackage{amsmath}
-\usepackage{placeins}
-\usepackage{xcolor}
 \usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{placeins}
+\usepackage{multirow}
+\usepackage[title, page]{appendix}
+\usepackage{setspace}
 \usepackage{tabularx}
+\usepackage{framed}
+\usepackage{algorithm}
 \usepackage{balance}
+\usepackage{algorithmic}
 
 
 \AtBeginDocument{%
@@ -57,9 +57,9 @@
 }
 
 \newcommand{\eat}[1]{}
-\input{speakql-commands}
-\input{snails-commands}
-\input{skalpel-commands}
+\input{SpeakQL-commands}
+\input{SNAILS-commands}
+\input{SKALPEL-commands}
 
 
 % technical report content flag
@@ -99,7 +99,7 @@ To my sons Constantine and Conrad, may this research in some small way improve t
 
 and to my parents \emph{Debbie} the English teacher, and \emph{Jack} the Engineer whos examples and willingness to spend long days and nights teaching and shaping me directly contributed to an excellent life;
 
-and to the memory of my good friend \emph{Ethan Clark}, whose passion prompted my first steps toward a lifetime of exploration in the field of computing.
+and to the memory of my good friend \emph{Ethan Clark}, with whom I grew up in the shadow of the Silicon Valley, and whose passion for all things computers prompted my first steps toward a lifetime of exploration in the field of computing.
 \end{dedication}
 % Optional
 \begin{epigraph}
@@ -162,6 +162,8 @@ I would also like to acknowledge the ``Smith Clan'' of lab~28, without
 whom my research would have no doubt taken fives times as long. It is
 their support that helped me in an immeasureable way.
 
+The introduction section contains material from ``An Overview of Human-Database Interaction Methods'' by Kyle Luoma, written to satisfy the UCSD Computer Science Ph.D. research exam requirement. The dissertation author was the sole investigator and author of this paper.
+
 Chapter 2, contains material from ``SNAILS: Schema Naming Assessments for Improved LLM-based SQL Inference'' by Kyle Luoma, and Arun Kumar, which appears in Proceedings of the 2025 International Conference on Management of Data (SIGMOD'25). The dissertation author was the primary investigator and author of this paper.
 
 Chapter 3, contains material from ``SKALPEL: Schema Knowledge Adjustments for LLM NL-to-SQL Performance Enhancements for Large Databases'' by Kyle Luoma, and Arun Kumar, which has been submitted for publication of the material. The dissertation author was the primary investigator and author of this material.
@@ -184,7 +186,12 @@ Chapter 3, contains material from ``SKALPEL: Schema Knowledge Adjustments for LL
 \publications
 \noindent\textbf{Kyle Luoma} and Arun Kumar. ``SKALPEL: Schema Knowledge Adjustments for LLM-based NL-to-SQL Performance Enhancements in Large Databases,'' Under Submission.
 \vskip\baselineskip
+\noindent~Alexander Michael Berenbeim, \textbf{Kyle Luoma}, Timeo Williams, Ryan McNeil, and Nathanial D. Bastian. ``NLMOptimizer: A Neurosymbolic Collaborative Assistant for Operations Research Optimization,'' Under Submission.
+\vskip\baselineskip
 \noindent\textbf{Kyle Luoma} and Arun Kumar. ``SNAILS: Schema Naming Assessments for Improved LLM-Based SQL Inference,'' Proceedings of the 2025 International Conference on Management of Data (SIGMOD'25), 1875--1900, 2025.
+\vskip\baselineskip
+\noindent\textbf{Kyle Luoma}, ``An Examination of Manpower Requirements in Support of the Army's Prospective Anti-Access and Area-Denial (A2AD) Role in the South China Sea,'' 
+Master Thesis, Naval Postgraduate School, Defense Technical Information Center (DTIC), 2017.
 
 % This puts in the FIELDS OF STUDY. Also inside vita and also
 % optional.
@@ -216,16 +223,13 @@ text of the abstract must be double spaced.
 
 % Optional Introduction
 \begin{dissertationintroduction}
-This optional section is barely described in the OGS manual other than
-saying it is optional and that it appears in the table of contents
-between the Abstract and the first chapter.
-
-No formatting guidelines appear so presumably, it should be formatted
-like an ordinary chapter. It should appear after the
+\input{introduction}
 \verb!\mainmatter! macro because it should start on page~1.
 \end{dissertationintroduction}
 
-\chapter{Introduction}
+% \chapter{Introduction}
+
+
 
 \chapter{Design and Evaluation of an SQL-Based Dialect for Spoken Querying}
 
@@ -243,13 +247,13 @@ like an ordinary chapter. It should appear after the
 \input{related-work-chapter}
 
 \chapter{Conclusion and Future Work}
-
+\input{future-work-chapter}
 
 \appendix
 
 % Stuff at the end of the dissertation goes in the back matter
 \backmatter
 \bibliographystyle{plain} % Or whatever style you want like plainnat
-\bibliography{speakql-ref, snails-ref, skalpel-ref}
+\bibliography{intro-ref, speakql-ref, snails-ref, skalpel-ref}
 
 \end{document}

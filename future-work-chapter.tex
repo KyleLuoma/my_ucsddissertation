@@ -1,0 +1,39 @@
+\section{Conclusions and Future Work for SpeakQL}
+\paragraph{\textbf{Conclusions}}
+Motivated by the growing success of ASR-based interactions, this work considers the usefulness of a more natural spoken structured querying for databases. 
+We design and evaluate a prototype dialect of SQL we call SpeakQL that we believe represents a potential solution for improving speech-based access that preserves correct-by-constructions guarantees of SQL. 
+Our user study suggests the utility of some of our features, while also offering avenues for refinement of other features.
+\paragraph{\textbf{Future Work}}
+
+As for future work, we consider a pivot toward natural language-based interfaces for databases, and envision integrating elements of the SpeakQL dialect into a stateful system to allow users to conversationally clarify and refine their query as part of the error correction and intent clarification process.
+
+\section{Conclusions and Future Work for SNAILS}
+\paragraph{\textbf{Conclusions}}
+Recognizing that the immediate future of NLIs with databases depends on the use of LLM-based systems, the SNAILS project explores the effects of schema naming on NL-to-SQL execution accuracy and schema linking.
+As the first work to perform an in-depth analysis of this topic, we introduce and define the idea of database identifier naturalness in concrete categorical terms.
+Using this definition, we evaluate the effects of naturalism using a benchmark dataset and associated artifacts tailor-made for the purpose.
+Overall, we find that there is a significant, weak-to-moderate, correlation between schema identifier naturalness and NL-to-SQL performance (both execution accuracy and schema linking).
+This observation should motivate researchers and practicioners alike to apply these findings to further expose schema-based performance impacts and improve database NLIs via schema naming maintenance.
+\paragraph{\textbf{Future Work}}
+In addition to extending the SNAILS  benchmark artifacts to include additional datasets and artifacts, we identify several NLP+DB directions for future work.
+First, we wish to ask why and how exactly do different naturalness levels alter schema linking performance so much?
+Is it due to the tokenization and embedding mechanics?
+If so, where in the latent space do these altered tokens end up, and how do the encoders make use of them?
+Second, why do the different foundational LLMs behave so differently?
+Is it related to their architectures, tokenization, (pre)training data, post-training finetuning process, or some other factors?
+We believe these open questions have the potential to lead to several interesting new lines of research at the DB and NLP intersection.
+
+\section{Conclusions and Future Work for SKALPEL}
+\paragraph{\textbf{Conclusions}}
+Contemporary research expresses mixed results around the usefulness of schema subsetting, and in our work we expose some of the underlying reasons for these inconstencies: namely that subsetting performance--as well as downstream NL-to-SQL inference--is database dependent, where schema size plays a large role in subsetting effectiveness and usefulness.
+From our analysis, we determine that subsetting small and medium schemas (less than 1,000 columns) actually tends to worsen NL-to-SQL performance for all types of LLMs, and so we recommend full schema representations in these cases, at least until real-world schema subsetting modules can improve recall.
+
+A case can be made for subsetting when dealing with schemas that have more than 1,000 columns. 
+This is because we see that for both open source and economy LLMs NL-to-SQL execution accuracy improves when using the LLM-based subsetters (e.g., RSLSQL, TASQL, DINSQL).
+In these cases, the decision to subset, and which subsetter to use, is more nuanced and depends on the tradeoff between performance and token usage.
+Alternatively, our prototype \PROJECTNAME{ }hybrid subsetter offers a solution that has the potential to reduce token usage while maintaining execution accuracy at the same levels as LLM-based subsetters.
+\paragraph{\textbf{Future Work}}
+
+In this paper we refine the idea of a hybrid subsetter using LLM-aided question decomposition, LLM-generated table descriptions, and semantic search (cosine distance) to retrieve schema tables that align to the decomposed natural language questions.
+Although we performed some preliminary distance search tuning based on the competing goals of high recall and reduced schema proportion, additional work can be done to identify additional ways to improve schema recall without negating the benefit of reduce schema sizes. 
+Specifically, would the join path detection method in~\cite{Katsogiannis-Meimarakis2026} be an effective way to mitigate the hidden relation problem that \PROJECTNAME{ }is sensitive to?

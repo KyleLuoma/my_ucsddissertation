@@ -592,21 +592,12 @@ In the case of larger schemas (more than 1,000 columns), we find that schema sub
 
 
 \subsection{Discussion}
-
-\paragraph{\textbf{Subsetting Usefulness}}
-Contemporary research expresses mixed results around the usefulness of schema subsetting, and in our work we expose some of the underlying reasons for these inconstencies: namely that subsetting performance--as well as downstream NL-to-SQL inference--is database dependent, where schema size plays a large role in subsetting effectiveness and usefulness.
-From our analysis, we determine that subsetting small and medium schemas (less than 1,000 columns) actually tends to worsen NL-to-SQL performance for all types of LLMs, and so we recommend full schema representations in these cases, at least until real-world schema subsetting modules can improve recall.
-
-A case can be made for subsetting when dealing with schemas that have more than 1,000 columns. 
-This is because we see that for both open source and economy LLMs NL-to-SQL execution accuracy improves when using the LLM-based subsetters (e.g., RSLSQL, TASQL, DINSQL).
-In these cases, the decision to subset, and which subsetter to use, is more nuanced and depends on the tradeoff between performance and token usage.
-Alternatively, our prototype \PROJECTNAME{ }hybrid subsetter offers a solution that has the potential to reduce token usage while maintaining execution accuracy at the same levels as LLM-based subsetters.
+%BEGIN-CONCLUSIONS
+%END-CONCLUSIONS
 
 \paragraph{\textbf{Future Research}}
-In this paper we refine the idea of a hybrid subsetter using LLM-aided question decomposition, LLM-generated table descriptions, and semantic search (cosine distance) to retrieve schema tables that align to the decomposed natural language questions.
-Although we performed some preliminary distance search tuning based on the competing goals of high recall and reduced schema proportion, additional work can be done to identify additional ways to improve schema recall without negating the benefit of reduce schema sizes. 
-Specifically, would the join path detection method in~\cite{Katsogiannis-Meimarakis2026} be an effective way to mitigate the hidden relation problem that \PROJECTNAME{ }is sensitive to?
-
+%BEGIN-FUTURE-WORK
+%END-FUTURE-WORK
 \subsection{Limitations}
 
 \paragraph{\textbf{Schema Size NL-to-SQL Question Distributions}}

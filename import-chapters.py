@@ -6,15 +6,15 @@ SPEAKQL_FILE = "./speakql-vldb-2022/UIST-2023/speakql-thesis-chapter.tex"
 SNAILS_FILE = "./schemas-for-nl-paper/SNAILS-thesis-chapter.tex"
 SKALPEL_FILE = "./skalpel-paper/schema-knowledge-focus.tex"
 
-PROJECTS = ["speakql", "snails", "skalpel"]
+PROJECTS = ["SpeakQL", "SNAILS", "SKALPEL"]
 
 project_files = {
     project: file for project, file in zip(PROJECTS, [SPEAKQL_FILE, SNAILS_FILE, SKALPEL_FILE])
 }
 project_end_sections = {
-    "speakql": "\\bibliographystyle",
-    "snails": "\\begin{acks",
-    "skalpel": "\\bibliographystyle"
+    "SpeakQL": "\\bibliographystyle",
+    "SNAILS": "\\begin{acks",
+    "SKALPEL": "\\bibliographystyle"
 }
 
 def extract_command(input_text) -> str:
@@ -37,12 +37,31 @@ print(extract_command("""
 
 
 related_work = {}
+future_work = {}
+conclusions = {}
 all_commands = []
 all_packages = set()
 for project in project_files:
 
     with open(project_files[project]) as f:
         project_tex = f.read()
+
+    # Extract future work
+    future_work_section = project_tex.split("%BEGIN-FUTURE-WORK")[1].split("%END-FUTURE-WORK")[0]
+    project_tex = project_tex.replace(future_work_section, "\n")
+    if "}\n" in future_work_section:
+        future_work_section = future_work_section.split("}\n")[1]
+    future_work[project] = future_work_section
+    
+    # Extract conclusions
+    if "%END-CONCLUSIONS" in project_tex:
+        conclusions_section = project_tex.split("%BEGIN-CONCLUSIONS")[1].split("%END-CONCLUSIONS")[0]
+        project_tex = project_tex.replace(conclusions_section, "\n")
+        if "}\n" in conclusions_section:
+            conclusions_section = conclusions_section.split("}\n")[1]
+        conclusions[project] = conclusions_section
+    else:
+        conclusions[project] = ""
 
     # Embed includes to avoid nested includes error
     includes = [incl.split("\n")[0][:-1] for incl in project_tex.split("\\include{") if "%" not in incl.split("\n")[0][:-1]]
@@ -77,9 +96,18 @@ for project in project_files:
     all_packages = all_packages.union(set(proj_packages))
 
 
+with open("future-work-chapter.tex", "wt") as f:
+    f.write("\n".join([
+        "\\section{Conclusions and Future Work for " + project + "}\n" + 
+        "\\paragraph{\\textbf{Conclusions" + "}}\n" + conclusions[project] +
+        "\\paragraph{\\textbf{Future Work" + "}}\n" + future_work[project]
+        for project in future_work if future_work[project] is not None
+    ]))
+
+
 with open("related-work-chapter.tex", "wt") as f:
     f.write("\n".join([
-        "\\section{Related Work for " + project.capitalize() + "}\n" + related_work[project]
+        "\\section{Related Work for " + project + "}\n" + related_work[project]
         for project in related_work if related_work[project] is not None
         ]))
 
