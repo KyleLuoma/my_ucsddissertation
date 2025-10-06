@@ -105,7 +105,7 @@ We also provide an identifier naturalness increaser (or expander) that leverages
 
 \paragraph{Artifact 6: NL-to-SQL Question Query Pairs}
 
-The SNAILS benchmark contains 503 NL question-SQL query pairs which we use for NL-to-SQL performance analysis of 4 LLMs.
+The SNAILS benchmark contains 503 NL question-SQL query pairs which we use for NL-to-SQL performance analysis of 5 LLMs.
 We created this new collection as another hand-labeled golden dataset without the use of AI-based workflows (Artifact 6).
 
 \paragraph{\textbf{Experimental Evaluation}}
@@ -270,7 +270,7 @@ To accomplish this, we create a Python program with GPT interaction that takes a
 
 Prior to experimenting with ML classifiers, we used a set of heuristics to score the naturalness of each identifier. 
 Comparisons between the heuristics-based scoring approach and ML classification reveals that ML is superior in terms of recall, precision, and F1.
-We include a description of the heuristics here for completeness, but exclude them from the main body of the report.
+We include a description of the heuristics here for completeness, but exclude the performance results from the main body of the report.
 
 \begin{itemize}
   \item Vectorize an English word vocabulary as frequency counts of letters in the word.
@@ -284,6 +284,7 @@ We include a description of the heuristics here for completeness, but exclude th
 
 
 \subsection{Dataset Naturalness Classifications}
+\label{section:natclassification}
 
 Identifier naturalness within each dataset is categorized using the $N1$ (Regular), $N2$ (Low), and $N3$ (Least) categories.
 Naturalness of table and column identifiers are cataloged both separately, and in consolidated form (i.e. tables and columns together).
@@ -297,7 +298,7 @@ where $Regular$, $Low$, and $Least$ are proportions of schema identifiers in eac
 \subsection{Training Data Collections}
 
 For finetuning tasks, we train language models using database identifiers extracted from the schemas in the SNAILS real-world database collection.
-We begin with a human-classified collection (Collection 1); then we employ classifier models trained on Collection 1 to generate a larger set (Collection 2) of machine-classified and human-curated identifier classifications.
+We begin with a human-classified collection (Collection 1), then we employ classifier models trained on Collection 1 to generate a larger set (Collection 2) of machine-classified and human-curated identifier classifications.
 
 \textbf{Collection 1} The full dataset contains 1,648 manually classified unique schema identifiers. The identifiers are hand labeled as one of 3 naturalness levels (Regular, Low, Least). We randomly divide the data into a training, validation, and test set. This resulted in a distribution of 959 identifiers used for training, 356 for validation, and 333 for testing. 
 
@@ -336,14 +337,11 @@ For this reason, we use models that employ either character-level tokenization, 
 We select 2 approaches: 1) Use of a foundational LLM in various capacities; and 2) Finetuning of a character-level token language model.
 
 \subsection{Character Tagging Feature}
-We include a pre-processing step that generates a sequence of special characters that correspond to the type of characters of the identifier to be classified. 
-The sequence is then concatenated with the identifier and passed to the language models during training and inference.
-We refer to this approach as \emph{character tagging}, and models employing tagging are labeled with TG in Table \ref{table:classifierperformance}.
-Both GPT- and CANINE-based models exhibit improvement in F1 scores using character tagging.
-
 There are intuitive structural differences between abbreviated words and their complete counterparts.
 Specifically, we observe that word abbreviations generally contain more consonants than vowels, as vowels seem more likely to be removed during abbreviation.
-We are unsure of a language model's ability to make use of this observation, so we offer some assistance in the form of a pre-processing step that generates a sequence of special characters that correspond to the type of characters of the identifier to be classified. 
+For this reason, we include a pre-processing step that generates a sequence of special characters that correspond to the type of characters of the identifier to be classified. 
+The sequence is then concatenated with the identifier and passed to the language models during training and inference.
+We refer to this approach as \emph{character tagging}, and models employing tagging are labeled with TG in Table \ref{table:classifierperformance}.
 We concatenate the tag sequence to the identifier and pass it to the language models for training and inference. Special characters include:
 \begin{itemize}
   \item \textbf{\textasciicircum}: Vowels
@@ -352,7 +350,6 @@ We concatenate the tag sequence to the identifier and pass it to the language mo
   \item \textbf{\$}: Special characters
   \item \textbf{$\ast$}: Any character not in the above categories
 \end{itemize} 
-We refer to this approach as \emph{character tagging}, and models employing tagging are labeled with TG in Table \ref{table:classifierperformance}.
 
 For example, the identifier \texttt{AuthorID\_5} would be pre-processed as follows:
 
@@ -364,12 +361,8 @@ Both GPT- and CANINE-based models exhibit improvement in F1 scores when using th
 
 \subsection{GPT 3.5/4 Turbo Few-Shot-Based Scoring}
 
-We experiment with the effectiveness of few-shot prompting to classify identifier naturalness.
-We opt to provide one set of instructions followed by a series of 25 randomly selected human-validated examples of naturalness levels.
-We perform text replacement on the trailing row by replacing the \_IDENTIFIER\_ text with the identifier to be classified. 
-This approach does not require model pre-training; but this convenience is paid for in terms of the number of tokens in the prompt, and classifying a large schema with this method can incur rather high LLM usage costs.
-
-\begin{verbatim}
+\begin{figure}
+  \begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 The following is a list of database identifiers and 
 labels that indicate how closely they resemble 
 natural english words:
@@ -381,45 +374,60 @@ N3: third most natural english words
 (e.g. very short abbreviations with obscured 
 meaning or acronyms)
 
-identifier:	CASENO	Label:	N1
-identifier:	BENTHOS_TotalAreaSampled_m2	Label:	N2
-identifier:	CAUSE3	Label:	N1
-identifier:	MT_RIVPACS_2011_OTU	Label:	N3
-identifier:	ACTIVATE	Label:	N1
-identifier:	MotorcycleChassisTypeId	Label:	N1
-identifier:	First_Name	Label:	N1
-identifier:	IPCAREA_2ND	Label:	N2
-identifier:	INJNO	Label:	N2
-identifier:	tbl_MicroHabitat	Label:	N2
-identifier:	EMSGCSEYE	Label:	N3
-identifier:	HEADRESTDAM	Label:	N2
-identifier:	AutoPedestrianAlertingSound	Label:	N1
-identifier:	ModelTest	Label:	N1
-identifier:	tlu_topo_position	Label:	N2
-identifier:	Understory_Comp	Label:	N1
-identifier:	BAGDAMAGE	Label:	N1
-identifier:	HARNESSDESIGN	Label:	N1
-identifier:	Coord_Syst	Label:	N2
-identifier:	CINJSEV	Label:	N2
-identifier:	JKWGT12	Label:	N3
-identifier: _IDENTIFIER_ Label:
-\end{verbatim}
+identifier:	CASENO                      Label:	N1
+identifier:	BENTHOS_TotalAreaSampled_m2 Label:	N2
+identifier:	CAUSE3                      Label:	N1
+identifier:	MT_RIVPACS_2011_OTU         Label:	N3
+identifier:	ACTIVATE                    Label:	N1
+identifier:	MotorcycleChassisTypeId     Label:	N1
+identifier:	First_Name                  Label:	N1
+identifier:	IPCAREA_2ND                 Label:	N2
+identifier:	INJNO                       Label:	N2
+identifier:	tbl_MicroHabitat            Label:	N2
+identifier:	EMSGCSEYE                   Label:	N3
+identifier:	HEADRESTDAM                 Label:	N2
+identifier:	AutoPedestrianAlertingSound Label:	N1
+identifier:	ModelTest                   Label:	N1
+identifier:	tlu_topo_position           Label:	N2
+identifier:	Understory_Comp             Label:	N1
+identifier:	BAGDAMAGE                   Label:	N1
+identifier:	HARNESSDESIGN               Label:	N1
+identifier:	Coord_Syst                  Label:	N2
+identifier:	CINJSEV                     Label:	N2
+identifier:	JKWGT12                     Label:	N3
+identifier:	_IDENTIFIER_                Label:
+  \end{Verbatim}
+\caption{Few-Shot naturalness classification completion prompt template}
+\label{fig:fewshotclassifierprompt}
+\end{figure}
+
+We experiment with the effectiveness of few-shot prompting to classify identifier naturalness.
+We opt to provide one set of instructions followed by a series of 25 randomly selected human-validated examples of naturalness levels.
+Figure~\ref{fig:fewshotclassifierprompt} is an example of such a randomly generated few-shot prompt templates.
+We perform text replacement on the trailing row by replacing the \_IDENTIFIER\_ text with the identifier to be classified. 
+This approach does not require model pre-training, but this convenience is paid for in terms of the number of tokens in the prompt, and classifying a large schema with this method can incur very high LLM usage costs.
 
 
-\subsection{GPT Davinci Fine Tuning}
+
+
+\subsection{GPT Davinci Finetuning}
 
 We train the Davinci-based completion models using the OpenAI command line API.
 We generated models with character tagging, as well as models without tagging.
 Below is an excerpt from the tagging-based training data.
 
-\begin{verbatim}
+\begin{figure}
+\begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 {"prompt":"ADDRESS ^+++^++ ->","completion":" N1"}
 {"prompt":"AIS ^^+ ->","completion":" N3"}
 {"prompt":"AISCODE ^^++^+^ ->","completion":" N3"}
 {"prompt":"BACKBPILL +^++++^++ ->","completion":" N2"}
 {"prompt":"ALIGNMENT ^+^+++^++ ->","completion":" N1"}
 {"prompt":"ARRMEDICAL ^+++^+^+^+ ->","completion":" N2"}
-\end{verbatim}
+\end{Verbatim}
+\caption{GPT Davinci finetuning example data with tagging feature.}
+\end{figure}
+
 
 Inference using charager tagged models requires appending the tag to the identifier in the same format as the training data.
 
@@ -489,7 +497,7 @@ We leave additional exploration of this topic to future research.
 \section{Naturalness-Modified Identifiers}
 
 
-Naturalness modification is the process of changing an identifier in such a way that it assumes a naturalness category that is not its original classification (see Figure \ref{fig:classify-modify-pipeline}).
+Naturalness modification is the process of changing an identifier in such a way that it assumes a naturalness category that is not its original classification.
 Modifying an identifier to become less natural is useful for creating benchmark schemas of varying naturalness levels.
 The same benefit applies to the process of modifying less natural identifiers to become more natural; this direction of modification also generally yields improved NL-to-SQL performance, as is demonstrated in the experiment and evaluation sections of this report.
 
@@ -498,7 +506,7 @@ Once validated, the identifiers are added to our ground truth dataset and used f
 
 \subsection{Decreasing Naturalness (Abbreviation)}
 Decreasing naturalness generally involves the removal of characters from an identifier in a manner that shortens the length while retaining some structure that still allows for some measure of readability.
-This cannot be achieved by randomly removing characters from an identifier; so we elect to use machine learning-based approaches to decrease identifier naturalness.
+This cannot be achieved by randomly removing characters from an identifier, so we elect to experiment with both machine learning-based and LLM-based approaches to decrease identifier naturalness.
 As with our classification approaches, we experiment with both engineered few shot prompts targeted at a general purpose foundational LLM (GPT), and a fine tuning approach (GPT Davinci).
 
 \paragraph{\textbf{FPT Davinci Fine Tuning Abbreviation}}
@@ -513,13 +521,18 @@ This resulted in the following fine tuned models:
 \end{itemize}
 
 Each fine tune dataset consists of 176 randomly selected identifiers and human-created naturalness modifications.
-Below is an example of Regular to Least model training data:
-\begin{verbatim}
+Figure~\ref{fig:regtoleasttrainingdata} provides an example of Regular to Least model training data:
+
+\begin{figure}
+\begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 {"prompt":"Plot ->","completion":" p\n"}
 {"prompt":"Metals ->","completion":" mt\n"}
 {"prompt":"Station_ID ->","completion":" S_ID\n"}
 {"prompt":"FUELEAK ->","completion":" F_Lk\n"}
-\end{verbatim} 
+\end{Verbatim} 
+\caption{Regular-to-Least naturalness modification training data example.}
+\label{fig:regtoleasttrainingdata}
+\end{figure}
 
 The outputs of these finetuned models require significant adjustment by human researchers; so we elect to employ an alternative approach described next.
 
@@ -527,8 +540,10 @@ The outputs of these finetuned models require significant adjustment by human re
 
 GPT 3.5-based few shot prompting (see example below) resulted in the most consistent outputs, with a reasonably low prompt token count.
 Rather than explaining the different categories followed by an instruction to convert an identifier to a specific category, we find that providing a simple instruction to \emph{abbreviate the database schema identifier to make it slightly shorter} followed by several examples is more effective.
+Figure~\ref{fig:regtolowprompt} contains an example prompt instructing an LLM to abbreviate an identifier from Regular to Low naturalness.
 
-\begin{verbatim}
+\begin{figure}
+\begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 Abbreviate the database schema identifier 
 to make it slightly shorter:
 Protocol_Name -> Protcl_Nm
@@ -544,23 +559,28 @@ Customer -> Custmr
 Abbreviate the database schema 
 identifier to make it slightly shorter:
 _IDENTIFIER_ ->
-\end{verbatim}
+\end{Verbatim}
+\caption{Regular-to-Low naturalness modification LLM prompt template.}
+\label{fig:regtolowprompt}
+\end{figure}
 
 \subsection{Increasing Naturalness (Expansion)}
 
 Increasing naturalness requires the expansion of an abbreviated identifier.
-A recent attempt at performing this task with model fine tuning~\cite{nameguess} was made during our research; and it appears to be a promising direction for research.
-However, we elect to enrich our process with external database metadata.
+This is a challenging task for pretrained language models that lack a context grounded on the specifics of the data to be expanded.
+A recent attempt at performing abbreviation expansion with model fine tuning~\cite{nameguess}  appears to be a promising direction for future research, but is too complex and resource intensive to extend to the SNAILS artifact datasets. Thus, we elect to enrich our process with external database metadata via retrieval augmented generation (RAG).
 
 \paragraph{\textbf{Expansion Process}}
-In order to accomplish this, we engineered a solution that employs a database metadata reader capable of reading .pdf, .xml, and .csv formatted metadata.
+In order to accomplish the RAG-based expansion process, we engineer a solution that employs a database metadata reader capable of reading .pdf, .xml, and .csv formatted metadata.
 Metadata is read and indexed at the word level, where an array of file locations (page and line numbers for pdf, line numbers for xml and csv) where words occur are mapped to each word.
 When a user keys in an identifier to modify, file locations where the identifier exists in the document are returned via index lookup.
 These index locations are used as the centerpoints of context windows that retrieve the surrounding content.
 This content is added to a fewshot prompt to provide the language model with document content that is likely to contain references to, and definitions of, the provided identifier.
 
-The fewshot prompt for generating an expanded identifier adheres to the template:
-\begin{verbatim}
+The fewshot prompt for generating an expanded identifier adheres to the template displayed in figure~\ref{fig:ragtemplate}.
+
+\begin{figure}
+\begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 Using the following text extracted from a 
 data dictionary:
 __CONTEXT__
@@ -572,12 +592,16 @@ Create a meaningful and concise database identifier
 using SQL compatible complete words to represent 
 abbreviations and acronyms for only 
 the identifier __IDENTIFIER__:
-\end{verbatim}
+\end{Verbatim}
+\caption{Retrieval augmented generation identifier expansion prompt template.}
+\label{fig:ragtemplate}
+\end{figure}
 
 The \_\_CONTEXT\_\_ placeholder is replaced with up to ten context window-length excerpts from the database metadata.
-This is an example of a completed prompt using the NYSED .pdf based data manual with context window of 200 characters:
+Figure~\ref{fig:ragfsprompt} is an example of a completed prompt using the NYSED .pdf based data manual with context window of 200 characters:
 
-\begin{verbatim}
+\begin{figure}
+\begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 Using the following text extracted from a data dictionary:
 r school  Text  255
 YEAR  Reporting Year (2021 for 2020 -21; 2022 for 2021 -22) 
@@ -599,7 +623,10 @@ abbreviations and acronyms for
 only the identifier num_teach_inexp:
 
 num_teach_inexp, number_of_teachers_inexperienced
-\end{verbatim}
+\end{Verbatim}
+\caption{Retrieval augmented generation identifier expansion few-shot prompt example.}
+\label{fig:ragfsprompt}
+\end{figure}
 
 In this successful example, we see that the identifier \emph{num\_teach\_inexp} has been expanded to a more natural \emph{number\_of\_teachers\_inexperienced}.
 This is despite the observation that the data retrieved from the .pdf file is quite unstructured and contains document artifacts.
@@ -624,8 +651,8 @@ In this process:
 \end{enumerate}
 
 Once a fewshot prompt has been created for a given database's metadata, the prompt is stored for any future program runs.
-This particular aspect of our project was built to support our research efforts; and we did not perform any experiments to evaluate its overall accuracy and usability.
-We leave these tasks as future research opportunities.
+This particular aspect of our project was built to support our research efforts, and we did not perform any experiments to evaluate its overall accuracy and usability.
+We leave these tasks as potential future research opportunities.
 
 
 
@@ -695,9 +722,7 @@ In total, 148 out of over 19,000 total identifiers (less than .01 percent) conta
 Since the intent of this project is to measure the effect of schema naturalness, we first check if there is sufficient distribution of naturalness levels across the collection. 
 We employ the GPT-3.5-based classifier described in Section \ref{subsection:naturalness-scoring} to evaluate the naturalness of the native schema identifiers.
 
-In addition to measuring the proportion of identifiers in each naturalness category, we also derive a combined naturalness score.
-Combined naturalness is the weighted average of category proportion values, where scores range from 0.0 to 1.0 with 1.0 representing a schema containing only Regular naturalness identifiers.
-A more detailed description of its calculation is available in the \iftechreport{appendix}\else{technical report~\cite{techreport}}\fi.
+
 
 Figure \ref{fig:databasenaturalness} displays the proportions of identifiers in each naturalness category, as well as the combined naturalness, in each native schema.
 From the chart, we can see that the schemas in the SNAILS collection described in Section \ref{subsection:benchmark-datasets} represent a heterogeneous selection of naturalness combinations.
@@ -705,7 +730,7 @@ From the chart, we can see that the schemas in the SNAILS collection described i
 \begin{figure}
   \centering
   \includegraphics[width=\figwidthmod\linewidth]{figures/naturalness_by_db.pdf}
-  \caption{Proportion of identifiers in each naturalness category within the SNAILS real-world database collection (Artifact 1). Horizontal line markers indicate calculated combined naturalness as described in the \iftechreport{appendix}\else{technical report~\cite{techreport}}\fi}
+  \caption{Proportion of identifiers in each naturalness category within the SNAILS real-world database collection (Artifact 1). Horizontal line markers indicate calculated combined naturalness as described in Section~\ref{section:natclassification}.}
   \label{fig:databasenaturalness}
 \end{figure}
 
@@ -1045,15 +1070,15 @@ Each file is associated with a database in the SNAILS schema collection.
 Some NL questions contain hint and note entries annotated as HINT and NOTE in lines that follow the NL query.
 We used neither the hints nor columns in any of the experiments described in this paper, but retain them for possible use in future research.
 
-While we store the data in .sql file format for readability and ease of use, we also offer a NL question loading script (load\_nl\_questions.py) in our repository. 
+While we store the data in .sql file format for readability and ease of use, we also offer an NL question loading script (load\_nl\_questions.py) in our repository. 
 This script performs rudimentary parsing of the .sql files and returns a Pandas DataFrame and optional .xlsx formatted spreadsheet.
 
 \paragraph{NL Question - SQL Query Example 1, ASIS Database Question 8}
 The focus of this benchmark dataset is on the evaluation of schema linking.
 As such, we were generous with value descriptions, providing literal value strings (e.g. ASIS\_HERPS\_20H location code in example 1) in the prompt.
 
-\begin{verbatim}
-
+\begin{figure}[H]
+\begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 -- 8: show how many minnows of each stage were counted 
       at the location ASIS_HERPS_20H
 SELECT stage, sum(count) minnowCountSum
@@ -1061,7 +1086,9 @@ FROM tblFieldDataMinnowTrapSurveys
 WHERE locationID = 'ASIS_HERPS_20H'
 GROUP BY stage
 ;
-\end{verbatim}
+\end{Verbatim}
+\caption{NL Question - SQL Query Example 1, ASIS Database Question 8}
+\end{figure}
 
 \paragraph{NL Question - SQL Query Example 2, NTSB Database Question 13}
 Example 2 shows additional code value hints provided in the NL question.
@@ -1069,8 +1096,9 @@ In order to enable the recall evaluation statistic, we limited the use of column
 In the cases where any arbitrary column as an argument in the count function will yield the same result as the $\ast$, we use only the $\ast$ symbol. 
 This eliminates the recall penalty for models selecting an arbitrary column within the count function.
 
-\begin{verbatim}
 
+\begin{figure}[H]
+\begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 -- 13: How many vehicles are there where drugs were present 
        (presence code value is 1) and the vehicle was towed 
        for a reason not due to disabling damage (towed code is 3)
@@ -1078,15 +1106,17 @@ SELECT COUNT(*) VEHCOUNT
 FROM GV
 WHERE PARDRUG = 1 AND TOWED = 3
 ;
-\end{verbatim}
+\end{Verbatim}
+\caption{NL Question - SQL Query Example 2, NTSB Database Question 13}
+\end{figure}
 
 
 \paragraph{NL Question - SQL Query Example 3, SBOD Database Human Resources Module Question 18}
 Questions vary in their complexity.
 This example shows one of the more complex questions that require multiple projections and joins as well as a selection.
 
-\begin{verbatim}
-  
+\begin{figure}[H]
+\begin{Verbatim}[frame=single,fillcolor=\color{lightgray}]
 -- 18: Show the professional status and educational 
        statuses as well as the home and work street 
        numbers of employees on the purchasing team.
@@ -1098,7 +1128,10 @@ JOIN OHTM emplTeams
     ON teamMembers.teamID = emplTeams.teamID
 WHERE emplTeams.name = 'Purchasing'
 ;
-\end{verbatim}
+\end{Verbatim}
+\caption{NL Question - SQL Query Example 3, SBOD Database Human Resources Module Question 18}
+\end{figure}
+
 
 \paragraph{\textbf{Adding New NL-SQL Pairs to the SNAILS Collection}}
 For researchers interested in extending the SNAILS collection, it is necessary to create new ground truth NL-SQL pairs for evaluation. 
@@ -1170,7 +1203,7 @@ The prompt is generated using native schema identifiers, and table and column na
 Native identifiers and their tags are replaced with modified identifiers using standard Python string replacement (e.g. str.replace(target, value)).
 
 \paragraph{Prompt naturalness conversion example}
-The objective is to modify the naturalness of the Klamath Invasive Species (KIS) schema to the least natural form.
+In this example, the objective is to modify the naturalness of the Klamath Invasive Species (KIS) schema to the least natural form.
 The first step is to generate a tagged prompt which is formed using the database metadata accessed via system tables.
 A tagged prompt table with columns and datatypes takes on the form:
 \begin{verbatim}
@@ -1187,7 +1220,7 @@ The resulting prompt after string replacement appears as the following in the fi
 #TSW( Sp nvarchar, S_Yr nvarchar, Pk nvarchar)
 \end{verbatim}
 
-The modified schema knowledge is presented to the LLM as though it is the native schema.
+During NL-to-SQL translation, the modified schema knowledge representation is presented to the LLM as if it is the native schema.
 
 
 \subsection{NL-to-SQL Inference}
@@ -1213,7 +1246,7 @@ We find that the finetuning appears to have improved its performance as compared
 
 \paragraph{Gemini 1.5 Pro}
 During the course of our research, Google released Gemini 1.5 Pro~\cite{geminiteam2024gemini15}, and we quickly integrated it into our existing workflows using the Google generative AI Python library.
-The remarkable faced of the Gemini 1.5 model is its context window size if 1 million tokens, which negates the need to reduce schema knowledge representations in order to meet context window constraints.
+A remarkable development of the Gemini 1.5 model is its context window size of 1 million tokens, which negates the need to reduce schema knowledge representations for the database schemas in the SNAILS collection in order to meet context window constraints.
 
 \paragraph{\textbf{CodeS and DIN SQL Implementation}}
 For the more complex DIN SQL and CodeS NL-to-SQL workflows, we provide additional versions of the SNAILS schema artifacts to conform to the input requirements of the target systems.
@@ -1231,7 +1264,7 @@ The tags guide the replacement algorithm, ensuring accurate replacement of natur
 \label{section:querynaturalnessmodification}
 
 When a query is formed against a schema with naturalness-modified identifiers, it is necessary to replace the modified identifiers with the native identifiers prior to executing the query over the target database.
-Simple string replacement is not sufficient in this case, because some identifier names may sometimes be substrings of other identifiers within a query; and replacing one may corrupt the other.
+Simple string replacement is not sufficient in this case, because some identifier names may be substrings of other identifiers within a query.
 We employ a Java-based parser and AST generator~\cite{Parr2014,antlrgrammarsv4} to build a parser system for tagging table and column identifiers in a query.
 
 \paragraph{Query naturalness modification example}
@@ -1293,6 +1326,7 @@ Predicted and gold queries are executed over target databases with native schema
 Valid result sets are stored as Pandas Dataframes for comparison.
 
 \subsection{Execution Result Set-Subset Matching}
+\label{section:resultsetmatching}
 
 Result set and subset comparison consisted of a comparison of the columns and rows returned by the two queries. Because it is possible for semantically equivalent query results to differ in terms of column ordering, column and aggregate function aliasing, row ordering (when an order is not specified in the question), and even the number of columns returned (as long as the predicted column set is a superset of the gold column set), result set comparison was performed using a series of rules implemented in Python.
 
@@ -1463,7 +1497,7 @@ A drawback of existing methods is that strict set or bag comparisons risk increa
 To reduce false negatives, the SNAILS approach to execution accuracy evaluation adopts 2 aspects of relaxed execution matching as described in~\cite{floratou2024nl2sql}; it accounts for: (1) The possibility that a predicted query may contain additional columns beyond those retrieved by a gold query; and (2) That unless specified in the NL question, tuples may appear in any order.
 To achieve this, we perform result set-superset comparisons to ensure that the predicted result set column set is a superset of the gold result set column set.
 That is, a generated query is considered incorrect if it does not contain \emph{all} gold query columns; but it is not considered incorrect (at this stage) if it includes columns not present in the gold query result. 
-A more detailed description of this approach is available in the \iftechreport{appendix}\else{technical report~\cite{techreport}}\fi.
+A more detailed description of this approach is described previously in Section~\ref{section:resultsetmatching}.
 
 \paragraph{\textbf{Manual Evaluation}}
 Execution result set comparison cannot prove query correctness; so we rely on it only to rule out true negatives from further consideration.
@@ -1515,7 +1549,7 @@ With a set $QI_g$ of identifiers present in the gold query and a set of identifi
 \\
 We exclude 137 linking score calculations from analysis in situations where the predicted query contains invalid SQL that prevents query parsing and identifier extraction.
 We use recall as the primary measure for schema linking, as it does not penalize generated queries that contain extra identifiers that do not render an answer incorrect in our setting, such as cases when an arbitrary column is referenced in a count function.
-Charts and tables depicting F1 and precision scores are available in the \iftechreport{appendix}\else{technical report~\cite{techreport}}\fi.
+Charts and tables depicting F1 and precision scores are available at the end of this chapter.
 
 \paragraph{\textbf{Identifier-Level Linking Analysis}}
 
@@ -1579,7 +1613,7 @@ The recall drop (approximately 20 percent decrease) associated with a modificati
 
 Naturalness changes within specific SNAILS database schemas paints a clearer picture of the impact of naturalness.
 Figure \ref{fig:recall-boxplot-dbs} provides a drill-down view of the effect of schema modification on the PILB, SBOD, and NTSB schemas in terms of \emph{QueryRecall}, and for each LLM and schema naturalness level.
-The center example (PILB) is a highly natural Native schema where schema naturalness modification would not be required. The leftmost example (NTSB) indicates linking performance improvement across all models for a native schema of lower naturalness converted to a higher naturalness schema, and presents a case where naturalness modification will improve NLI performance. The rightmost database (SBOD) represents a Least naturalness schema, and transformation from Native to Regular yields significant improvements for all models. In all cases, we see that reducing naturalness to the Least level consistently degrades \emph{QueryRecall}. 
+The first example (PILB) is a highly natural Native schema where schema naturalness modification would not be required. The center example (NTSB) indicates linking performance improvement across all models for a native schema of lower naturalness converted to a higher naturalness schema, and presents a case where naturalness modification will improve NLI performance. The bottom database (SBOD) represents a Least naturalness schema, and transformation from Native to Regular yields significant improvements for all models. In all cases, we see that reducing naturalness to the Least level consistently degrades \emph{QueryRecall}. 
 
 \paragraph{\textbf{Statistical Significance}}
 Kendall-Tau ($\tau$) Correlations between the proportion of Least identifiers and \emph{QueryRecall} range from $\tau=-0.16$ (Gemini) to $\tau=-0.28$ (Phind-CodeLlama2), with $P < 0.001$ for all models.
@@ -1616,12 +1650,6 @@ For the DIN SQL LLM-based approach, naturalness effects are less pronounced, tho
 Figure \ref{fig:spiderresults} shows that with the SNAILS schema renaming artifacts applied to the Spider NL-to-SQL benchmark dev dataset~\cite{Yu&al.18c}, naturalness effects are the most significant between Low and Least levels of naturalness.
 Performance differences across naturalness levels for the highly natural Spider schemas resemble performance over similarly-natural schemas in the SNAILS collection.
 
-
-\paragraph{\textbf{Mean token to character ratio effect on schema linking}}
-
-The Kendall-Tau correlation mean token-to-character ratio correlations (Tables \ref{table:tokenratio-recall-ktau-native} and \ref{table:tokenratio-recall-ktau-all}) indicates that there is significant evidence that for GPT and Code Llama tokenizers over both native and modified schemas, that as the token-to-character ratio increases, schema linking performance decreases.
-This same observation does not hold for the Code Bison tokenizer ober the native schemas.
-Because of the inconsistent power of the token-character ratio measurement, we believe it may not serve as a viable proxy for naturalness in all cases.
 
 
 \section{Discussion and Limitations}
@@ -1660,7 +1688,7 @@ Schema modifications may not be necessary (or helpful), if a schema is already c
 DBAs should assess current naturalness levels prior to committing to naming modifications.
 At a minimum, we recommend that any Least identifier be modified to a Regular naturalness level and, if feasible, Low identifiers as well.
 If renaming a less natural schema's identifiers is not feasible due to integration constraints, we suggest one of two approaches: 1) adopting a naturalness-as-a-view strategy by mapping Native identifiers to Regular naturalness identifiers using SQL views, or 2) a middleware approach that modifies schema knowledge in LLM prompts and generated SQL queries prior to execution on the database.
-We sketch a rough design of both options in the \iftechreport{appendix}\else{technical report~\cite{techreport}}\fi.
+
 
 We demonstrate a natural schema view proof of concept with our SNAILS database collection and their MS SQL Server instances.
 For each table and column in the collection's database schemas, we map the Native table or column to its Regular counterpart in the naturalness modified identifier dataset using SQL view creation DDL and a db\_nl schema.
@@ -1809,7 +1837,7 @@ Figures \ref{fig:db-level-boxplots-f1-1}-\ref{fig:db-level-boxplots-recall-2} sh
 
 % Mean token char ratio K tau tables for Recall
 
-\begin{table*}
+\begin{table*}[ht]
   \centering
   \caption{Kendall-Tau ($\tau$) Correlations between the \emph{Mean Token-to-Character Ratio} and \emph{Query Recall}.}
   \begin{subfigure}{.5\linewidth}
