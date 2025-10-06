@@ -93,7 +93,7 @@ With the rapid improvement in natural database interfaces, new challenges emerge
 
 In this dissertation, we examine 3 areas of natural language database interaction research: speech-based database querying with a natural-like extension of the SQL syntax, schema identifier naming effects on NL-to-SQL performance, and schema reprentations in LLM-based NL-to-SQL pipelines.
 The overarching goal of our work in these areas is to improve natural interactions with databases both directly between the user and the database with our SQL syntax extension, and indirectly by improving LLM-based NL-to-SQL translation.
-Table~\ref{table:contributions} provides a high-level summary of the types of this dissertations contributions for each chapter.
+Table~\ref{table:contributions} provides a high-level summary of the contributions in each chapter of this dissertation.
 The contributions for each project are as follows:
 
 \paragraph{\textbf{SpeakQL 2: Design and evaluation of an SQL-based dialect for spoken querying}}
@@ -104,7 +104,7 @@ To further improve speech-based querying, we design the SpeakQL dialect with 4 n
 We describe the implementation of the SpeakQL dialect, including its grammar rules and the SpeakQL-to-SQL translation process.
 
 After implementing the SpeakQL syntax in a speech-to-query pipeline, we administer an A/B user study with 23 participants designed to compare the usefulness of SQL and SpeakQL syntax during speech-based querying.
-Qualitative analysis of the within-subjects study yielded no statistically significant differences in performance measures including query planning time, number of attempts required to correctly dictate a query, or the number of errors between the 2 dialects.
+Quantitative analysis of the within-subjects study yielded no statistically significant differences in performance measures including query planning time, number of attempts required to correctly dictate a query, or the number of errors between the 2 dialects.
 However, our post-study participant survey surfaces some encouraging pieces of evidence that SpeakQL, despite being a new and slightly more verbose dialect of SQL, takes comparable time to dictate but with a higher ease of use as per the self-reported participant feedback.
 
 As work on the SpeakQL project reached its culmination point, transformer-based large language models and transformer-based automatic speech recognition systems were greatly increasing the accuracy of both NL-to-SQL translation and speech recognition.

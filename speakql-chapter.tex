@@ -139,7 +139,7 @@ To summarize, this paper makes the following technical contributions:
 
 \paragraph{\textbf{Origins and Purpose}}
 
-Introduced in 1974~\cite{Chamberlin1974}, SQL is nearing its 50th birthday. Despite (or perhaps because of) its age, it remains the de facto standard language for database quyering. SQL (originally named SEQUEL) was intended for both application programmers and a non-programmer target audience of business professionals and other laypersons requiring data access from relational databases~\cite{Chamberlin1976}. Its initial design and following updates were informed by a user-centric approach, and it is perhaps one of the first programming languages for which human-computer interaction considerations were deliberately studied~\cite{Reisner1975,Reisner1977}. Due to its high popularity, declarative nature, targeted purpose, structured syntax, and human-centric design, SQL is a natural starting point for a spoken query language.
+Introduced in 1974~\cite{Chamberlin1974}, SQL recently celebrated its 50th birthday. Despite (or perhaps because of) its age, it remains the de facto standard language for database quyering. SQL (originally named SEQUEL) was intended for both application programmers and a non-programmer target audience of business professionals and other laypersons requiring data access from relational databases~\cite{Chamberlin1976}. Its initial design and following updates were informed by a user-centric approach, and it is perhaps one of the first programming languages for which human-computer interaction considerations were deliberately studied~\cite{Reisner1975,Reisner1977}. Due to its high popularity, declarative nature, targeted purpose, structured syntax, and human-centric design, SQL is a natural starting point for a spoken query language.
 
 \paragraph{\textbf{Syntax Grammar and SQL Variants}}
 
@@ -167,7 +167,7 @@ That said, recent research suggests that NLI with more restricted grammar and/or
 
 Controlled or restricted NL are based on an NL such as English but more restrictive in their lexicon, syntax, and semantics. 
 They retain a majority of its base NL properties and are defined explicitly~\cite{10.1162/COLI_a_00168}. 
-Most PLs (including SQL) are not controlled NLs because their syntax deviates too much from the NL and have many statements that do not exist in the NL. 
+Most programming languages (including SQL) are not controlled NLs because their syntax deviates too much from the NL and have many statements that do not exist in the NL. 
 Controlled NLs have been evaluated against linear keyword languages such as SQL and found to be easier for novice users for performing data retrieval tasks~\cite{doi:10.1287/isre.3.3.252}. Early research on controlled query languages suggests a continuum between formal and natural language exists with a mid-point serving as an optimal combination of structure and flexibility~\cite{10.1145/800045.801602}.
 In contrast to NL-to-SQL described previously, a controlled NL does offer the benefit of being ``correct-by-construction'' at the cost of being less flexible than a natural language interface.
 
@@ -246,7 +246,7 @@ Keyword synonyms are listed in Figure \ref{fig:synonymsslide}.
 SpeakQL allows for the use of optional THE and TABLE keywords when dictating a table expression. 
 This permits expressions such as \emph{SELECT everything FROM THE courseoffering TABLE}, which can be more natural for speaking than the SQL equivalent \emph{SELECT everything FROM courseoffering}. 
 Introducing the THE keyword as a determinant clarifies the context of the subject of the SpeakQL sentence, which is the \emph{courseoffering} table. 
-Appending the TABLE keyword to the expression provides further context and clarity that the referenced table is a tangible object within the database. While neither keyword changes the expression's meaning, their usage improves the naturalness of the SELECT statement, thus potentially improving the dictation experience.
+Appending the TABLE keyword to the expression provides further context and clarity that the referenced table is a tangible object within the database. While neither keyword changes the expression's meaning, their usage increases the naturalness of the SELECT statement, thus potentially improving the dictation experience.
 
 
 \subsubsection{\textbf{Examples}}
@@ -366,7 +366,7 @@ Query unbundling aims to directly reduce this cognitive load based on the ``stre
 Basically, this is a ``local-first'' approach to using the database schema in query construction. 
 It is closer to the logical query plan produced behind the scenes for SQL queries. 
 We extend the grammar to permit the expression of \emph{unbundled SELECT} queries that specify columns, table source, and WHERE predicates for \textit{one relation at a time}. 
-These unbundled relation can then be joined together using separate \emph{join-with} clauses where the speaker defines the join predicate(s). 
+These unbundled relations can then be joined together using separate \emph{join-with} clauses where the speaker defines the join predicate(s). 
 Each unbundled query is delimited by the AND THEN, THEN, or NEXT keywords.
 Modifier clauses can be specified together in a single expression or separately using multiple modifier clauses. 
 The order of the \emph{unbundled SELECT}, \emph{JOIN-WITH}, and \emph{modifier} clauses remains optional, retaining the additional flexibility for dictation that SpeakQL offers.
@@ -669,7 +669,7 @@ The translator performs translation through a series of steps. The first step ta
 
 
 \paragraph{\textbf{Synonym Replacement}} 
-In this step performs a scan search of all active nodes in the AST for rules that are a member of the keyword and delimiter categories for which SpeakQL synonyms exist. 
+In this step the translator performs a scan search of all active nodes in the AST for rules that are a member of the keyword and delimiter categories for which SpeakQL synonyms exist. 
 This includes \emph{selectKeyword}, \emph{fromKeyword}, \emph{selectElementDelimiter}, and more. 
 When a keyword or delimiter rule is identified during the search, the translator performs an update on the rule node that replaces the terminal token representative of a SpeakQL synonym with its corresponding SQL keyword. 
 Optional keywords such as THE and TABLE are identified in the same manner and removed from the AST.
@@ -750,11 +750,11 @@ Given these assumptions, where expression bundling proceeds as depicted in algor
 
 Similar to the select element bundling step, the first occurence of a \emph{whereExpression} parse rule, \emph{whereExpression'}, within the query AST and designates it as the target for additional \emph{whereExpression} parse rule migration. Because where expressions are optional within \emph{selectStatement} parser rules, it is possible that \emph{whereExpression'} is not a member of the first \emph{selectStatement} parse rule, \emph{selectStatement'}, in the query. Because of this possibility, the translator may perform an additional migration step where it migrates \emph{whereExpression'} to become a child of \emph{selectStatement'}.
 
-The translator takes advantage of the recursive nature of the where expression grammar (see figure \ref{fig:whereexprgrammar}) by designating where expressions that exist in \emph{selectStatement} parse rules that are not \emph{selectStatement'} as children of \emph{whereExpression'}. During this migration process, the translator employs helper functions to surround migrated expressions with parentheses and deliminating the migrated expressions with \emph{andKeyword} parser rules. The end result of this process is a single cross-table conjunctive \emph{whereExpression} parser rule that contains all other \emph{whereExpression} parser rules specified in other unbundled queries within the SpeakQL query. 
+The translator takes advantage of the recursive nature of the where expression grammar by designating where expressions that exist in \emph{selectStatement} parse rules that are not \emph{selectStatement'} as children of \emph{whereExpression'}. During this migration process, the translator employs helper functions to surround migrated expressions with parentheses and delimiting the migrated expressions with \emph{andKeyword} parser rules. The end result of this process is a single cross-table conjunctive \emph{whereExpression} parser rule that contains all other \emph{whereExpression} parser rules specified in other unbundled queries within the SpeakQL query. 
 
 \paragraph{Bundling join parts}
 
-Join part bundling collects all \emph{multiJoinExpression} parse rules and aggregates them in an arbitrary order to form a valid SQL join expression. Join part bundling is an optional feature because an alternate form of relation joining where all table sources are specified within \emph{fromExpression} parse rules, and join conditions between each table source are specified within \emph{whereExpression} predicates (e.g. \emph{from table one, table two where one.id = two.id}), is also possible. Currently, because join order in the resulting SQL query is arbitrary within the bounds of its implementation rules, join part bundling is limited to allowing only inner joins. Queries that require outer join expressions may still be expressed using other SpeakQL features; but may not employ the unbundling feature. Outer join capability is a future SpeakQL feature development objective.
+Join part bundling collects all \emph{multiJoinExpression} parse rules and aggregates them in an arbitrary order to form a valid SQL join expression. Join part bundling is an optional feature because an alternate form of relation joining where all table sources are specified within \emph{fromExpression} parse rules, and join conditions between each table source are specified within \emph{whereExpression} predicates (e.g. \emph{from table one, table two where one.id = two.id}), is also possible. Currently, because join order in the resulting SQL query is arbitrary within the bounds of its implementation rules, join part bundling is limited to allowing only inner joins. Queries that require outer join expressions may still be expressed using other SpeakQL features; but may not employ the unbundling feature. Outer join capability would be a future SpeakQL feature development objective.
 
 % \TransformFunctionJoinParts
 
@@ -762,7 +762,7 @@ The join part bundling process begins when the translator creates a list of all 
 
 After analyzing all \emph{multiJoinExpression} and making modifications toward SQL-correct syntax, the translator begins the join consolidation process by designating the first table referenced in the queries first \emph{selectStatement'} as the base table upon which the SQL-correct join statement will be built. In order to ensure valid join expression chaining, the translator determines a table join order that ensures that each subsequent table added to a join expression references a table in its join condition that already exists within the objective join expression. In other words, while building the SQL-correct join expression, a \emph{multiJoinExpression} will not be added to the target \emph{joinExpression} until all tables referenced in its join condition have been added to the target \emph{joinExpression}. The process will continue iterating over remaining \emph{multiJoinExpressions} until the table existence constraint can be satisfied and all expressions have been added to the objective SQL-correct expression, or it is determined that \emph{multiJoinExpressions} exist in the SpeakQL query that cannot be chained and the translator responds with an error condition. The translator then performs an additional safety check to ensure that all tables referenced in the query's \emph{unbundledQueryOrderSpecification} parser rules are also referenced in a corresponding \emph{multiJoinExpression} parser rule, and throws an error if a violation is encountered.
 
-After the join bundling process is completed, all join expressions consolidated within a single \emph{multiJoinExpression} are migrated to the first \emph{tableExpressionNoJoin} parse rule. The \emph{tableExpressionNoJoin} parse rule name is then updated to \emph{tableExpression} and becomes a valid SQL from + join expression; and join bundling is complete.
+After the join bundling process is completed, all join expressions consolidated within a single \emph{multiJoinExpression} are migrated to the first \emph{tableExpressionNoJoin} parse rule. The \emph{tableExpressionNoJoin} parse rule name is then updated to \emph{tableExpression} and becomes a valid SQL from + join expression, and join bundling is complete.
 
 \paragraph{Bundling table expressions}
 
@@ -776,7 +776,7 @@ After all relevant bundling steps are complete, the translator performs syntax t
 
 
 \paragraph{\textbf{SpeakQL Parser Performance Comparisons}}
-A comparison of the SQL and SpeakQL grammar implementations reveals that SpeakQL feature implementation results in deeper trees with additional branches. Naturally, this increase in complexity will result in a corresponding increase in time required to parse a query. A performance comparison between three parsers, a MySQL grammar-based parser, a full SpeakQL parser that extends the entire MySQL grammar, and a simple SpeakQL parser that extends only a DML subset of the MySQL grammar was conducted to validate assumptions about parser performance improvements for smaller grammars. 
+A comparison of the SQL and SpeakQL grammar implementations reveals that SpeakQL feature implementation results in deeper trees with additional branches. Naturally, this increase in complexity will result in a corresponding increase in time required to parse a query. To validate assumptions about parser performance improvements for smaller grammars, We conducted a performance comparison between three parsers: a MySQL grammar-based parser, a full SpeakQL parser that extends the entire MySQL grammar, and a simple SpeakQL parser that extends only a DML subset of the MySQL grammar. 
 
 \begin{figure}
     \centering
@@ -845,21 +845,29 @@ Specifically, participants are divided into two groups: a SpeakQL-to-SQL group a
 All participants in one group answered all 12 questions in one dialect first and then switch to the other dialect.
 
 \paragraph{\textbf{Database Schema and Queries}}
-We use a 6-table university course database schema for our user study. 
+
+\begin{figure}
+  \centering
+  \includegraphics{figures/speakql_university_model.jpg}
+  \caption{University course database schema used in the SpeakQL dialect user study.}
+  \label{fig:speakqlschema}
+\end{figure}
+
+We use a 6-table university course database schema (see Figure~\ref{fig:speakqlschema}) for our user study. 
 It is a snowflake schema with a course offerings table at its center with three foreign keys referencing tables on courses, rooms, and terms. 
 The course and room tables have foreign keys referencing tables on departments and buildings, respectively.
 For practice we created 3 realistic queries of increasing complexity: a single-table project, a single-table aggregate, and a 3-table join. 
 The study itself uses 6 simple and 6 complex queries, with all the simple queries being single-table queries, while the complex ones join between 2 and 5 tables each.
 
 \paragraph{\textbf{Logistics}} 
-Study sessions were conducted over Zoom with a simple browser-based web interface. 
+Study sessions rely on the Zoom video conferencing application with a screen share of a simple browser-based web interface built specifically for the study. 
 The interface enables the speaker to see the database schema, receive query prompts, dictate queries through their device's microphone, and see the live ASR transcription of their dictation. 
 We use the state-of-the-art Whisper model for ASR~\cite{https://doi.org/10.48550/arxiv.2212.04356}. 
 The study administrator employed a separate ``Wizard of Oz'' control panel to evaluate correctness of the spoken query, to offer feedback in realtime (i.e., identify errors and ask for re-dictation if needed), to answer general questions on SQL or SpeakQL, and to manage the overall progression of the study session. 
 
 \paragraph{\textbf{Quantitative Analyses}}
-We evaluate performance using the following dependent variables: planning time (time from seeing query prompt to starting recording which accounts for schema review, note taking, questions, and verbal rehearsals), number of attempts till a fully correct query, completion time per attempt, and total completion time for all attempts.
-Independent variables are based on query prompt attribute and feature usage. 
+We evaluate performance using the following dependent variables: planning time (time from seeing query prompt to starting recording which accounts for schema review, note taking, questions, and verbal rehearsals), number of attempts needed to dictate a fully correct query, completion time per attempt, and total completion time for all attempts.
+Independent variables reflect aspects of query prompt attributes and feature usage. 
 Prompt attribute is the complexity of the correct SQL query, binarized as simple or complex (more details below). 
 Feature usage determination is based on post-participation transcription of recordings and further analyses. 
 
@@ -874,11 +882,12 @@ We used syntax-focused heuristics on the ASR output text to make this process ea
 
 
 \paragraph{\textbf{Study Session Overview}}
-Each session was for 90 minutes, and began with a 22 minute training video that provided an overview of SpeakQL features and usage examples. 
-Following the video was a brief question and answer session and user interface demonstration.
+Each session lasted for up to 90 minutes, and began with a 22 minute training video that provided an overview of SpeakQL features and usage examples. 
+Following the video, participants were affored a brief question and answer session and provided a demonstration of the user interface.
 Participants then answered up to 15 prompts using both dialects (3 practice and 12 measured). 
 They dictated in one dialect (SpeakQL or SQL) and then repeated the same queries in the same order for the other dialect. They were encouraged to use as many SpeakQL features as possible. 
 The study administrator was available to answer questions about the schema or language syntax.
+
 The online context made a note taking prohibition unenforceable. 
 As such, we deemed that a complete restriction would result in a temptation to take notes covertly. 
 Participants were advised that they \emph{should} try to perform without using notes, but if they did, they were required to discard them after the first dialect to mitigate learning effect bias.
@@ -904,7 +913,7 @@ Data from one participant was omitted from analysis due to a violation of the no
 
 \paragraph{\textbf{Feature Usage Impact}} 
 Hypotheses H1 and H2 are feature-focused tests to analyze the impact of specific SpeakQL features. 
-But since SpeakQL feature usage was optional, it turned out that participants did not consistently use many SpeakQL features across many prompts. 
+However, the optional nature of SpeakQL feature usage resulted in participants who did not consistently use many SpeakQL features across many prompts. 
 Feature usage was also not consistent between participant groups (SpeakQL-first vs.~SQL-first) and participants who had SQL as their first condition were less likely to use SpeakQL features as often as participants who had SpeakQL as their first condition. 
 Due to this unexpected imbalanced voluntary usage rate for some features, we are unable to make any significant observations of feature usage effects on dependent variables. 
 
@@ -922,10 +931,12 @@ Due to this unexpected imbalanced voluntary usage rate for some features, we are
     \caption{Planning Time, First Attempts,\\By Individual Query}
     \label{fig:queryplanningtime}
   \end{subfigure}
+  \caption{Total Time and Planning Time By Individual Query}
+  \label{fig:totalandplanningtime}
 \end{figure*}
 
 \paragraph{\textbf{Planning Time}} 
-Planning time is a part of H1 and H2. 
+Planning time, which is counted as the time elapsed between when a participant first reads the natural language prompt and when they press the record button to begin dictating the query, is a part of both H1 and H2. 
 We analyzed total number of attempts to reach a correct query, as well as the planning time for the first attempt. 
 We measure first attempt planning time as opposed to the planning time for the final attempt because our observation was that for second and third attempts, participants generally performed no additional planning.
 Thus, the time participants take to digest the prompt, analyze the schema, and plan the query is reflected within the first attempt planning time. 
@@ -973,8 +984,8 @@ Figure~\ref{fig:featureusage} shows a significant disparity in popularity of the
 Natural functions are the most popular, followed by unbundling and synonyms; clause and modifier reordering are the least popular. 
 Figure~\ref{fig:unusedfeatures} shows the frequency of the self-reported reasons for not using a given feature.
 As expected, SQL familiarity is a top reason that dissuaded some participants from using SpeakQL features. 
-In particular, clause/modifier reordering were not used due to that reason the most. 
-Some also could not remember how to use unbundling or natural functions, perhaps due to their novelty.
+Clause and modifier reordering were the features most impacted by the SQL familiarity reason. 
+Some participants also said that they could not remember how to use unbundling or natural functions, perhaps due to their novelty.
 
 \begin{figure}[ht]
   \centering
@@ -1027,7 +1038,7 @@ We analyzed the transcripts and audio files of incorrect attempts in order to or
 \end{figure}
 \paragraph{\textbf{Observations}}
 
-Figure \ref{fig:errorcounts} shows the breakdown of error types by dialect and failure category. The total number of failures analyzed was 190, 95 SpeakQL and 95 SQL. All failure categories occured for both dialects; but syntax and dictation failures were more commmon for SpeakQL than SQL. Conversely, schema and semantic failures were more common for SQL than SpeakQL. The higher rate of syntax and dictation errors for SpeakQL is likely due to the fact that SpeakQL is a new language and participants were not as familiar with it, though we did observe a much higher rate of SpeakQL syntax errors where participants used incorrect keywords or invalid synonyms. The lower rate of schema and semantic error hints at the possibility that some aspect of SpeakQL may have made it easier for participants to reason about the schema and the query prompt.
+Figure \ref{fig:errorcounts} shows the breakdown of error types by dialect and failure category. The total number of failures analyzed was 190: 95 SpeakQL, and 95 SQL. All failure categories occured for both dialects, but syntax and dictation failures were more commmon for SpeakQL than SQL. Conversely, schema and semantic failures were more common for SQL than SpeakQL. The higher rate of syntax and dictation errors for SpeakQL is possibly due to: 1) the fact that SpeakQL is a new language and participants were not as familiar with it, 2) the incorrect use of SpeakQL keywords, and 3) the invocation of keywords that are not in the SpeakQL vocabulary. The lower rate of schema and semantic errors when using SpeakQL hints at the possibility that some aspect of SpeakQL may have made it easier for participants to reason about the schema and the natural language query prompt.
 
 
 
@@ -1080,7 +1091,7 @@ Table~\ref{tab:categories-and-codes} lists the number of participants who gave e
 \paragraph{\textbf{Positive Comments}} 
 8 participants made positive comments that were not feature-specific. 
 These included general impressions of their experience using SpeakQL, a comment that using SpeakQL was easier than using SQL for dictation, and 4 comments that SpeakQL had a natural feel and was easy to use.
-We present some quote verbatim. 
+Some notable participant quotes include: 
 
 \vspace{1mm}
 \emph{"SpeakQL definitely makes dictation of queries more natural without worrying a lot about the syntax (which would include the orders) and even the parentheses."}
@@ -1103,7 +1114,7 @@ They reported that unbundling required less planning time, feels faster, enables
 
 
 \paragraph{\textbf{Negative Comments}}
-The most common ones related to syntax difficulty, with 9 participants reporting dislike of different aspects of SpeakQL syntax. 
+The most prevalent negative comments related to syntax difficulty, with 9 participants reporting dislike of different aspects of SpeakQL syntax. 
 4 participants reported difficulty with unbundling for complex queries. 
 3 reported that using the unbundling join syntax or non-unbundled queries that used join synonyms was difficult. 
 One participant said that the GROUP BY AUTOMATICALLY feature was not intuitive and felt less natural.
@@ -1137,7 +1148,7 @@ Participant feedback on the survey indicates that more than half of participants
 
 \textbf{Synonyms.} Although the simplest feature, they were only the third-most popular feature in the actual usage data. They also attracted the most negative feedback, with the crux being they caused more uncertainty about the valid keywords. We observed that 12 of the SpeakQL attempt failures were due to incorrect synonym usage. We plan to drop some synonyms in future implementations of SpeakQL. 
 
-\textbf{Clause reordering.} This ended up the most non-used feature, mainly because participants had high enouguh familiarity with SQL to not need such reordering. But we plan to retain this feature as it did not elicit negative feedback.
+\textbf{Clause reordering.} This ended up the most non-used feature, mainly because participants had high enough familiarity with SQL to not need such reordering. But we plan to retain this feature as it did not elicit negative feedback.
 
 \textbf{Natural functions.} This was the most popular feature and universally liked by participants. We plan to expand this feature to reduce the need to speak other special characters such as quotes around string literals in predicates.
 
@@ -1148,7 +1159,7 @@ That is, that participants spent more time and effort thinking about which eleme
 The naturalness of the syntax does not appear to be a significant factor in improving measurable outcomes of the query dictation process, though many participants indicated that they found the syntax easier to use than SQL. 
 
 We believe that pursuing modifications to the SpeakQL dialect based on user study results may still be worthwhile. 
-However, given the recent rapid progress of NL-to-SQL capabilities, we also condede that perhaps the most important factor in improving the ease of use of spoken querying is to improve the NL-to-SQL capabilities of existing NLIs.
+However, given the recent rapid progress of NL-to-SQL capabilities, we also concede that perhaps the most important factor in improving the ease of use of spoken querying is to improve the NL-to-SQL capabilities of existing NLIs.
 The SpeakQL dialect may benefit some aspects if these workflows, perhaps as a post-dictation error correction dialect within a stateful query system or as a prompt engineering language tool for NL-to-SQL systems.
 
 \textbf{Stateful Dialogue for Query Correction} Attempt failures for SpeakQL queries were more likely to be syntax- or dictation-based (Figure \ref{fig:errorcounts}). In SpeakQL's current implementation, such errors require the user to re-state the entire query from the beginning. Many of these errors would not require a full re-dictation if the user could simply correct the error in the query through a simple edit. Full  implementation of a stateful system was outside of the scope of this paper's evaluation of a natural syntax. However, we believe dialogue system that provides verbal and/or visual error feedback and suggested corrections for a user to accept or modify would be a useful addition to the SpeakQL system in future iterations.
